@@ -429,10 +429,16 @@
    "map": 329,
    "points": [
     {
+     "x": 3680.6,
+     "y": -3230.0,
+     "z": 127.0,
+     "hint": "Clear the Crimson Guardsmen, Conjurors and Gallants in this square; Timmy the Cruel then appears."
+    },
+    {
      "x": 3651.6,
      "y": -3190.1,
      "z": 127.0,
-     "hint": "Clear the Crimson Guardsmen, Conjurors and Gallants in this square; Timmy the Cruel then appears."
+     "hint": null
     }
    ],
    "source": "smart_scripts 10808 events 3-6 (invisible on reset, visible on update) gated by conditions 22/6: no 10418/10419/10424 within 40yd. Pos = guid 247227.",
@@ -1096,10 +1102,16 @@
    "map": 555,
    "points": [
     {
+     "x": -154.6,
+     "y": -96.3,
+     "z": 8.2,
+     "hint": "Kill every Cabal Ritualist in this hall. Hellmaw is banished until the last one dies."
+    },
+    {
      "x": -157.2,
      "y": -64.4,
      "z": 8.2,
-     "hint": "Kill every Cabal Ritualist in this hall. Hellmaw is banished until the last one dies."
+     "hint": null
     }
    ],
    "source": "instance_shadow_labyrinth.cpp:64-92 (all NPC_CABAL_RITUALIST 18794 dead -> Hellmaw DoAction(1)); boss_ambassador_hellmaw.cpp:57-90 (immune+banish while ritualists alive); ritualists 146113-146130 (+6 heroic-only 146230-146235); point = spawn 146119",
