@@ -17,6 +17,7 @@ class NavRouter:
         self.raw_tele = []                           # teleports whose destination is off the navmesh
         self.req = {}                                # (a, b) -> bosses that must be dead to use it
         self.label = {}                              # (a, b) -> arrow hint for this teleport
+        self.door = {}                               # poly -> bosses that must be dead to walk through
 
     def locate(self, wow, radius=15.0):
         rc = navmesh.wow_to_rc(wow)
@@ -63,8 +64,18 @@ class NavRouter:
             self.extra[pb][pa] = L
             self.kind[(pb, pa)] = ('bridge', ptb, pta)
 
+    def add_door(self, pos, radius, req):
+        """A door that opens when `req` bosses are dead: close the navmesh polygons in it until then."""
+        rc = navmesh.wow_to_rc(pos)
+        shut = [i for i, p in enumerate(self.M.polys)
+                if math.hypot(p.center[0] - rc[0], p.center[2] - rc[2]) <= radius and abs(p.center[1] - rc[1]) < 4]
+        if not shut:
+            self.report.append('DOOR-UNPLACED %s %s' % (self.tag, pos))
+        for i in shut:
+            self.door[i] = frozenset(req)
+
     def dijkstra(self, src, killed=None):
-        """killed: boss names already dead; None means every teleporter is open."""
+        """killed: boss names already dead; None means every teleporter and door is open."""
         M = self.M
         dist = {src: 0.0}
         prev = {}
@@ -74,6 +85,8 @@ class NavRouter:
             if d > dist.get(u, 1e18):
                 continue
             for v in M.polys[u].links:
+                if killed is not None and v in self.door and not self.door[v] <= killed:
+                    continue
                 nd = d + M.cost(u, v)
                 if nd < dist.get(v, 1e18):
                     dist[v] = nd
@@ -189,6 +202,8 @@ def nav_routes(M, mapid, m, routes_in, blist, go_by_map, got, report, order_boss
         a, b = t[0], t[1]
         R0.add_teleport(a, b, True, t[2] if len(t) > 2 and t[2] is not None else unlock_for(mapid, b),
                         label=t[3] if len(t) > 3 else None)
+    for pos, radius, req in cfg.DOORS.get(mapid, []):
+        R0.add_door(pos, radius, req)
     walls = centre.Walls(M) if cfg.CENTRE_PATHS else None
     routes = []
     for R in routes_in:

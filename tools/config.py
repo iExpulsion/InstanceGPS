@@ -166,7 +166,18 @@ TELEPORTS = {
 }
 
 # Manual boss positions {(map, name): (x, y, z)} that override everything else.
-POSITIONS = {}
+POSITIONS = {
+    # Rend starts on the balcony above Blackrock Stadium and rides down on Gyth once the waves are
+    # done; the fight is on the arena floor (areatrigger 2026 at_blackrock_stadium, which starts it)
+    (229, 'Warchief Rend Blackhand'): (153.8, -419.8, 110.5),
+}
+
+# Doors that stay shut until bosses die: {map: [((x, y, z), radius, [bosses])]}. Routes don't walk
+# through them before then (navmesh polygons within `radius` yards of the door are closed).
+DOORS = {
+    # Blackrock Spire: the stadium's exit portcullis (GO 175186, DoorData PASSAGE on Rend)
+    229: [((93.0, -435.6, 111.0), 6.0, ['Warchief Rend Blackhand'])],
+}
 
 # Bosses fought in a different place per faction: {(map, name): {'Alliance': pos, 'Horde': pos}}.
 # Instances with any of these get one route per faction.
@@ -305,6 +316,12 @@ BOSS_VIA = {
         # Pythas -> Skum: down the west side of the rock; the navmesh's shorter way along the east
         # side can't be walked (way traced on an in-game map screenshot, 2026-10-01)
         'Skum': [((2.0, -233.7, -73.8), None), ((-63.5, -213.3, -65.6), None), ((-129.1, -187.3, -67.6), None)],
+    },
+    229: {
+        # in through the stadium's entry door (GO 164726); walking in starts the event
+        'Warchief Rend Blackhand': [((108.0, -420.3, 111.0),
+                                     'Walk into the stadium to start the event: fight off the waves of Blackhand '
+                                     'troops, then Rend rides down on Gyth. The exit gate opens when Rend dies.')],
     },
 }
 
