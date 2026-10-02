@@ -34,29 +34,27 @@ jobs:
         working-directory: test
         run: python ci.py
 
-      - name: Build zip
+      - name: Build zips
         id: pkg
         run: |
           python tools/package.py
           version=$(sed -n 's/^## Version: *//p' InstanceGPS/InstanceGPS.toc | tr -d '\r')
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "zip=dist/InstanceGPS-$version.zip" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         with:
           name: InstanceGPS-${{ steps.pkg.outputs.version }}
-          path: ${{ steps.pkg.outputs.zip }}
+          path: dist/*.zip
 
       - name: Publish a release if the version is new
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.pkg.outputs.version }}
-          ZIP: ${{ steps.pkg.outputs.zip }}
         run: |
           tag="v$VERSION"
           if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
             echo "$tag is already released; raise ## Version in the .toc to publish a new one."
             exit 0
           fi
-          gh release create "$tag" "$ZIP" --target "$GITHUB_SHA" --title "InstanceGPS $VERSION" --generate-notes
+          gh release create "$tag" dist/*.zip --target "$GITHUB_SHA" --title "InstanceGPS $VERSION" --generate-notes

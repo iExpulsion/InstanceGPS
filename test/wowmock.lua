@@ -94,7 +94,8 @@ function UnitExists() return false end
 function EasyMenu() end
 function CloseDropDownMenus() end
 function ReloadUI() end
-function StaticPopup_Show() end
+function StaticPopup_Show(which, a1) mock.popup = { which = which, text = a1 } return mock.popup end
+function UnitIsDeadOrGhost() return mock.dead end
 function tinsert(t, v) table.insert(t, v) end
 
 -- fire an event on every registered frame

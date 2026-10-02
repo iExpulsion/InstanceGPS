@@ -5,32 +5,44 @@
 import os, re, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+OVERRIDE = {"DN_MODULES": os.path.join("fixtures", "override_brs.lua")}
 
-# test file -> lines its output must contain
-CHECKS = {
-    "ui.lua": [],
-    "reset.lua": [],
-    "hard.lua": ["cleared:\ttrue"],
-    "stats.lua": ["stats test done"],
-    "pathview.lua": ["pathview ok"],
-    "idle.lua": ["has waypoint after:\tfalse", "HUD shown:\tfalse"],
-}
+# (name, test file, environment, lines its output must contain)
+CHECKS = [
+    ("ui", "ui.lua", {}, []),
+    ("reset", "reset.lua", {}, []),
+    ("hard", "hard.lua", {}, ["cleared:\ttrue"]),
+    ("stats", "stats.lua", {}, ["stats test done"]),
+    ("pathview", "pathview.lua", {}, ["pathview ok"]),
+    ("idle", "idle.lua", {}, ["has waypoint after:\tfalse", "HUD shown:\tfalse"]),
+    ("overrides", "overrides.lua", OVERRIDE,
+     ["instance removed:\ttrue", "boss removed:\ttrue", "boss renamed:\ttrue", "routes consistent:\ttrue",
+      "custom boss after Gizrul:\ttrue\tnpc detected:\ttrue", "boss moved:\ttrue", "hint removed:\ttrue",
+      "hint shown:\ttrue"]),
+    # the overridden routes walk cleanly (rough routes to the custom and the moved boss)
+    ("override walk Lower", "scenario.lua", dict(OVERRIDE, DN_MAP="229", DN_ROUTE="1"), ["route walk done, 0 waypoint problems"]),
+    ("override walk Upper", "scenario.lua", dict(OVERRIDE, DN_MAP="229", DN_ROUTE="2"), ["route walk done, 0 waypoint problems"]),
+    ("recorder", "recorder.lua", {},
+     ["leg recorded:\ttrue\ttrue\ttrue", "detour cut:\ttrue", "mark kept:\ttrue", "export loads:\ttrue",
+      "export registers:\ttrue", "leg replaced:\ttrue", "mark exported as hint:\ttrue"]),
+]
 
 
-def run(args):
-    p = subprocess.run([sys.executable] + args, cwd=HERE, capture_output=True, text=True)
+def run(args, env=None):
+    p = subprocess.run([sys.executable] + args, cwd=HERE, capture_output=True, text=True,
+                       env=dict(os.environ, **(env or {})))
     return p.returncode, p.stdout + p.stderr
 
 
 failed = []
-for test, wants in CHECKS.items():
-    code, out = run(["run_test.py", "", test])
+for name, test, env, wants in CHECKS:
+    code, out = run(["run_test.py", "", test], env)
     problems = ["exit code %d" % code] if code else []
     problems += [l for l in out.splitlines() if re.match(r"\s*FAIL\b", l)]
     problems += ["missing: " + w.replace("\t", " ") for w in wants if w not in out]
-    print(("ok    " if not problems else "FAIL  ") + test)
+    print(("ok    " if not problems else "FAIL  ") + name)
     if problems:
-        failed.append(test)
+        failed.append(name)
         print("\n".join("      " + p for p in problems[:10]))
         print(out[-2000:])
 

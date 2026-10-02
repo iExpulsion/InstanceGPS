@@ -152,6 +152,15 @@ function DN:RefreshMap()
 		end
 	end
 
+	-- other layers (the route recorder's legs): fn(inst, level, toMap(x, y) -> px, py, Dot(px, py))
+	local function DotAt(x, y)
+		local t = Dot()
+		t:ClearAllPoints()
+		t:SetPoint("CENTER", overlay, "TOPLEFT", x, -y)
+		return t
+	end
+	for _, fn in ipairs(self.mapLayers or {}) do fn(inst, level, px, DotAt) end
+
 	-- boss pins, numbered in route order (other bosses get no number)
 	local numOf = {}
 	for k, bi in ipairs(route.order) do numOf[bi] = k end
@@ -200,7 +209,7 @@ overlay:SetScript("OnUpdate", function(_, elapsed)
 	if sinceRedraw < 0.25 then return end
 	sinceRedraw = 0
 	local key = (GetMapInfo() or "") .. ":" .. (GetCurrentMapDungeonLevel() or 0) .. ":" ..
-		tostring(DN.leg and DN.leg.to) .. ":" .. tostring(DN.routeIndex)
+		tostring(DN.leg and DN.leg.to) .. ":" .. tostring(DN.routeIndex) .. ":" .. (DN.recordVersion or 0)
 	if key ~= shownKey then
 		shownKey = key
 		DN:RefreshMap()

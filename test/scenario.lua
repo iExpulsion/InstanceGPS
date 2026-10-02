@@ -29,8 +29,17 @@ local route = mine[tonumber(os.getenv("DN_ROUTE") or "1")]
 local p = route.path
 place(p[1], p[2], p[3])
 MOCK.Fire("PLAYER_ENTERING_WORLD")
+-- server modules (Override.lua) apply on entering the world: a built one replaces the instance,
+-- and any of them can rewrite its routes
+if NS.Instances[MAP] ~= inst then
+	inst = NS.Instances[MAP]
+	for _, r in ipairs(inst.allRoutes) do
+		if r.name == route.name and r.faction == route.faction then route = r end
+	end
+end
 MOCK.Tick(0.2)
 assert(DN.inst == inst, "instance not detected")
+p = route.path
 -- several routes from one entrance (Blackrock Spire Lower/Upper): pick the walked one in the
 -- route switcher, as a player heading for it would
 if route.index and DN.routeIndex ~= route.index then DN:SetRoute(route.index, true) end

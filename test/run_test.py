@@ -11,6 +11,9 @@ def load(path):
     fn = L.eval('function(src, name) local f, err = loadstring(src, name) if not f then error(err) end return f end')(src, os.path.basename(path))
     L.eval('function(f) f("InstanceGPS", NS) end')(fn)
 load(DATA)
-for f in ['Core.lua', 'Nav.lua', 'Arrow.lua', 'Tracker.lua', 'MapOverlay.lua', 'PathView.lua', 'Config.lua']:
+for f in ['Core.lua', 'Override.lua', 'Nav.lua', 'Arrow.lua', 'Tracker.lua', 'MapOverlay.lua', 'PathView.lua', 'Recorder.lua', 'Config.lua']:
     load(os.path.join(ADDON, f))
+# server modules load after the addon, like dependent addons in game (DN_MODULES=path;path)
+for f in filter(None, os.environ.get('DN_MODULES', '').split(os.pathsep)):
+    load(f)
 L.execute(open(os.path.join(here, sys.argv[2] if len(sys.argv) > 2 else 'scenario.lua'), encoding='utf8').read())

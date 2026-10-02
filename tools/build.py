@@ -20,6 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import dbc, maptex, navmesh, navroute, wmofloors, sqlparse as sp
 import config as cfg
+import overlay
 
 ROOT = os.path.dirname(HERE)
 CACHE_DIR = None
@@ -562,6 +563,7 @@ def build(D, fixups):
         blist = sorted(bosses.values(), key=lambda b: (b['order'], b['name']))
         for b in blist:   # typos in the client's encounter names
             b['name'] = cfg.BOSS_RENAME.get(b['name'], b['name'])
+        blist = overlay.extra_bosses(mapid, blist)   # a server module's removed and custom bosses
 
         spawns = spawns_by_map[mapid]
         byname = collections.defaultdict(list)
@@ -608,7 +610,7 @@ def build(D, fixups):
                     spell = fx['spell']
                 b['noDeath'] = bool(fx.get('noDeath'))
             b['friendly'] = b['name'] in cfg.FRIENDLY_ON_DEFEAT
-            b['npcs'] = sorted(npcs)
+            b['npcs'] = sorted(npcs | set(b.get('extraNpcs', ())))   # a module's custom creatures too
             b['spell'] = spell
             pos = None
             fp = None
@@ -623,6 +625,8 @@ def build(D, fixups):
                 b['posSource'] = 'spawn'
             man = cfg.POSITIONS.get((mapid, b['name']))
             if man:
+                if man[2] is None and pos:
+                    b['refZ'] = pos[2]   # a module's position without a height: near the old one's
                 pos = man
                 b['posSource'] = 'manual'
             b['pos'] = pos
@@ -717,7 +721,65 @@ def build(D, fixups):
                     report.append('NOMASK %d %s' % (mapid, m[5]))
             mask_cache.append(masks)
             return masks
+        # map levels a point is drawn on, as a bitmask (bit f = level f): every level whose
+        # rectangle holds it and whose texture shows floor there; stacked levels get all of them
+        # the client's own rule: the WMO group a point is in decides its level (DungeonMapChunk)
+        locator = None
+        if len(floors) > 1 and cfg.USE_WMO_FLOORS:
+            dm_rows = (S['dm'] if S and map_source == 'blizzard' else D['dm'])
+            locator = wmofloors.FloorLocator(m[1], mapid, chunk_rows, dm_rows,
+                                             [(s[10], s[11], s[12]) for s in spawns],
+                                             S['wmoarea'] if S else D['wmoarea'])
+            if not locator.ok:
+                report.append('WMOFLOORS-OFF %d %s (coverage %.0f%%)' % (mapid, m[5], locator.coverage * 100))
+                locator = None
+        # overview levels (a rectangle holding most of two or more other levels) show everything
+        def area(r):
+            return max(0.0, r[1] - r[0]) * max(0.0, r[3] - r[2])
+
+        def overlap(a, b):
+            return area((max(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), min(a[3], b[3])))
+        overview = {f for f, r in floors.items()
+                    if sum(1 for g, q in floors.items() if g != f and area(q) > 0
+                           and overlap(r, q) > 0.8 * area(q)) >= 2}
+
+        def floor_of(p):
+            if not floors:
+                return 1
+            if locator is not None:
+                f = locator.floor(p[0], p[1], p[2])
+                if f is not None and f in floors:
+                    bits = 1 << f
+                    for o in overview:
+                        r = floors[o]
+                        if r[0] <= p[1] <= r[1] and r[2] <= p[0] <= r[3]:
+                            bits |= 1 << o
+                    return bits
+            c = [f for f, r in floors.items()
+                 if r[0] - 5 <= p[1] <= r[1] + 5 and r[2] - 5 <= p[0] <= r[3] + 5]
+            if not c:
+                c = [min(floors)]
+            if len(c) == 1:
+                return 1 << c[0]          # only one level here: no need for the texture masks
+            mask_of = {fm.floor: fm for fm in get_masks()}
+            on = [f for f in c if f in mask_of and mask_of[f].on_floor(p[0], p[1])]
+            unknown = [f for f in c if f not in mask_of]
+            pick = on + unknown or c
+            return sum(1 << f for f in set(pick))
+
         navm = navmesh.NavMesh(cfg.MMAPS_DIR, mapid) if cfg.USE_NAVMESH else None
+        # positions from a server module's overrides have no height (the game gives addons none):
+        # the navmesh floor there on the map level they name
+        for b in blist:
+            if b.get('pos') and b['pos'][2] is None:
+                level = overlay.LEVELS.get((mapid, b['name']))
+                ref = b.get('refZ')
+                if ref is None and spawns:
+                    # a new boss: at the height of the creatures around it
+                    near = min(spawns, key=lambda s: d2((s[10], s[11]), b['pos']))
+                    ref = near[12]
+                z = overlay.resolve_height(navm, b['pos'], level, floor_of, ref) if navm is not None and navm.ok else None
+                b['pos'] = (b['pos'][0], b['pos'][1], z if z is not None else (ref or 0.0))
         if navm is not None and navm.ok:
             escorts = {}
             for bname, entry in cfg.ESCORTS.get(mapid, {}).items():
@@ -834,51 +896,6 @@ def build(D, fixups):
                 routes.append({'name': R['name'], 'hard': R.get('hard'), 'diffs': R.get('diffs'), 'faction': R.get('faction'), 'start': R['start'], 'order': [blist.index(bl[k]) + 1 for k in seq],
                                'poly': poly, 'stops': stops, 'tele': tele_idx, 'length': total})
 
-        # map levels a point is drawn on, as a bitmask (bit f = level f): every level whose
-        # rectangle holds it and whose texture shows floor there; stacked levels get all of them
-        # the client's own rule: the WMO group a point is in decides its level (DungeonMapChunk)
-        locator = None
-        if len(floors) > 1 and cfg.USE_WMO_FLOORS:
-            dm_rows = (S['dm'] if S and map_source == 'blizzard' else D['dm'])
-            locator = wmofloors.FloorLocator(m[1], mapid, chunk_rows, dm_rows,
-                                             [(s[10], s[11], s[12]) for s in spawns],
-                                             S['wmoarea'] if S else D['wmoarea'])
-            if not locator.ok:
-                report.append('WMOFLOORS-OFF %d %s (coverage %.0f%%)' % (mapid, m[5], locator.coverage * 100))
-                locator = None
-        # overview levels (a rectangle holding most of two or more other levels) show everything
-        def area(r):
-            return max(0.0, r[1] - r[0]) * max(0.0, r[3] - r[2])
-
-        def overlap(a, b):
-            return area((max(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), min(a[3], b[3])))
-        overview = {f for f, r in floors.items()
-                    if sum(1 for g, q in floors.items() if g != f and area(q) > 0
-                           and overlap(r, q) > 0.8 * area(q)) >= 2}
-
-        def floor_of(p):
-            if not floors:
-                return 1
-            if locator is not None:
-                f = locator.floor(p[0], p[1], p[2])
-                if f is not None and f in floors:
-                    bits = 1 << f
-                    for o in overview:
-                        r = floors[o]
-                        if r[0] <= p[1] <= r[1] and r[2] <= p[0] <= r[3]:
-                            bits |= 1 << o
-                    return bits
-            c = [f for f, r in floors.items()
-                 if r[0] - 5 <= p[1] <= r[1] + 5 and r[2] - 5 <= p[0] <= r[3] + 5]
-            if not c:
-                c = [min(floors)]
-            if len(c) == 1:
-                return 1 << c[0]          # only one level here: no need for the texture masks
-            mask_of = {fm.floor: fm for fm in get_masks()}
-            on = [f for f in c if f in mask_of and mask_of[f].on_floor(p[0], p[1])]
-            unknown = [f for f in c if f not in mask_of]
-            pick = on + unknown or c
-            return sum(1 << f for f in set(pick))
 
         inst = {
             'map': mapid, 'name': m[5], 'type': 'raid' if m[2] == 2 else 'party', 'mapSource': map_source,
@@ -932,11 +949,10 @@ def f1(v):
     return s[:-2] if s.endswith('.0') else s
 
 
-def write_lua(out, path):
-    L = []
-    L.append('-- Generated by tools/build.py from the 3.3.5a client DBCs and AzerothCore world DB. Do not edit.')
-    L.append('local _, ns = ...')
-    L.append('ns.Instances = {')
+def write_lua(out, path, head=None, open_line='ns.Instances = {', close_line='}'):
+    L = list(head or ['-- Generated by tools/build.py from the 3.3.5a client DBCs and AzerothCore world DB. Do not edit.',
+                      'local _, ns = ...'])
+    L.append(open_line)
     for mapid in sorted(out):
         I = out[mapid]
         L.append(' [%d] = {' % mapid)
@@ -992,13 +1008,26 @@ def write_lua(out, path):
             L.append('    path={%s}},' % pts)
         L.append('  },')
         L.append(' },')
-    L.append('}')
+    L.append(close_line)
     with open(path, 'w', encoding='utf8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
 
 
 if __name__ == '__main__':
-    outp = sys.argv[1]
+    server = sys.argv[sys.argv.index('--module') + 1] if '--module' in sys.argv else None
+    outp = None if server else sys.argv[1]
+    if server:
+        # a server module: route the instances whose bosses its Overrides.lua changes, into its Routes.lua
+        ov = overlay.load(server)
+        overlay.apply(ov)
+        maps, _ = overlay.touched(ov)
+        if not maps:
+            stale = os.path.join(ov['folder'], 'Routes.lua')
+            if os.path.exists(stale):
+                os.remove(stale)
+            overlay.set_routes_in_toc(ov['folder'], False)
+            sys.exit('%s: nothing to route (no bosses moved, added or removed); the game applies the rest.' % ov['name'])
+        os.environ['DN_MAPS'] = ','.join(map(str, maps))
     if '--write-only' in sys.argv:
         # regenerate Data.lua from the last build (cache/instances.pkl) without re-routing
         import pickle, achstats
@@ -1018,6 +1047,14 @@ if __name__ == '__main__':
     CACHE_DIR = cache
     D = load_all(dbc_dir, cache)
     out, report = build(D, fixups)
+    if server:
+        import achstats
+        achstats.attach(out, STOCK_DBC, report)
+        path, maps = overlay.write_module(out, ov, write_lua)
+        print('\n'.join(r for r in report if not r.startswith(('ROUTE', 'NO-STAT', 'UNUSED-STAT'))))
+        print('\n'.join(r for r in report if r.startswith('ROUTE')))
+        print('%s: %d instances routed -> %s' % (ov['name'], len(maps), path))
+        sys.exit(0)
     # partial builds (DN_MAPS) are merged into the last full result
     import pickle
     store = os.path.join(cache or HERE, 'instances.pkl')

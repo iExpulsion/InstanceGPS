@@ -165,6 +165,11 @@ TELEPORTS = {
     ]},
 }
 
+# Set by server modules (servers/<name>/server.py, see overlay.py); AzerothCore itself has none.
+REMOVE_INSTANCES = set()
+REMOVE_BOSSES = {}
+EXTRA_BOSSES = {}
+
 # Manual boss positions {(map, name): (x, y, z)} that override everything else.
 POSITIONS = {
     # Rend starts on the balcony above Blackrock Stadium and rides down on Gyth once the waves are

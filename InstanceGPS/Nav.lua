@@ -155,15 +155,26 @@ end
 
 local HINT_NEAR = 15      -- yards: a hint (drop, NPC to talk to, ...) shows this close to its spot
 
--- The hint of a route point first..last within HINT_NEAR of the player, if any.
+-- The hint of a route point first..last within HINT_NEAR of the player, if any; else one a
+-- server module added at a spot of its own (Override.lua).
 local function NearHint(route, px, py, first, last)
 	local h, p = route.hints, route.path
-	if not h then return nil end
-	for k = math.max(1, first), last do
-		if h[k] then
-			local o = (k - 1) * 3
-			local dx, dy = p[o + 1] - px, p[o + 2] - py
-			if dx * dx + dy * dy < HINT_NEAR * HINT_NEAR then return h[k] end
+	if h then
+		for k = math.max(1, first), last do
+			if h[k] then
+				local o = (k - 1) * 3
+				local dx, dy = p[o + 1] - px, p[o + 2] - py
+				if dx * dx + dy * dy < HINT_NEAR * HINT_NEAR then return h[k] end
+			end
+		end
+	end
+	local extra = DN.inst and DN.inst.extraHints
+	if extra then
+		for _, e in ipairs(extra) do
+			local dx, dy = e.x - px, e.y - py
+			if dx * dx + dy * dy < HINT_NEAR * HINT_NEAR and (not e.f or not DN.pfloor or OnFloor(e.f, DN.pfloor)) then
+				return e.text
+			end
 		end
 	end
 end
@@ -298,10 +309,10 @@ function DN:NextWaypoint()
 	if portal then
 		-- the teleport starts at the waypoint we're heading to; some have their own hint
 		portal = route.teleText and route.teleText[wp] or true
-	elseif route.hints then
+	else
 		-- a drop or an NPC to talk to at the next waypoint, or one we're at: also one the
 		-- waypoints skipped past because they're bunched up (out to a cage and straight back)
-		portal = route.hints[wp] or NearHint(route, px, py, math.min(seg, wp), math.max(seg, wp))
+		portal = route.hints and route.hints[wp] or NearHint(route, px, py, math.min(seg, wp), math.max(seg, wp))
 	end
 	local dist = sqrt(dx * dx + dy * dy)
 	-- on an ordinary stretch, aim down the path rather than at the next corner

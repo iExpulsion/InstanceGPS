@@ -92,11 +92,13 @@ The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock 
 /igps view          toggle the 3D path view
 /igps lock          lock / unlock frames
 /igps resetpos      reset frame positions
+/igps record        record a route for your server (see below)
 ```
 
 ## Notes
 
 - Routes are worked out from AzerothCore's navigation data and world database, so they fit AzerothCore-based 3.3.5 servers. A server that moves bosses or changes an instance may get some wrong routes.
+- **Server modules:** where a server changes instances, a module (`InstanceGPS_<Server>`) carries the changes. Install it next to InstanceGPS if your server has one. Anyone can make one for their server: it's a single Lua file, and `/igps record` records routes for it as you walk them. See [docs/MODULES.md](docs/MODULES.md). Modules so far: [Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria).
 - Classic and Burning Crusade dungeon maps are from [WoW Dungeon Maps](https://github.com/Trimitor/WDM-addons).
 
 ## Building from source

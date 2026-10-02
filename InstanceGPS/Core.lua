@@ -126,6 +126,7 @@ local indexed = false
 local function BuildIndexes()
 	if indexed then return end
 	indexed = true
+	DN:ApplyOverrides(ns.Instances)   -- server modules (Override.lua), before anything is indexed
 	local faction = UnitFactionGroup("player")
 	for mapId, inst in pairs(ns.Instances) do
 		inst.mapId = mapId
@@ -309,6 +310,7 @@ function DN:MarkKilled(b, how)
 		self:Print("%s defeated at %s.", b.name, DN.FormatTime(run.killed[b.id]))
 	end
 	self:CheckCleared()
+	self:Fire("BOSS_KILLED", b, how)
 	self:Fire("RUN_CHANGED")
 end
 

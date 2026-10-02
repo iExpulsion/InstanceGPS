@@ -200,8 +200,10 @@ SlashCmdList.INSTANCEGPS = function(msg)
 	elseif cmd == "resetpos" then
 		DN.db.pos = {}
 		ReloadUI()
+	elseif cmd == "record" then
+		DN:RecordCommand(rest)
 	else
-		DN:Print("v%s commands:", DN.version)
+		DN:Print("%s commands:", DN:Title())
 		local lines = {
 			"/igps - toggle the boss tracker",
 			"/igps arrow - toggle the navigation arrow",
@@ -215,6 +217,7 @@ SlashCmdList.INSTANCEGPS = function(msg)
 			"/igps options - all options (Interface > AddOns > InstanceGPS)",
 			"/igps minimap | hud | view - toggle the path on the minimap / around you / 3D view",
 			"/igps lock - lock/unlock frames",  "/igps resetpos - reset frame positions",
+			"/igps record - record a route to fix or add one for your server (/igps record for more)",
 		}
 		for _, l in ipairs(lines) do DEFAULT_CHAT_FRAME:AddMessage("   " .. l) end
 	end
@@ -276,10 +279,10 @@ local function Slider(key, label, lo, hi, step, fmt, x, y)
 	return s
 end
 
+local title
 local function BuildPanel()
-	local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("TOPLEFT", 16, -16)
-	title:SetText("InstanceGPS " .. DN.version)
 
 	Header("General", -46)
 	Check("arrow", "Navigation arrow", "Points along the route to the next boss.", 16, -64)
@@ -314,6 +317,7 @@ local function BuildPanel()
 end
 
 panel:SetScript("OnShow", function()
+	title:SetText(DN:Title())   -- server modules register after this panel is built
 	for _, c in ipairs(controls) do c.Refresh() end
 end)
 

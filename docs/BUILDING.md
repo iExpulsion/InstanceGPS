@@ -61,9 +61,19 @@ python suite.py [mapid ...]          walk every route for each faction and diffi
 python hintcheck.py                  check every hint shows during the walks (needs a local build cache)
 ```
 
+## Server modules
+
+InstanceGPS itself is built only from AzerothCore. A server's differences live in a module, an addon `InstanceGPS_<Server>` in a repo of its own, whose `Overrides.lua` calls `InstanceGPS:Override`. [MODULES.md](MODULES.md) has the format; anyone can write one without these tools, and the game applies it itself (`InstanceGPS/Override.lua`), with rough routes to moved and custom bosses.
+
+**`python build.py --module <path> --dbc ../dbc --cache ../cache`** (from `tools/`; the path is the module's repo or addon folder) gives a module proper routes. It reads the same `Overrides.lua` (`tools/overlay.py`), routes every instance whose bosses it moves, adds or removes (plus its build-only `order`, `doors` and `links`), and writes the module's `Routes.lua`. In game those replace the AzerothCore instances whole, and the overrides apply on top. The base `Data.lua` isn't touched. A position from an override has no height (the game gives addons none), so the build takes the navmesh floor there on the map level given, nearest the boss's old height or the creatures around it.
+
+`Routes.lua` records the InstanceGPS version and which version of each base instance it was built from; the module template's `tools/check.py` warns when the base has changed one of them since.
+
+To test a module in game, point `Interface\AddOns\InstanceGPS_<Server>` at its folder (a junction, like the addon's).
+
 ## Releasing
 
 1. Raise `## Version` in `InstanceGPS/InstanceGPS.toc` and push.
 2. GitHub Actions runs the tests, builds `InstanceGPS-<version>.zip` and, because the version is new, publishes a release tagged `v<version>` with the zip attached. Pushes that don't change the version only build the zip as a workflow artifact.
 
-`python tools/package.py` builds the same zip locally, in `dist/`.
+`python tools/package.py` builds the same zip locally, in `dist/`. Server modules are released from their own repos.
