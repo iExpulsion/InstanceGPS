@@ -121,7 +121,7 @@ arrow:SetScript("OnUpdate", function(self, elapsed)
 end)
 
 function DN:UpdateArrowVisibility()
-	if self.opt.arrow and self.inst then arrow:Show() else arrow:Hide() end
+	if self.opt.arrow and self:NavOn() then arrow:Show() else arrow:Hide() end
 	arrow:SetScale(self.opt.arrowScale or 1)
 end
 

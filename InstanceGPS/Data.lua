@@ -2,7 +2,7 @@
 local _, ns = ...
 ns.Instances = {
  [33] = {
-  name="Shadowfang Keep", type="party", needsMapPatch=true, file="ShadowfangKeep", area=765,
+  name="Shadowfang Keep", type="party", exp=0, needsMapPatch=true, file="ShadowfangKeep", area=765,
   floors={[1]={2003.8,2356.2,-319.9,-84.9}, [2]={2147.6,2360,-303.2,-161.6}, [3]={2103.8,2256.2,-193.2,-91.6}, [4]={2103.8,2256.2,-193.2,-91.6}, [5]={2103.8,2256.2,-193.2,-91.6}, [6]={2080.8,2279.2,-182.5,-50.3}, [7]={2023.8,2296.2,-278.2,-96.6}},
   bosses={
    {name="Rethilgore", id=464, diff=1, npcs={3914}, x=-252.1, y=2123.1, z=81.2, f=130},
@@ -21,7 +21,7 @@ ns.Instances = {
   },
  },
  [34] = {
-  name="Stormwind Stockade", type="party", needsMapPatch=true, file="TheStockade", area=691,
+  name="Stormwind Stockade", type="party", exp=0, needsMapPatch=true, file="TheStockade", area=691,
   floors={[1]={-188.3,189.8,-31.5,220.6}},
   bosses={
    {name="Targorr the Dread", id=536, diff=1, npcs={1696}, x=159.6, y=1.3, z=-25.6, f=2},
@@ -36,7 +36,7 @@ ns.Instances = {
   },
  },
  [36] = {
-  name="Deadmines", type="party", needsMapPatch=true, file="TheDeadmines", area=757,
+  name="Deadmines", type="party", exp=0, needsMapPatch=true, file="TheDeadmines", area=757,
   floors={[1]={-796.6,-237.4,-337.5,35.3}, [2]={-1016.6,-517.4,-267.5,65.3}},
   bosses={
    {name="Rhahk'zor", id=161, diff=1, npcs={644}, x=-192.9, y=-448.2, z=54.4, f=2},
@@ -54,7 +54,7 @@ ns.Instances = {
   },
  },
  [43] = {
-  name="Wailing Caverns", type="party", needsMapPatch=true, file="WailingCaverns", area=750,
+  name="Wailing Caverns", type="party", exp=0, needsMapPatch=true, file="WailingCaverns", area=750,
   floors={[1]={-375.9,560.5,-410.1,214.2}},
   bosses={
    {name="Lady Anacondra", id=585, diff=1, npcs={3671}, x=15.3, y=297.2, z=-87.7, f=2},
@@ -73,7 +73,7 @@ ns.Instances = {
   },
  },
  [47] = {
-  name="Razorfen Kraul", type="party", needsMapPatch=true, file="RazorfenKraul", area=762,
+  name="Razorfen Kraul", type="party", exp=0, needsMapPatch=true, file="RazorfenKraul", area=762,
   floors={[1]={1322.5,2058.9,1858.7,2349.6}},
   bosses={
    {name="Death Speaker Jargba", id=440, diff=1, npcs={4428}, x=2146.4, y=1411.2, z=74, f=2},
@@ -89,7 +89,7 @@ ns.Instances = {
   },
  },
  [48] = {
-  name="Blackfathom Deeps", type="party", needsMapPatch=true, file="BlackfathomDeeps", area=689,
+  name="Blackfathom Deeps", type="party", exp=0, needsMapPatch=true, file="BlackfathomDeeps", area=689,
   floors={[1]={-381.3,502.9,-677.1,-87.7}, [2]={-581.3,302.9,-927.1,-337.7}, [3]={-281.3,2.9,-877.1,-687.7}},
   bosses={
    {name="Ghamoo-ra", id=219, diff=1, npcs={4887}, x=-442.4, y=211.8, z=-52.6, f=2},
@@ -107,7 +107,7 @@ ns.Instances = {
   },
  },
  [70] = {
-  name="Uldaman", type="party", needsMapPatch=true, file="Uldaman", area=693,
+  name="Uldaman", type="party", exp=0, needsMapPatch=true, file="Uldaman", area=693,
   floors={[1]={-248.5,645.1,-391.5,204.3}, [2]={52.5,545.1,-57.8,270.6}},
   bosses={
    {name="Revelosh", id=547, diff=1, npcs={6910}, x=-225.6, y=161.2, z=-44.5, f=2},
@@ -125,7 +125,7 @@ ns.Instances = {
   },
  },
  [90] = {
-  name="Gnomeregan", type="party", needsMapPatch=true, file="Gnomeregan", area=692,
+  name="Gnomeregan", type="party", exp=0, needsMapPatch=true, file="Gnomeregan", area=692,
   floors={[1]={-277.8,491.9,-694,-180.9}, [2]={-77.8,691.9,-714,-200.9}, [3]={-127.8,741.9,-967.3,-387.6}, [4]={73,942.7,-937.3,-357.6}},
   bosses={
    {name="Grubbis", id=379, diff=1, npcs={7361}, x=-495.2, y=-90.8, z=-149.5, f=2},
@@ -141,7 +141,7 @@ ns.Instances = {
   },
  },
  [109] = {
-  name="Sunken Temple", type="party", needsMapPatch=true, file="TheTempleOfAtalHakkar", area=688,
+  name="Sunken Temple", type="party", exp=0, needsMapPatch=true, file="TheTempleOfAtalHakkar", area=688,
   floors={[1]={-252.3,442.8,-718.5,-255.2}, [2]={-24.3,223.9,-423,-257}, [3]={-182.7,373.5,-620.8,-250.4}},
   bosses={
    {name="Atal'alarion", id=485, diff=1, npcs={8580}, x=-480.4, y=96.6, z=-189.7, f=10},
@@ -160,7 +160,7 @@ ns.Instances = {
   },
  },
  [129] = {
-  name="Razorfen Downs", type="party", needsMapPatch=true, file="RazorfenDowns", area=761,
+  name="Razorfen Downs", type="party", exp=0, needsMapPatch=true, file="RazorfenDowns", area=761,
   floors={[1]={570.9,1279.9,2209.9,2682.6}},
   bosses={
    {name="Tuten'kash", id=434, diff=1, npcs={7355}, x=2487.9, y=804.2, z=43.1, f=2},
@@ -175,7 +175,7 @@ ns.Instances = {
   },
  },
  [189] = {
-  name="Scarlet Monastery", type="party", needsMapPatch=true, file="ScarletMonastery", area=763,
+  name="Scarlet Monastery", type="party", exp=0, needsMapPatch=true, file="ScarletMonastery", area=763,
   floors={[1]={948,1568,1616.9,2030.2}, [2]={-482.5,-162.3,93.9,307.4}, [3]={-562.4,50.3,1600.6,2009.1}, [4]={1040.7,1744,812.4,1281.3}},
   bosses={
    {name="Interrogator Vishas", id=444, diff=1, npcs={3983}, x=1786.5, y=1124.4, z=7.6, f=2},
@@ -199,7 +199,7 @@ ns.Instances = {
   },
  },
  [209] = {
-  name="Zul'Farrak", type="party", needsMapPatch=true, file="ZulFarrak", area=687,
+  name="Zul'Farrak", type="party", exp=0, needsMapPatch=true, file="ZulFarrak", area=687,
   floors={[0]={241.7,1625,1129.2,2052.1}},
   bosses={
    {name="Hydromancer Velratha", id=593, diff=1, npcs={7795}, x=1698.2, y=1210.7, z=9.4, f=1},
@@ -218,7 +218,7 @@ ns.Instances = {
   },
  },
  [229] = {
-  name="Blackrock Spire", type="party", needsMapPatch=true, file="BlackrockSpire", area=722,
+  name="Blackrock Spire", type="party", exp=0, needsMapPatch=true, file="BlackrockSpire", area=722,
   floors={[1]={-876.3,10.6,-286.8,304.4}, [2]={-876.3,10.6,-286.8,304.4}, [3]={-876.3,10.6,-286.8,304.4}, [4]={-876.3,10.6,-286.8,304.4}, [5]={-876.3,10.6,-286.8,304.4}, [6]={-876.3,10.6,-286.8,304.4}, [7]={-876.3,10.6,-286.8,304.4}},
   bosses={
    {name="Highlord Omokk", id=267, diff=1, npcs={9196}, x=-22.8, y=-300.7, z=31.8, f=254},
@@ -246,7 +246,7 @@ ns.Instances = {
   },
  },
  [230] = {
-  name="Blackrock Depths", type="party", needsMapPatch=true, file="BlackrockDepths", area=705,
+  name="Blackrock Depths", type="party", exp=0, needsMapPatch=true, file="BlackrockDepths", area=705,
   floors={[1]={-884.7,522.3,248.6,1186.7}, [2]={-934.7,572.3,495.3,1500}},
   bosses={
    {name="High Interrogator Gerstahn", id=227, diff=1, npcs={9018}, x=310.6, y=-146.3, z=-70.3, f=2},
@@ -276,7 +276,7 @@ ns.Instances = {
   },
  },
  [249] = {
-  name="Onyxia's Lair", type="raid", needsMapPatch=true, file="OnyxiasLair", area=719,
+  name="Onyxia's Lair", type="raid", exp=0, needsMapPatch=true, file="OnyxiasLair", area=719,
   floors={[1]={-371.7,111.4,-223.8,98.2}},
   bosses={
    {name="Onyxia", id=707, diff=3, npcs={10184,36538}, stats={[1]={1098}}, x=-10.6, y=-219.4, z=-87.7, f=2},
@@ -287,7 +287,7 @@ ns.Instances = {
   },
  },
  [269] = {
-  name="Opening of the Dark Portal", type="party", needsMapPatch=true, file="CoTTheBlackMorass", area=734,
+  name="Opening of the Dark Portal", type="party", exp=1, needsMapPatch=true, file="CoTTheBlackMorass", area=734,
   floors={[0]={6562.5,7650,-2225,-1500}},
   bosses={
    {name="Chrono Lord Deja", id=287, diff=3, npcs={17879,20738}, x=-2025.3, y=7119.6, z=22.7, f=1},
@@ -301,7 +301,7 @@ ns.Instances = {
   },
  },
  [289] = {
-  name="Scholomance", type="party", needsMapPatch=true, file="Scholomance", area=764,
+  name="Scholomance", type="party", exp=0, needsMapPatch=true, file="Scholomance", area=764,
   floors={[1]={-68.6,251.4,104.3,317.7}, [2]={-128.6,311.4,44.3,337.7}, [3]={-113.6,296.4,34.3,307.7}, [4]={-174.1,356.9,-66.3,287.7}},
   bosses={
    {name="Kirtonos the Herald", id=451, diff=1, npcs={10506}, x=314.9, y=90.3, z=101.6, f=4},
@@ -325,7 +325,7 @@ ns.Instances = {
   },
  },
  [309] = {
-  name="Zul'Gurub", type="raid", needsMapPatch=true, file="ZulGurub", area=698,
+  name="Zul'Gurub", type="raid", exp=0, needsMapPatch=true, file="ZulGurub", area=698,
   floors={[0]={-2733.3,-612.5,-12639.6,-11225}},
   bosses={
    {name="High Priestess Jeklik", id=785, diff=1, npcs={14517}, x=-12291.9, y=-1380.1, z=144.9, f=1},
@@ -346,7 +346,7 @@ ns.Instances = {
   },
  },
  [329] = {
-  name="Stratholme", type="party", needsMapPatch=true, file="Stratholme", area=766,
+  name="Stratholme", type="party", exp=0, needsMapPatch=true, file="Stratholme", area=766,
   floors={[1]={-3617.7,-2912,3339,3809.4}, [2]={-3967.7,-2962,3499,4169.5}},
   bosses={
    {name="Hearthsinger Forresten", id=473, diff=1, npcs={10558}, x=3595.8, y=-3509.9, z=137.5, f=2},
@@ -373,7 +373,7 @@ ns.Instances = {
   },
  },
  [349] = {
-  name="Maraudon", type="party", needsMapPatch=true, file="Maraudon", area=751,
+  name="Maraudon", type="party", exp=0, needsMapPatch=true, file="Maraudon", area=751,
   floors={[1]={-827.5,147.5,550,1200}, [2]={-1158.8,478.8,-208.3,883.3}},
   bosses={
    {name="Noxxion", id=422, diff=1, npcs={13282}, x=1130.4, y=-191.3, z=-80, f=2},
@@ -393,7 +393,7 @@ ns.Instances = {
   },
  },
  [389] = {
-  name="Ragefire Chasm", type="party", needsMapPatch=true, file="Ragefire", area=681,
+  name="Ragefire Chasm", type="party", exp=0, needsMapPatch=true, file="Ragefire", area=681,
   floors={[1]={-286,452.9,-453,39.6}},
   bosses={
    {name="Oggleflint", id=430, diff=1, npcs={11517}, x=-147.5, y=38.7, z=-38.8, f=2},
@@ -408,7 +408,7 @@ ns.Instances = {
   },
  },
  [409] = {
-  name="Molten Core", type="raid", needsMapPatch=true, file="MoltenCore", area=697,
+  name="Molten Core", type="raid", exp=0, needsMapPatch=true, file="MoltenCore", area=697,
   floors={[1]={-1395.6,-130.8,459.9,1303.1}},
   bosses={
    {name="Lucifron", id=663, diff=1, npcs={12118}, x=1037, y=-986.3, z=-181.5, f=2},
@@ -429,7 +429,7 @@ ns.Instances = {
   },
  },
  [429] = {
-  name="Dire Maul", type="party", needsMapPatch=true, file="DireMaul", area=700,
+  name="Dire Maul", type="party", exp=0, needsMapPatch=true, file="DireMaul", area=700,
   floors={[1]={-387.5,887.5,200,1050}, [2]={125,650,-150,200}, [3]={231.2,718.8,-150,175}, [4]={325,1075,-250,250}, [5]={-900,-100,-281.7,251.7}, [6]={-862.5,112.5,-200,450}},
   bosses={
    {name="Zevrim Thornhoof", id=343, diff=1, npcs={11490}, x=-35, y=-448, z=-37.9, f=64},
@@ -462,7 +462,7 @@ ns.Instances = {
   },
  },
  [469] = {
-  name="Blackwing Lair", type="raid", needsMapPatch=true, file="BlackwingLair", area=756,
+  name="Blackwing Lair", type="raid", exp=0, needsMapPatch=true, file="BlackwingLair", area=756,
   floors={[1]={-1344.1,-844.6,-7727.1,-7394.1}, [2]={-1379.1,-729.6,-7777.1,-7344.1}, [3]={-1369.1,-719.6,-7757.1,-7324.1}, [4]={-1419.1,-769.6,-7637.1,-7204.1}},
   bosses={
    {name="Razorgore the Untamed", id=610, diff=1, npcs={12435}, x=-7570.6, y=-1090, z=413.6, f=14},
@@ -481,7 +481,7 @@ ns.Instances = {
   },
  },
  [509] = {
-  name="Ruins of Ahn'Qiraj", type="raid", needsMapPatch=true, file="RuinsofAhnQiraj", area=718,
+  name="Ruins of Ahn'Qiraj", type="raid", exp=0, needsMapPatch=true, file="RuinsofAhnQiraj", area=718,
   floors={[0]={522.9,3035.4,-9908.3,-8233.3}},
   bosses={
    {name="Kurinnaxx", id=718, diff=1, npcs={15348}, x=-8822.2, y=1625.8, z=19.8, f=1},
@@ -497,7 +497,7 @@ ns.Instances = {
   },
  },
  [531] = {
-  name="Ahn'Qiraj Temple", type="raid", needsMapPatch=true, file="AhnQiraj", area=767,
+  name="Ahn'Qiraj Temple", type="raid", exp=0, needsMapPatch=true, file="AhnQiraj", area=767,
   floors={[1]={138.1,2915.6,-9511,-7659.3}, [2]={1538.1,2515.6,-8703.5,-8051.8}, [3]={1738.1,2315.6,-8720.2,-8335.1}},
   bosses={
    {name="The Prophet Skeram", id=709, diff=1, npcs={15263}, x=-8346, y=2081, z=125.7, f=6},
@@ -516,7 +516,7 @@ ns.Instances = {
   },
  },
  [532] = {
-  name="Karazhan", type="raid", needsMapPatch=true, file="Karazhan", area=800,
+  name="Karazhan", type="raid", exp=1, needsMapPatch=true, file="Karazhan", area=800,
   floors={[1]={-2225,-1675,-11189.6,-10822.9}, [2]={-2081.4,-1823.6,-11189,-11017.1}, [3]={-2132.6,-1787.4,-11066.3,-10836.2}, [4]={-2190,-1670,-11119.6,-10772.9}, [5]={-1932.6,-1698.4,-10969.3,-10813.2}, [6]={-2205.8,-1624.2,-11190.6,-10802.9}, [7]={-2066.8,-1875.2,-11115.6,-10987.9}, [8]={-2037.7,-1898.3,-11105.2,-11012.3}, [9]={-2270,-1510,-11459.6,-10952.9}, [10]={-2040.1,-1589.9,-11386.3,-11086.2}, [11]={-1825.5,-1554.5,-11285.1,-11104.4}, [12]={-2182.5,-1587.5,-11444.6,-11047.9}, [13]={-1963,-1434,-11339.1,-10986.4}, [14]={-2032.6,-1787.4,-11143,-10979.5}, [15]={-2025.1,-1813.9,-11113.6,-10972.9}, [16]={-2020.1,-1918.9,-11097,-11029.5}, [17]={-2155.1,-1813.9,-11102,-10874.5}},
   bosses={
    {name="Attumen the Huntsman", id=652, diff=1, npcs={16152}, x=-11126.3, y=-1929.1, z=49.3, f=21062},
@@ -538,7 +538,7 @@ ns.Instances = {
   },
  },
  [533] = {
-  name="Naxxramas", type="raid", file="Naxxramas", area=536,
+  name="Naxxramas", type="raid", exp=2, file="Naxxramas", area=536,
   floors={[1]={-3734.1,-2640.3,2886.6,3615.8}, [2]={-4234.1,-3140.3,2886.6,3615.8}, [3]={-3787,-2587,2336,3136}, [4]={-4287.4,-3087,2336.6,3136.8}, [5]={-4400.1,-2330.3,2311.3,3691.2}, [6]={-5522.3,-4866.4,3379.2,3816.5}},
   bosses={
    {name="Anub'Rekhan", id=673, diff=3, npcs={15956,29249}, stats={[1]={1361},[2]={1368}}, x=3308.6, y=-3476.3, z=287.2, f=36},
@@ -565,7 +565,7 @@ ns.Instances = {
   },
  },
  [534] = {
-  name="The Battle for Mount Hyjal", type="raid", needsMapPatch=true, file="CoTMountHyjal", area=776,
+  name="The Battle for Mount Hyjal", type="raid", exp=1, needsMapPatch=true, file="CoTMountHyjal", area=776,
   floors={[0]={-4025,-1525,4479.2,6145.8}},
   bosses={
    {name="Rage Winterchill", id=618, diff=1, npcs={17767}, x=5024.1, y=-1743.3, z=1322.6, f=1},
@@ -581,7 +581,7 @@ ns.Instances = {
   },
  },
  [540] = {
-  name="Hellfire Citadel: The Shattered Halls", type="party", needsMapPatch=true, file="TheShatteredHalls", area=711,
+  name="Hellfire Citadel: The Shattered Halls", type="party", exp=1, needsMapPatch=true, file="TheShatteredHalls", area=711,
   floors={[1]={-432.6,631.1,-91.7,617.4}},
   bosses={
    {name="Grand Warlock Nethekurse", id=407, diff=3, npcs={16807,20568}, x=172.7, y=289.6, z=-8.1, f=2},
@@ -597,7 +597,7 @@ ns.Instances = {
   },
  },
  [542] = {
-  name="Hellfire Citadel: The Blood Furnace", type="party", needsMapPatch=true, file="TheBloodFurnace", area=726,
+  name="Hellfire Citadel: The Blood Furnace", type="party", exp=1, needsMapPatch=true, file="TheBloodFurnace", area=726,
   floors={[1]={-504.5,499,-65.9,603.1}},
   bosses={
    {name="The Maker", id=401, diff=3, npcs={17381,18621}, x=327.2, y=137.8, z=9.6, f=2},
@@ -611,7 +611,7 @@ ns.Instances = {
   },
  },
  [543] = {
-  name="Hellfire Citadel: Ramparts", type="party", needsMapPatch=true, file="HellfireRamparts", area=798,
+  name="Hellfire Citadel: Ramparts", type="party", exp=1, needsMapPatch=true, file="HellfireRamparts", area=798,
   floors={[1]={1294.7,1989.3,-1492.5,-1029.4}},
   bosses={
    {name="Watchkeeper Gargolmar", id=392, diff=3, npcs={17306,18436}, x=-1187.2, y=1530.5, z=68.5, f=2},
@@ -625,7 +625,7 @@ ns.Instances = {
   },
  },
  [544] = {
-  name="Magtheridon's Lair", type="raid", needsMapPatch=true, file="MagtheridonsLair", area=780,
+  name="Magtheridon's Lair", type="raid", exp=1, needsMapPatch=true, file="MagtheridonsLair", area=780,
   floors={[1]={-170.5,385.5,-115.3,255.3}},
   bosses={
    {name="Magtheridon", id=651, diff=1, npcs={17257}, stats={[1]={1086}}, x=-18.7, y=2.2, z=-0.3, f=2},
@@ -636,7 +636,7 @@ ns.Instances = {
   },
  },
  [545] = {
-  name="Coilfang: The Steamvault", type="party", needsMapPatch=true, file="TheSteamvault", area=728,
+  name="Coilfang: The Steamvault", type="party", exp=1, needsMapPatch=true, file="TheSteamvault", area=728,
   floors={[1]={-716.7,160,-425.9,158.6}, [2]={-716.7,160,-425.9,158.6}},
   bosses={
    {name="Hydromancer Thespia", id=314, diff=3, npcs={17797,20629}, x=88.4, y=-316.1, z=-7.8, f=2},
@@ -650,7 +650,7 @@ ns.Instances = {
   },
  },
  [546] = {
-  name="Coilfang: The Underbog", type="party", needsMapPatch=true, file="TheUnderbog", area=727,
+  name="Coilfang: The Underbog", type="party", exp=1, needsMapPatch=true, file="TheUnderbog", area=727,
   floors={[1]={-653.9,241,-172.9,423.7}},
   bosses={
    {name="Hungarfen", id=320, diff=3, npcs={17770,20169}, x=-121.3, y=-388.6, z=36.9, f=2},
@@ -664,7 +664,7 @@ ns.Instances = {
   },
  },
  [547] = {
-  name="Coilfang: The Slave Pens", type="party", needsMapPatch=true, file="TheSlavePens", area=729,
+  name="Coilfang: The Slave Pens", type="party", exp=1, needsMapPatch=true, file="TheSlavePens", area=729,
   floors={[1]={-836.1,53.9,-391.7,201.7}},
   bosses={
    {name="Mennu the Betrayer", id=301, diff=3, npcs={17941,19893}, x=49.5, y=-380.2, z=3, f=2},
@@ -677,7 +677,7 @@ ns.Instances = {
   },
  },
  [548] = {
-  name="Coilfang: Serpentshrine Cavern", type="raid", needsMapPatch=true, file="CoilfangReservoir", area=781,
+  name="Coilfang: Serpentshrine Cavern", type="raid", exp=1, needsMapPatch=true, file="CoilfangReservoir", area=781,
   floors={[1]={-1362.5,212.5,-400,650}},
   bosses={
    {name="Hydross the Unstable", id=623, diff=1, npcs={21216}, x=-239.8, y=-366.5, z=-0.7, f=2},
@@ -694,7 +694,7 @@ ns.Instances = {
   },
  },
  [550] = {
-  name="Tempest Keep", type="raid", needsMapPatch=true, file="TempestKeep", area=783,
+  name="Tempest Keep", type="raid", exp=1, needsMapPatch=true, file="TempestKeep", area=783,
   floors={[1]={-787.5,787.5,-100,950}},
   bosses={
    {name="Al'ar", id=730, diff=1, npcs={19514}, x=377.7, y=-18.5, z=42.9, f=2},
@@ -708,7 +708,7 @@ ns.Instances = {
   },
  },
  [552] = {
-  name="Tempest Keep: The Arcatraz", type="party", needsMapPatch=true, file="TheArcatraz", area=732,
+  name="Tempest Keep: The Arcatraz", type="party", exp=1, needsMapPatch=true, file="TheArcatraz", area=732,
   floors={[1]={-405.1,284.6,-75.4,384.4}, [2]={-245.3,300.8,44,408}, [3]={-422.6,214.1,150.8,575.3}},
   bosses={
    {name="Zereketh the Unbound", id=494, diff=3, npcs={20870,21626}, x=273.6, y=-123, z=-10, f=2},
@@ -723,7 +723,7 @@ ns.Instances = {
   },
  },
  [553] = {
-  name="Tempest Keep: The Botanica", type="party", needsMapPatch=true, file="TheBotanica", area=730,
+  name="Tempest Keep: The Botanica", type="party", exp=1, needsMapPatch=true, file="TheBotanica", area=730,
   floors={[1]={-107.6,649.8,-256.9,248}},
   bosses={
    {name="Commander Sarannis", id=502, diff=3, npcs={17976,21551}, x=151, y=296, z=-4.6, f=2},
@@ -738,7 +738,7 @@ ns.Instances = {
   },
  },
  [554] = {
-  name="Tempest Keep: The Mechanar", type="party", needsMapPatch=true, file="TheMechanar", area=731,
+  name="Tempest Keep: The Mechanar", type="party", exp=1, needsMapPatch=true, file="TheMechanar", area=731,
   floors={[1]={-341.8,334.5,-100.8,350}, [2]={-341.8,334.5,-37.8,413}},
   bosses={
    {name="Mechano-Lord Capacitus", id=513, diff=3, npcs={19219,21533}, x=208.2, y=-13, z=-2.1, f=2},
@@ -752,7 +752,7 @@ ns.Instances = {
   },
  },
  [555] = {
-  name="Auchindoun: Shadow Labyrinth", type="party", needsMapPatch=true, file="ShadowLabyrinth", area=725,
+  name="Auchindoun: Shadow Labyrinth", type="party", exp=1, needsMapPatch=true, file="ShadowLabyrinth", area=725,
   floors={[1]={-656.4,185.1,-498.2,62.8}},
   bosses={
    {name="Ambassador Hellmaw", id=208, diff=3, npcs={18731,20636}, x=-156.7, y=5, z=8.2, f=2},
@@ -767,7 +767,7 @@ ns.Instances = {
   },
  },
  [556] = {
-  name="Auchindoun: Sethekk Halls", type="party", needsMapPatch=true, file="SethekkHalls", area=724,
+  name="Auchindoun: Sethekk Halls", type="party", exp=1, needsMapPatch=true, file="SethekkHalls", area=724,
   floors={[1]={-187.7,515.8,-295.3,173.7}, [2]={-187.7,515.8,-295.3,173.7}},
   bosses={
    {name="Darkweaver Syth", id=206, diff=3, npcs={18472,20690}, x=-144.8, y=173.6, z=1.8, f=2},
@@ -783,7 +783,7 @@ ns.Instances = {
   },
  },
  [557] = {
-  name="Auchindoun: Mana-Tombs", type="party", needsMapPatch=true, file="ManaTombs", area=733,
+  name="Auchindoun: Mana-Tombs", type="party", exp=1, needsMapPatch=true, file="ManaTombs", area=733,
   floors={[1]={-546.4,276.9,-458.8,90.1}},
   bosses={
    {name="Pandemonius", id=203, diff=3, npcs={18341,20267}, x=-68, y=-118.9, z=-1.2, f=2},
@@ -800,7 +800,7 @@ ns.Instances = {
   },
  },
  [558] = {
-  name="Auchindoun: Auchenai Crypts", type="party", needsMapPatch=true, file="AuchenaiCrypts", area=723,
+  name="Auchindoun: Auchenai Crypts", type="party", exp=1, needsMapPatch=true, file="AuchenaiCrypts", area=723,
   floors={[1]={-415,327.6,-140.1,355}, [2]={-602.5,215.1,-210.1,335}},
   bosses={
    {name="Shirrak the Dead Watcher", id=201, diff=3, npcs={18371,20318}, x=-50.9, y=-163.1, z=26.4, f=4},
@@ -812,7 +812,7 @@ ns.Instances = {
   },
  },
  [560] = {
-  name="The Escape From Durnholde", type="party", needsMapPatch=true, file="CoTHillsbradFoothills", area=735,
+  name="The Escape From Durnholde", type="party", exp=1, needsMapPatch=true, file="CoTHillsbradFoothills", area=735,
   floors={[0]={-477.1,1854.2,1572.9,3127.1}},
   bosses={
    {name="Lieutenant Drake", id=285, diff=3, npcs={17848,20535}, x=2172.8, y=149.5, z=88, f=1},
@@ -826,7 +826,7 @@ ns.Instances = {
   },
  },
  [564] = {
-  name="Black Temple", type="raid", needsMapPatch=true, file="BlackTemple", area=797,
+  name="Black Temple", type="raid", exp=1, needsMapPatch=true, file="BlackTemple", area=797,
   floors={[1]={23.9,1276.1,-240,594.8}, [2]={-176,799,380,1030}, [3]={-191,814,400,1070}, [4]={135,575,343.3,636.7}, [5]={-70,600,664.2,1110.8}, [6]={-67.5,637.5,450,920}, [7]={137.5,492.5,606.7,843.3}},
   bosses={
    {name="High Warlord Naj'entus", id=601, diff=1, npcs={22887}, x=434.9, y=739.3, z=15.1, f=14},
@@ -846,7 +846,7 @@ ns.Instances = {
   },
  },
  [565] = {
-  name="Gruul's Lair", type="raid", needsMapPatch=true, file="GruulsLair", area=777,
+  name="Gruul's Lair", type="raid", exp=1, needsMapPatch=true, file="GruulsLair", area=777,
   floors={[1]={-50,475,-12.5,337.5}},
   bosses={
    {name="High King Maulgar", id=649, diff=1, npcs={18831}, x=145.8, y=191, z=-11.5, f=2},
@@ -858,7 +858,7 @@ ns.Instances = {
   },
  },
  [568] = {
-  name="Zul'Aman", type="raid", needsMapPatch=true, file="ZulAman", area=782,
+  name="Zul'Aman", type="raid", exp=1, needsMapPatch=true, file="ZulAman", area=782,
   floors={[0]={583.3,1852.1,-277.1,568.8}},
   bosses={
    {name="Akil'zon", id=778, diff=1, npcs={23574}, x=376.4, y=1407.3, z=75.5, f=1},
@@ -875,7 +875,7 @@ ns.Instances = {
   },
  },
  [574] = {
-  name="Utgarde Keep", type="party", file="UtgardeKeep", area=524,
+  name="Utgarde Keep", type="party", exp=2, file="UtgardeKeep", area=524,
   floors={[1]={-310.4,424.2,25.7,515.4}, [2]={-238.2,242.9,-16.3,304.4}, [3]={-510.9,225.7,-75.3,415.7}},
   bosses={
    {name="Prince Keleseth", id=571, diff=3, npcs={23953,30748}, x=193.1, y=197.5, z=40.8, f=2},
@@ -888,7 +888,7 @@ ns.Instances = {
   },
  },
  [575] = {
-  name="Utgarde Pinnacle", type="party", file="UtgardePinnacle", area=525,
+  name="Utgarde Pinnacle", type="party", exp=2, file="UtgardePinnacle", area=525,
   floors={[1]={-697.6,-148.6,186.9,552.9}, [2]={-747.6,8.6,157.8,662}},
   bosses={
    {name="Svala Sorrowgrave", id=577, diff=3, npcs={26668,30810}, x=296.6, y=-346.1, z=90.6, f=2},
@@ -903,7 +903,7 @@ ns.Instances = {
   },
  },
  [576] = {
-  name="The Nexus", type="party", file="TheNexus", area=521,
+  name="The Nexus", type="party", exp=2, file="TheNexus", area=521,
   floors={[1]={-708.1,393.2,64.1,798.3}},
   bosses={
    {name="Frozen Commander", id=519, diff=2, npcs={26796,26798,30397,30398}, x=424.5, y=186, z=-34.9, f=2},
@@ -922,7 +922,7 @@ ns.Instances = {
   },
  },
  [578] = {
-  name="The Oculus", type="party", file="Nexus80", area=529,
+  name="The Oculus", type="party", exp=2, file="Nexus80", area=529,
   floors={[1]={787.3,1302,877.1,1220.2}, [2]={712.3,1377,927.1,1370.2}, [3]={787.3,1302,927.1,1270.2}, [4]={897.3,1192,990.4,1186.9}},
   bosses={
    {name="Drakos the Interrogator", id=528, diff=3, npcs={27654,31558}, x=947.8, y=1045.8, z=360.1, f=14},
@@ -937,7 +937,7 @@ ns.Instances = {
   },
  },
  [580] = {
-  name="The Sunwell", type="raid", needsMapPatch=true, file="SunwellPlateau", area=790,
+  name="The Sunwell", type="raid", exp=1, needsMapPatch=true, file="SunwellPlateau", area=790,
   floors={[1]={377.5,842.5,1580,1890}},
   bosses={
    {name="Kalecgos", id=724, diff=1, npcs={24850,24892}, noDeath=true, x=1704.2, y=924.8, z=53.2, f=2},
@@ -953,7 +953,7 @@ ns.Instances = {
   },
  },
  [585] = {
-  name="Magister's Terrace", type="party", needsMapPatch=true, file="MagistersTerrace", area=799,
+  name="Magister's Terrace", type="party", exp=1, needsMapPatch=true, file="MagistersTerrace", area=799,
   floors={[1]={-304.2,226.1,-27.8,325.8}, [2]={-304.2,226.1,-27.8,325.8}},
   bosses={
    {name="Selin Fireheart", id=414, diff=3, npcs={24723,25562}, x=242.1, y=0.3, z=1.8, f=4},
@@ -967,7 +967,7 @@ ns.Instances = {
   },
  },
  [595] = {
-  name="The Culling of Stratholme", type="party", file="CoTStratholme", area=522,
+  name="The Culling of Stratholme", type="party", exp=2, file="CoTStratholme", area=522,
   floors={[1]={731.1,1856.4,1891.8,2642}},
   bosses={
    {name="Meathook", id=293, diff=3, npcs={26529,31211}, x=2351.4, y=1197.8, z=130.4, f=2},
@@ -982,7 +982,7 @@ ns.Instances = {
   },
  },
  [599] = {
-  name="Halls of Stone", type="party", file="Ulduar77", area=527,
+  name="Halls of Stone", type="party", exp=2, file="Ulduar77", area=527,
   floors={[1]={206.3,1126.5,762.4,1375.9}},
   bosses={
    {name="Krystallus", id=563, diff=3, npcs={27977,31381}, x=1008.6, y=759.9, z=208.7, f=2},
@@ -997,7 +997,7 @@ ns.Instances = {
   },
  },
  [600] = {
-  name="Drak'Tharon Keep", type="party", file="DrakTharonKeep", area=535,
+  name="Drak'Tharon Keep", type="party", exp=2, file="DrakTharonKeep", area=535,
   floors={[1]={-927,-307.1,-595.9,-182.6}, [2]={-1002,-382.1,-595.9,-182.6}},
   bosses={
    {name="Trollgore", id=369, diff=3, npcs={26630,31362}, x=-266.2, y=-660.1, z=26.5, f=2},
@@ -1011,7 +1011,7 @@ ns.Instances = {
   },
  },
  [601] = {
-  name="Azjol-Nerub", type="party", file="AzjolNerub", area=534,
+  name="Azjol-Nerub", type="party", exp=2, file="AzjolNerub", area=534,
   floors={[1]={-30,723,292.1,794.1}, [2]={400,693,450.5,645.8}, [3]={462.1,829.6,395,640}},
   bosses={
    {name="Krik'thir the Gatewatcher", id=216, diff=3, npcs={28684,31612}, x=529.6, y=646.2, z=777.4, f=8},
@@ -1024,7 +1024,7 @@ ns.Instances = {
   },
  },
  [602] = {
-  name="Halls of Lightning", type="party", file="HallsofLightning", area=526,
+  name="Halls of Lightning", type="party", exp=2, file="HallsofLightning", area=526,
   floors={[1]={-282.5,283.7,1157.1,1534.5}, [2]={-538.5,169.7,959.7,1431.9}},
   bosses={
    {name="General Bjarngrim", id=555, diff=3, npcs={28586,31533}, x=1262, y=-26.9, z=33.5, f=2},
@@ -1038,7 +1038,7 @@ ns.Instances = {
   },
  },
  [603] = {
-  name="Ulduar", type="raid", file="Ulduar", area=530,
+  name="Ulduar", type="raid", exp=2, file="Ulduar", area=530,
   floors={[1]={-445.2,224.2,1392.7,1839}, [2]={-674.7,653.7,1679,2564.7}, [3]={-315.8,594.8,1612,2219}, [4]={1685,3254.4,2122.5,3168.8}, [5]={-310,309.5,1834.8,2247.8}},
   bosses={
    {name="Flame Leviathan", id=744, diff=3, npcs={33113,34003}, stats={[1]={2856},[2]={2872}}, x=420.7, y=-15.4, z=409.8, f=2},
@@ -1064,7 +1064,7 @@ ns.Instances = {
   },
  },
  [604] = {
-  name="Gundrak", type="party", file="Gundrak", area=531,
+  name="Gundrak", type="party", exp=2, file="Gundrak", area=531,
   floors={[1]={259.9,1164.9,1465.5,2068.9}},
   bosses={
    {name="Slad'ran", id=383, diff=3, npcs={29304,31370}, x=1775.1, y=675, z=129.3, f=2},
@@ -1083,7 +1083,7 @@ ns.Instances = {
   },
  },
  [608] = {
-  name="Violet Hold", type="party", file="VioletHold", area=537,
+  name="Violet Hold", type="party", exp=2, file="VioletHold", area=537,
   floors={[1]={665.3,921.6,1813.3,1984.2}},
   bosses={
    {name="First Prisoner", id=541, diff=3, npcs={29266,29312,29313,29314,29315,29316,31507,31508,31509,31510,31511,31512}, x=1871.5, y=871, z=43.4, f=2},
@@ -1097,7 +1097,7 @@ ns.Instances = {
   },
  },
  [615] = {
-  name="The Obsidian Sanctum", type="raid", file="TheObsidianSanctum", area=532,
+  name="The Obsidian Sanctum", type="raid", exp=2, file="TheObsidianSanctum", area=532,
   floors={[0]={-29.2,1133.3,2841.7,3616.7}},
   bosses={
    {name="Vesperon", id=740, diff=3, npcs={30449,31535}, x=3145.7, y=520.7, z=89.7, f=1},
@@ -1113,7 +1113,7 @@ ns.Instances = {
   },
  },
  [616] = {
-  name="The Eye of Eternity", type="raid", file="TheEyeofEternity", area=528,
+  name="The Eye of Eternity", type="raid", exp=2, file="TheEyeofEternity", area=528,
   floors={[1]={1036.7,1466.8,611.1,897.8}},
   bosses={
    {name="Malygos", id=734, diff=3, npcs={28859,31734}, stats={[1]={1391},[2]={1394}}, x=747.6, y=1393.4, z=296, f=2},
@@ -1124,7 +1124,7 @@ ns.Instances = {
   },
  },
  [619] = {
-  name="Ahn'kahet: The Old Kingdom", type="party", file="Ahnkahet", area=523,
+  name="Ahn'kahet: The Old Kingdom", type="party", exp=2, file="Ahnkahet", area=523,
   floors={[1]={-1205.7,-233.3,200.4,848.7}},
   bosses={
    {name="Elder Nadox", id=212, diff=3, npcs={29309,31456}, x=679.9, y=-905.5, z=25.7, f=2},
@@ -1143,7 +1143,7 @@ ns.Instances = {
   },
  },
  [624] = {
-  name="Vault of Archavon", type="raid", file="VaultofArchavon", area=533,
+  name="Vault of Archavon", type="raid", exp=2, file="VaultofArchavon", area=533,
   floors={[1]={-812.5,585.7,-634.1,298.1}},
   bosses={
    {name="Archavon the Stone Watcher", id=772, diff=3, npcs={31125,31722}, stats={[1]={1753},[2]={1754}}, x=138.9, y=-101.5, z=91.4, f=2},
@@ -1157,7 +1157,7 @@ ns.Instances = {
   },
  },
  [631] = {
-  name="Icecrown Citadel", type="raid", file="IcecrownCitadel", area=605,
+  name="Icecrown Citadel", type="raid", exp=2, file="IcecrownCitadel", area=605,
   floors={[1]={1384.3,2739.8,-764.8,138.8}, [2]={1631,2698,-754.7,-43.3}, [3]={2116.3,2311.8,-580.3,-450}, [4]={1993.6,2767.3,4012.4,4528.2}, [5]={2216.1,3364.8,4002.4,4768.2}, [6]={2586.6,2960.3,4455.8,4704.9}, [7]={-2271.6,-1978.3,410.3,605.8}, [8]={-2648.3,-2400.3,414.1,579.4}},
   bosses={
    {name="Lord Marrowgar", id=845, diff=3, npcs={36612,37957,37958,37959}, stats={[1]={4639},[2]={4641},[3]={4640},[4]={4642}}, x=-401.4, y=2211.1, z=42.1, f=2},
@@ -1185,7 +1185,7 @@ ns.Instances = {
   },
  },
  [632] = {
-  name="The Forge of Souls", type="party", file="TheForgeofSouls", area=602,
+  name="The Forge of Souls", type="party", exp=2, file="TheForgeofSouls", area=602,
   floors={[1]={1686,3134.1,4814.5,5779.9}},
   bosses={
    {name="Bronjahm", id=829, diff=3, npcs={36497,36498}, stats={[1]={4713},[2]={4714}}, x=5297.3, y=2506.5, z=686.2, f=2},
@@ -1197,7 +1197,7 @@ ns.Instances = {
   },
  },
  [649] = {
-  name="Trial of the Crusader", type="raid", file="TheArgentColiseum", area=544,
+  name="Trial of the Crusader", type="raid", exp=2, file="TheArgentColiseum", area=544,
   floors={[1]={-41.3,328.7,446.4,693}, [2]={-211.3,528.7,433,926.4}},
   bosses={
    {name="Northrend Beasts", id=629, diff=15, npcs={34797,35447,35448,35449}, stats={[1]={4028},[2]={4031},[3]={4030},[4]={4029}}, x=563.7, y=139.6, z=393.8, f=2},
@@ -1213,7 +1213,7 @@ ns.Instances = {
   },
  },
  [650] = {
-  name="Trial of the Champion", type="party", file="TheArgentColiseum", area=543,
+  name="Trial of the Champion", type="party", exp=2, file="TheArgentColiseum", area=543,
   floors={[1]={437.4,807.4,629.4,876.1}},
   bosses={
    {name="Grand Champions", id=334, diff=3, npcs={34657,34701,34702,34703,34705,35569,35570,35571,35572,35617,36082,36083,36084,36085,36086,36087,36088,36089,36090,36091}, spell=68572, noDeath=true, friendly=true, stats={[1]={4018,4048,4050,4052,4054},[2]={4019,4049,4051,4053,4055}}, statDiv=3, x=748.3, y=619.4, z=411.3, f=2},
@@ -1227,7 +1227,7 @@ ns.Instances = {
   },
  },
  [658] = {
-  name="Pit of Saron", type="party", file="PitofSaron", area=603,
+  name="Pit of Saron", type="party", exp=2, file="PitofSaron", area=603,
   floors={[0]={-693.8,839.6,233.3,1256.2}},
   bosses={
    {name="Forgemaster Garfrost", id=833, diff=3, npcs={36494,37613}, stats={[1]={4717},[2]={4728}}, x=712.1, y=-215.7, z=527.1, f=1},
@@ -1240,7 +1240,7 @@ ns.Instances = {
   },
  },
  [668] = {
-  name="Halls of Reflection", type="party", file="HallsofReflection", area=604,
+  name="Halls of Reflection", type="party", exp=2, file="HallsofReflection", area=604,
   floors={[1]={1470,2349,5127,5713}},
   bosses={
    {name="Falric", id=841, diff=3, npcs={38112,38599}, stats={[1]={4722},[2]={4723}}, x=5284.2, y=2030.7, z=709.3, f=2},
@@ -1254,7 +1254,7 @@ ns.Instances = {
   },
  },
  [724] = {
-  name="The Ruby Sanctum", type="raid", file="TheRubySanctum", area=610,
+  name="The Ruby Sanctum", type="raid", exp=2, file="TheRubySanctum", area=610,
   floors={[0]={150,902.1,2927.1,3429.2}},
   bosses={
    {name="Baltharus the Warborn", id=890, diff=3, npcs={39751,39920}, x=3153.1, y=389.5, z=86.3, f=1},

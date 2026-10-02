@@ -1,4 +1,5 @@
--- Switching InstanceGPS off in an instance (and back on), and the Instances options page.
+-- Navigation off in an instance (and back on): the arrow and path views go, the boss tracker stays
+-- unless offHidesTracker is set; and the Instances options page, by expansion.
 local DN = NS.DN
 MOCK.now = 1000000
 MOCK.Fire("ADDON_LOADED", "InstanceGPS")
@@ -12,21 +13,29 @@ MOCK.level = lv
 MOCK.mx, MOCK.my = DN:WorldToMap(inst, lv, p[1], p[2])
 MOCK.Fire("ZONE_CHANGED_NEW_AREA")
 MOCK.Tick(0.3)
-print("on at first:", DN.inst == inst)
+print("on at first:", DN:NavOn(), "arrow shown:", DN.arrow.shown)
 local b = inst.bosses[inst.routes[1].order[1]]
-DN:MarkKilled(b, "death")
 
 SlashCmdList.INSTANCEGPS("off")
 MOCK.Tick(0.3)
-print("off:", DN.inst == nil and DN.offHere == inst, "tracker hidden:", not DN.tracker.shown, "arrow hidden:", not DN.arrow.shown)
-MOCK.Fire("ZONE_CHANGED_NEW_AREA")
-print("stays off:", DN.inst == nil and DN.offHere == inst)
+print("nav off:", DN.inst == inst and not DN:NavOn(), "arrow hidden:", not DN.arrow.shown,
+	"HUD hidden:", not InstanceGPSHUD.shown, "tracker kept:", DN.tracker.shown)
+DN:MarkKilled(b, "death")
+print("kills tracked while off:", DN:IsKilled(b))
+DN.opt.offHidesTracker = true
+DN:NavChanged()
+print("tracker hidden by option:", not DN.tracker.shown)
+DN.opt.offHidesTracker = false
+DN:NavChanged()
 
 SlashCmdList.INSTANCEGPS("on")
 MOCK.Tick(0.3)
-print("back on:", DN.inst == inst, "kill kept:", DN:IsKilled(b))
+print("back on:", DN:NavOn(), "arrow back:", DN.arrow.shown, "kill kept:", DN:IsKilled(b))
 
--- the options page lists every instance, ticked unless it's off
+-- every instance knows its expansion; the options page lists them all, ticked unless off
+local noExp = 0
+for _, i in pairs(NS.Instances) do if i.exp == nil then noExp = noExp + 1 end end
+print("expansions known:", noExp == 0)
 DN:SetOff(MAP, true)
 InstanceGPSInstances.scripts.OnShow(InstanceGPSInstances)
 local n, count = 0, 0
@@ -41,5 +50,5 @@ end
 print("listed:", n == count, "off unticked:", cb36 and not cb36:GetChecked())
 cb36:SetChecked(true)
 cb36.scripts.OnClick(cb36)
-print("ticked back on:", DN.inst == inst)
+print("ticked back on:", DN:NavOn())
 print("instances test done")

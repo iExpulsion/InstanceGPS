@@ -163,7 +163,7 @@ end
 
 function DN:RefreshTracker()
 	local inst, run = self.inst, self.run
-	if not inst or not run or not self.opt.tracker then
+	if not inst or not run or not self.opt.tracker or (self.opt.offHidesTracker and not self:NavOn()) then
 		f:Hide()
 		return
 	end

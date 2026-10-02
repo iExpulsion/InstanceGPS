@@ -82,7 +82,10 @@ function DN:RefreshMap()
 			if i.file and i.file:lower() == file:lower() then inst = i break end
 		end
 	end
-	if not inst or self:IsOff(inst.mapId) then return end
+	if not inst then return end
+	-- navigation off here: boss pins only (and nothing if the tracker's hidden there too)
+	local navOff = self:IsOff(inst.mapId)
+	if navOff and self.opt.offHidesTracker then return end
 	local level = GetCurrentMapDungeonLevel() or 0
 	if not inst.floors[level] then
 		if inst.floors[0] then level = 0 else return end
@@ -125,7 +128,7 @@ function DN:RefreshMap()
 		local a, b = (i - 1) * 3, i * 3
 		local done = i < legFrom
 		-- a segment changing levels (stairs, doorways, drops) shows on both of them
-		if not done and not route.teleAt[i] and (OnFloor(p[a + 3], level) or OnFloor(p[b + 3], level)) then
+		if not navOff and not done and not route.teleAt[i] and (OnFloor(p[a + 3], level) or OnFloor(p[b + 3], level)) then
 			local x1, y1 = px(p[a + 1], p[a + 2])
 			local x2, y2 = px(p[b + 1], p[b + 2])
 			local dx, dy = x2 - x1, y2 - y1

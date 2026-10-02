@@ -23,6 +23,7 @@ local defaults = {
 	hudSize = 280, hudRange = 40, hudAlpha = 0.7, hudOffset = -30, hudHideCombat = true,
 	pathViewScale = 1,
 	hardModes = false,   -- hard-mode route variants (Obsidian Sanctum: Sartharion with the drakes up)
+	offHidesTracker = false,   -- where navigation is off (Instances page), hide the boss tracker too
 }
 
 -------------------------------------------------------------------------------- utils
@@ -499,24 +500,33 @@ end
 
 -------------------------------------------------------------------------------- events
 
--- Instances switched off (Interface > AddOns > InstanceGPS > Instances, the menu, /igps off): in
--- one, InstanceGPS acts as if you weren't in an instance at all. Account-wide.
+-- Instances with navigation switched off (Interface > AddOns > InstanceGPS > Instances, the menu,
+-- /igps off): no arrow, path views, route on the map or hints there. The boss tracker keeps going,
+-- unless the offHidesTracker option hides it too. Account-wide.
 function DN:IsOff(mapId)
 	return self.db and self.db.off and self.db.off[mapId] or false
+end
+
+-- navigation is on in the current instance
+function DN:NavOn()
+	return self.inst ~= nil and not self:IsOff(self.inst.mapId)
+end
+
+function DN:NavChanged()
+	self:Fire("INSTANCE_CHANGED", self.inst)
+	self:Fire("RUN_CHANGED")
+	if WorldMapFrame:IsShown() then self:RefreshMap() end
 end
 
 function DN:SetOff(mapId, off)
 	self.db.off = self.db.off or {}
 	self.db.off[mapId] = off and true or nil
-	self:DetectInstance()
-	if WorldMapFrame:IsShown() then self:RefreshMap() end
+	self:NavChanged()
 end
 
 function DN:DetectInstance()
 	local inInstance, itype = IsInInstance()
 	local inst
-	local wasOff = self.offHere
-	self.offHere = nil
 	if inInstance and (itype == "party" or itype == "raid") then
 		local name = GetInstanceInfo()
 		if not (WorldMapFrame and WorldMapFrame:IsShown()) then SetMapToCurrentZone() end
@@ -525,11 +535,8 @@ function DN:DetectInstance()
 		local id = (name and byName[name:lower()]) or (file and byFile[file:lower()])
 		inst = id and ns.Instances[id]
 	end
-	if inst and self:IsOff(inst.mapId) then
-		self.offHere, inst = inst, nil
-		if wasOff ~= self.offHere then
-			self:Print("Off in %s. /igps on to turn it back on here.", self.offHere.name)
-		end
+	if inst and inst ~= self.inst and self:IsOff(inst.mapId) then
+		self:Print("Navigation is off in %s. /igps on to turn it back on here.", inst.name)
 	end
 	-- a Dungeon Finder teleport can take us from one copy of a dungeon straight into a new copy
 	local regroup = inst and inst == self.inst and self.char.newGroupAt

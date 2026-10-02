@@ -374,7 +374,7 @@ driver:SetScript("OnUpdate", function(_, elapsed)
 	if since < 0.025 then return end
 	since = 0
 	local o = DN.opt
-	if not o or not DN.inst then return end
+	if not o or not DN:NavOn() then return end
 	local px, py = PlayerPos()
 	local hudOn = o.pathHud and not (o.hudHideCombat and UnitAffectingCombat("player"))
 	if not px or not DN.wp.x then
@@ -401,7 +401,7 @@ driver:SetScript("OnUpdate", function(_, elapsed)
 end)
 
 function DN:UpdatePathViews()
-	local o, inst = self.opt, self.inst
+	local o, inst = self.opt, self:NavOn() and self.inst
 	if not o then return end
 	if not (inst and o.pathMinimap) then mmDots:Begin() mmDots:Finish() mmEnd:Hide() end
 	local size = o.hudSize or 280
