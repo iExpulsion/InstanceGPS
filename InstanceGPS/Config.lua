@@ -359,6 +359,8 @@ local function SmallButton(parent, text, w, fn)
 	return DN.Button(parent, text, fn, w)
 end
 
+local SHORT = { [0] = "Classic", [1] = "Burning Crusade", [2] = "Wrath", [99] = "Other" }
+
 local function BuildInstances()
 	local t = instPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	t:SetPoint("TOPLEFT", 16, -16)
@@ -382,52 +384,69 @@ local function BuildInstances()
 	hide.Refresh = function() hide:SetChecked(DN.opt.offHidesTracker) end
 	instPanel.hide = hide
 
+	-- expansion -> { party = {...}, raid = {...} }; anything a server module added without one: "Other"
+	local groups, order = {}, {}
+	for mapId, inst in pairs(ns.Instances) do
+		local e = EXPANSIONS[inst.exp] and inst.exp or 99
+		if not groups[e] then
+			groups[e] = { party = {}, raid = {}, checks = {} }
+		end
+		table.insert(groups[e][inst.type == "raid" and "raid" or "party"], { mapId = mapId, name = inst.name })
+	end
+	for _, e in ipairs({ 0, 1, 2, 99 }) do
+		if groups[e] then order[#order + 1] = e end
+	end
+
+	-- On / Off per expansion, in a row that doesn't scroll (buttons in a scrolling list land on
+	-- fractions of a pixel, and their text wobbles as it scrolls)
+	local x = 16
+	for _, e in ipairs(order) do
+		local checks = groups[e].checks
+		local label = instPanel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		label:SetPoint("TOPLEFT", x, -101)
+		label:SetText(SHORT[e])
+		x = x + label:GetStringWidth() + 6
+		local on = SmallButton(instPanel, "On", 44, function() SetMany(checks, true) end)
+		on:SetPoint("TOPLEFT", x, -96)
+		local off = SmallButton(instPanel, "Off", 44, function() SetMany(checks, false) end)
+		off:SetPoint("TOPLEFT", on, "TOPRIGHT", 2, 0)
+		x = x + on:GetWidth() + 2 + off:GetWidth() + 20
+	end
+
 	local scroll = CreateFrame("ScrollFrame", "InstanceGPSInstancesScroll", instPanel, "UIPanelScrollFrameTemplate")
-	scroll:SetPoint("TOPLEFT", 12, -96)
+	scroll:SetPoint("TOPLEFT", 12, -126)
 	scroll:SetPoint("BOTTOMRIGHT", -32, 12)
 	local child = CreateFrame("Frame", nil, scroll)
 	child:SetSize(560, 10)
 	scroll:SetScrollChild(child)
 
-	-- expansion -> { party = {...}, raid = {...} }; anything a server module added without one: "Other"
-	local groups = {}
-	for mapId, inst in pairs(ns.Instances) do
-		local e = EXPANSIONS[inst.exp] and inst.exp or 99
-		groups[e] = groups[e] or { party = {}, raid = {} }
-		table.insert(groups[e][inst.type == "raid" and "raid" or "party"], { mapId = mapId, name = inst.name })
-	end
 	local y = 0
-	for _, e in ipairs({ 0, 1, 2, 99 }) do
+	for _, e in ipairs(order) do
 		local g = groups[e]
-		if g then
-			local checks = {}
-			local h = child:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-			h:SetPoint("TOPLEFT", 4, -y - 3)
-			h:SetText(EXPANSIONS[e] or "Other")
-			SmallButton(child, "On", 44, function() SetMany(checks, true) end):SetPoint("TOPLEFT", 230, -y)
-			SmallButton(child, "Off", 44, function() SetMany(checks, false) end):SetPoint("TOPLEFT", 278, -y)
-			y = y + 24
-			local rows = 0
-			for col, kind in ipairs({ "party", "raid" }) do
-				local list = g[kind]
-				table.sort(list, function(a, b) return a.name < b.name end)
-				local label = child:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
-				label:SetPoint("TOPLEFT", (col - 1) * 280 + 8, -y)
-				label:SetText(kind == "raid" and "Raids" or "Dungeons")
-				for k, i in ipairs(list) do
-					local cname = "InstanceGPSInst_" .. i.mapId
-					local cb = CreateFrame("CheckButton", cname, child, "InterfaceOptionsCheckButtonTemplate")
-					cb:SetPoint("TOPLEFT", (col - 1) * 280, -(y + 14 + (k - 1) * 22))
-					_G[cname .. "Text"]:SetText(i.name)
-					cb.mapId = i.mapId
-					cb:SetScript("OnClick", function(self) DN:SetOff(self.mapId, not self:GetChecked()) end)
-					checks[#checks + 1] = cb
-					instChecks[#instChecks + 1] = cb
-				end
-				rows = math.max(rows, #list)
+		local h = child:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		h:SetPoint("TOPLEFT", 4, -y - 3)
+		h:SetText(EXPANSIONS[e] or "Other")
+		y = y + 22
+		local rows = 0
+		for col, kind in ipairs({ "party", "raid" }) do
+			local list = g[kind]
+			table.sort(list, function(a, b) return a.name < b.name end)
+			local label = child:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
+			label:SetPoint("TOPLEFT", (col - 1) * 280 + 8, -y)
+			label:SetText(kind == "raid" and "Raids" or "Dungeons")
+			for k, i in ipairs(list) do
+				local cname = "InstanceGPSInst_" .. i.mapId
+				local cb = CreateFrame("CheckButton", cname, child, "InterfaceOptionsCheckButtonTemplate")
+				cb:SetPoint("TOPLEFT", (col - 1) * 280, -(y + 14 + (k - 1) * 22))
+				_G[cname .. "Text"]:SetText(i.name)
+				cb.mapId = i.mapId
+				cb:SetScript("OnClick", function(self) DN:SetOff(self.mapId, not self:GetChecked()) end)
+				g.checks[#g.checks + 1] = cb
+				instChecks[#instChecks + 1] = cb
 			end
-			y = y + 14 + rows * 22 + 14
+			rows = math.max(rows, #list)
 		end
+		y = y + 14 + rows * 22 + 14
 	end
 	child:SetHeight(y)
 end
