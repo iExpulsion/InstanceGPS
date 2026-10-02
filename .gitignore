@@ -16,3 +16,6 @@
 
 __pycache__/
 *.pyc
+
+# The build report lands next to Data.lua
+/InstanceGPS/*_report.txt

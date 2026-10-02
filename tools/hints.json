@@ -265,10 +265,16 @@
    "map": 229,
    "points": [
     {
+     "x": 102.4,
+     "y": -319.2,
+     "z": 65.5,
+     "hint": "Kill every Blackhand mob around the 7 glowing runes in this hall; when all runes go dark, the doors to Pyroguard Emberseer on the far side open."
+    },
+    {
      "x": 216.4,
      "y": -286.1,
      "z": 76.9,
-     "hint": "Kill every Blackhand mob around the 7 glowing runes of the Hall of Blackhand; when all runes go dark these doors open."
+     "hint": null
     },
     {
      "x": 144.4,
