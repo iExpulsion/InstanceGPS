@@ -1,0 +1,18 @@
+# Build inputs and outputs (client data, navmesh, caches): recreated by the tools, see docs/BUILDING.md
+/cache/
+/mmaps/
+/dbc/
+/dbc_stock/
+/blpcache/
+/mpqlist/
+/out/
+/png/
+/dist/
+
+# Local settings and notes
+/tools/paths_local.py
+/hints/
+/scratch/
+
+__pycache__/
+*.pyc

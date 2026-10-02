@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Lua 5.1 and test dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          pip install lupa
+
+      - name: Check Lua syntax
+        run: for f in InstanceGPS/*.lua; do luac5.1 -p "$f"; done
+
+      - name: Run tests
+        working-directory: test
+        run: python ci.py
+
+      - name: Build zip
+        id: pkg
+        run: |
+          python tools/package.py
+          version=$(sed -n 's/^## Version: *//p' InstanceGPS/InstanceGPS.toc | tr -d '\r')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "zip=dist/InstanceGPS-$version.zip" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: InstanceGPS-${{ steps.pkg.outputs.version }}
+          path: ${{ steps.pkg.outputs.zip }}
+
+      - name: Publish a release if the version is new
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.pkg.outputs.version }}
+          ZIP: ${{ steps.pkg.outputs.zip }}
+        run: |
+          tag="v$VERSION"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "$tag is already released; raise ## Version in the .toc to publish a new one."
+            exit 0
+          fi
+          gh release create "$tag" "$ZIP" --target "$GITHUB_SHA" --title "InstanceGPS $VERSION" --generate-notes

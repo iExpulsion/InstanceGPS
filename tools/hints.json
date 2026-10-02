@@ -1,0 +1,2660 @@
+{
+ "hints": [
+  {
+   "map": 33,
+   "points": [
+    {
+     "x": -240.9,
+     "y": 2122.6,
+     "z": 81.3,
+     "hint": "Talk to Sorcerer Ashcrombe or Deathstalker Adamant in the cells (lever by the door): 'Please unlock the courtyard door.'"
+    }
+   ],
+   "source": "smart_scripts 3850/3849 event 62 gossip menus 21213/21214 -> actionlists 385000/384900 set Courtyard Door (guid 20835, entry 18895) open; gossip_menu_option 21213/21214 text; Rethilgore (3914) death sets their data. Pos = creature guid 16262 (Ashcrombe; Adamant guid 16261 at -243.7,2113.7,81.3). Cell levers 18900/18901 open cell doors 18934/18936.",
+   "confidence": "high",
+   "boss": "Razorclaw the Butcher"
+  },
+  {
+   "map": 33,
+   "points": [
+    {
+     "x": -146.0,
+     "y": 2172.0,
+     "z": 128.4,
+     "hint": "Fenrus's death summons 4 Arugal's Voidwalkers here; kill them to open the Sorcerer's Gate."
+    }
+   ],
+   "source": "smart_scripts 4274 (Fenrus death -> Arugal data) -> 427500 summon group (creature_summon_groups 4275: 4x 4627 around -146,2172,128.4); 4627 on death sets GO 33785 (Sorcerer's Gate 18972, -129.0,2166.2,129.2) open.",
+   "confidence": "high",
+   "boss": "Wolf Master Nandos"
+  },
+  {
+   "map": 36,
+   "points": [
+    {
+     "x": -106.4,
+     "y": -617.3,
+     "z": 13.8,
+     "hint": "Loot Defias Gunpowder from the powder barrel here."
+    },
+    {
+     "x": -107.6,
+     "y": -659.7,
+     "z": 7.2,
+     "hint": "Use the Defias Gunpowder on the Defias Cannon to blow open the Iron Clad Door."
+    }
+   ],
+   "source": "gameobject 17155 Defias Gunpowder (guid 26203, loot 2882 -> item 5397 100%); item 5397 spell 6250; smart_scripts 16398 (Defias Cannon, guid 26205) on spell hit 6250 -> 1639800 sets Iron Clad Door 16397 (guid 30534, -100.5,-668.8,7.4) open. Door Lever 101833 (-96.9,-670.6) is on the far side.",
+   "confidence": "high",
+   "boss": "Mr. Smite"
+  },
+  {
+   "map": 48,
+   "points": [
+    {
+     "x": -818.8,
+     "y": -164.5,
+     "z": -24.5,
+     "hint": "Light all four Fires of Aku'mai on this platform and kill the waves each one summons; the Portal of Aku'Mai then opens."
+    }
+   ],
+   "source": "instance_blackfathom_deeps.cpp: portal 21117 opens when TYPE_FIRE1-4 DONE and all summoned adds dead; smart_scripts 21118-21121 gossip hello sets fire data + summons group. Fires guids 32930-32933 at (-813.5/-823.9, -158.5/-170.5, -24.5); point = their centre.",
+   "confidence": "high",
+   "boss": "Aku'mai"
+  },
+  {
+   "map": 70,
+   "points": [
+    {
+     "x": -234.7,
+     "y": 239.6,
+     "z": -50.9,
+     "hint": "Use the Keystone to open the Seal of Khaz'Mul and wake Ironaya."
+    }
+   ],
+   "source": "smart_scripts 124371 (Keystone, guid 14393, lock 359) gossip hello: sets instance data 0, opens Seal of Khaz'Mul 124372 (-234.6,294.8), unflags and moves Ironaya.",
+   "confidence": "high",
+   "boss": "Ironaya"
+  },
+  {
+   "map": 70,
+   "points": [
+    {
+     "x": 104.8,
+     "y": 272.5,
+     "z": -26.5,
+     "hint": "Use the Altar of the Keepers to wake the four Stone Keepers; kill them to open the Temple Door down to Archaedas."
+    },
+    {
+     "x": 96.5,
+     "y": 269.1,
+     "z": -52.1,
+     "hint": "Use the Altar of Archaedas to awaken Archaedas."
+    }
+   ],
+   "source": "GO 130511 Altar of The Keepers (ritual, spell 11568 = spell_uldaman_sub_boss_agro_keepers) wakes Stone Keeper 4857 (guids 27554/27555/27794/28368); their SAI (-28368 etc.) on death opens Temple Door 124367 (137.7,288.1,-26.4) + instance data 1. GO 133234 Altar of Archaedas (spell 10340 = spell_uldaman_boss_agro_archaedas) -> Archaedas SetData(1,1) removes Stoned.",
+   "confidence": "medium",
+   "boss": "Archaedas"
+  },
+  {
+   "map": 90,
+   "points": [
+    {
+     "x": -514.9,
+     "y": -138.5,
+     "z": -152.4,
+     "hint": "Talk to Blastmaster Emi Shortfuse: 'I am ready to begin.' Guard her from the trogg waves; Grubbis arrives with the last wave."
+    }
+   ],
+   "source": "smart_scripts 7998 menu 1080 'I am ready to begin.' (conditions 15/1080: event not started) starts escort; summon group 4 of 7998 = Grubbis 7361 at -495.24,-90.81,-149.49; no other Grubbis spawn in creature table. Pos = creature guid 30136.",
+   "confidence": "high",
+   "boss": "Grubbis"
+  },
+  {
+   "map": 109,
+   "points": [
+    {
+     "x": -515.6,
+     "y": 95.3,
+     "z": -148.7,
+     "hint": "Statue 1 of 6: activate this Atal'ai Statue first."
+    },
+    {
+     "x": -419.8,
+     "y": 94.5,
+     "z": -148.7,
+     "hint": "Statue 2 of 6: activate this Atal'ai Statue."
+    },
+    {
+     "x": -491.4,
+     "y": 136.0,
+     "z": -148.7,
+     "hint": "Statue 3 of 6: activate this Atal'ai Statue."
+    },
+    {
+     "x": -491.5,
+     "y": 53.5,
+     "z": -148.7,
+     "hint": "Statue 4 of 6: activate this Atal'ai Statue."
+    },
+    {
+     "x": -443.9,
+     "y": 136.1,
+     "z": -148.7,
+     "hint": "Statue 5 of 6: activate this Atal'ai Statue."
+    },
+    {
+     "x": -443.4,
+     "y": 53.8,
+     "z": -148.7,
+     "hint": "Statue 6 of 6: activate this Atal'ai Statue; Atal'alarion appears below."
+    }
+   ],
+   "source": "smart_scripts 148830-148835 gossip hello -> instance data 10 (DATA_STATUES) +1, gated by conditions 22/1 GetData(10)==0..5 (148830 first ... 148835 last; wrong order casts a debuff). Atal'alarion (8580, guid 34521) spawns in phase 2 and SAI event 1 (conditions 22/2: GetData(10)==6) sets phase 1. Positions = gameobject guids 27898, 27899, 28111, 28112, 28113, 28114.",
+   "confidence": "high",
+   "boss": "Atal'alarion"
+  },
+  {
+   "map": 109,
+   "points": [
+    {
+     "x": -466.8,
+     "y": 272.9,
+     "z": -90.4,
+     "hint": "Optional: use the Egg of Hakkar (quest 'The God Hakkar') in this circle to call the Shade of Hakkar."
+    },
+    {
+     "x": -435.4,
+     "y": 248.9,
+     "z": -90.8,
+     "hint": "Use Hakkari Blood on each of the 4 Eternal Flames; when all are doused the Avatar of Hakkar appears."
+    }
+   ],
+   "source": "item 10465 Egg of Hakkar spell 12346 = spell_temple_of_atal_hakkar_awaken_the_soulflayer (summons Shade of Hakkar 8440 at -466.795,272.863,-90.447); smart_scripts 148418-148421 Eternal Flame gossip hello -> counter on 8440; 8440 counter 4 summons Avatar 8443. Flames guids 47561-47564 (-435.4,248.9 / -499.1,248.6 / -499.1,303.5 / -434.9,303.8). Hakkari Blood = item 10460.",
+   "confidence": "medium",
+   "boss": "Avatar of Hakkar"
+  },
+  {
+   "map": 109,
+   "points": [
+    {
+     "x": -467.4,
+     "y": 166.0,
+     "z": -66.7,
+     "hint": "Kill the troll guardian on this balcony, one of six (Zul'Lor, Zolo, Gasher, Loro, Hukku, Mijan); with all six dead Jammal'an's forcefield drops."
+    },
+    {
+     "x": -528.6,
+     "y": 130.2,
+     "z": -66.8,
+     "hint": "Kill the troll guardian on this balcony, one of six (Zul'Lor, Zolo, Gasher, Loro, Hukku, Mijan); with all six dead Jammal'an's forcefield drops."
+    },
+    {
+     "x": -528.0,
+     "y": 59.5,
+     "z": -66.7,
+     "hint": "Kill the troll guardian on this balcony, one of six (Zul'Lor, Zolo, Gasher, Loro, Hukku, Mijan); with all six dead Jammal'an's forcefield drops."
+    },
+    {
+     "x": -466.7,
+     "y": 24.4,
+     "z": -66.8,
+     "hint": "Kill the troll guardian on this balcony, one of six (Zul'Lor, Zolo, Gasher, Loro, Hukku, Mijan); with all six dead Jammal'an's forcefield drops."
+    },
+    {
+     "x": -405.5,
+     "y": 60.5,
+     "z": -67.1,
+     "hint": "Kill the troll guardian on this balcony, one of six (Zul'Lor, Zolo, Gasher, Loro, Hukku, Mijan); with all six dead Jammal'an's forcefield drops."
+    },
+    {
+     "x": -406.2,
+     "y": 131.1,
+     "z": -66.9,
+     "hint": "Kill the troll guardian on this balcony, one of six (Zul'Lor, Zolo, Gasher, Loro, Hukku, Mijan); with all six dead Jammal'an's forcefield drops."
+    }
+   ],
+   "source": "instance_sunken_temple.cpp DATA_DEFENDER_KILLED: forcefield 149431 (guid 268932, -518.1,-85.5,-91.2) opens when 6 defenders die; smart_scripts 5712-5717 on death set instance data 11. Positions = creature guids 34522, 39843-39847.",
+   "confidence": "high",
+   "boss": "Jammal'an the Prophet",
+   "any_order": true
+  },
+  {
+   "map": 129,
+   "points": [
+    {
+     "x": 2552.4,
+     "y": 857.0,
+     "z": 51.5,
+     "hint": "Strike the Gong three times: kill the Tomb Fiends, then the Tomb Reavers; the third strike summons Tuten'kash."
+    }
+   ],
+   "source": "smart_scripts 148917 (Gong, guid 32045) gossip hello summons group 1/2/3 by instance data (conditions 22/1-3 GetData(148917)==0/1/2); creature_summon_groups 148917 group 3 = Tuten'kash 7355 at 2487.94,804.22,43.11. No static spawn.",
+   "confidence": "high",
+   "boss": "Tuten'kash"
+  },
+  {
+   "map": 189,
+   "points": [
+    {
+     "x": 1153.9,
+     "y": 1398.4,
+     "z": 32.6,
+     "hint": "Fight Scarlet Commander Mograine; when he falls Whitemane comes through the High Inquisitor's Door and revives him. Kill both."
+    }
+   ],
+   "source": "smart_scripts 3976 at 1% hp -> 397600 sets data on Whitemane 3977 (guid 39946); 3977 event 0 opens High Inquisitor's Door 104600 (guid 11877, 1173.0,1398.9) and moves to Mograine. Pos = Mograine guid 40029.",
+   "confidence": "high",
+   "boss": "High Inquisitor Whitemane"
+  },
+  {
+   "map": 229,
+   "points": [
+    {
+     "x": -14.4,
+     "y": -395.8,
+     "z": 48.5,
+     "hint": "Optional: use Omokk's Head (quest 'Urok Doomhowl') at Urok's Tribute Pile; kill the ogre waves and Urok arrives."
+    }
+   ],
+   "source": "instance_blackrock_spire.cpp ProcessEvent EVENT_UROK_DOOMHOWL 4845 (pile 175621 guid 99791, spell focus 743); item 12534 Omokk's Head spell 16447. Urok 10584 has no static spawn in creature table.",
+   "confidence": "medium",
+   "boss": "Urok Doomhowl"
+  },
+  {
+   "map": 229,
+   "points": [
+    {
+     "x": 216.4,
+     "y": -286.1,
+     "z": 76.9,
+     "hint": "Kill every Blackhand mob around the 7 glowing runes of the Hall of Blackhand; when all runes go dark these doors open."
+    },
+    {
+     "x": 144.4,
+     "y": -280.9,
+     "z": 91.5,
+     "hint": "Use the Blackrock Altar to free Pyroguard Emberseer (his Incarcerators attack first)."
+    }
+   ],
+   "source": "instance_blackrock_spire.cpp Dragonspireroomstore/check (areatrigger 2046 at_dragonspire_hall): runes 175194-175200 (guids 87824-87830) go dark when Blackhand Dreadweaver/Summoner/Veteran within 15yd die; all 7 -> open GO_EMBERSEER_IN 175244 (guid 87839 at 216.4,-286.1,76.9) and Doors 175705. Blackrock Altar 175706 (guid 87838, ritual spell 16533) -> event 4884 -> Emberseer SetData(1,1).",
+   "confidence": "high",
+   "boss": "Pyroguard Emberseer"
+  },
+  {
+   "map": 229,
+   "points": [
+    {
+     "x": 76.0,
+     "y": -334.7,
+     "z": 91.5,
+     "hint": "Optional: use Father Flame in the Rookery; kill the waves of guardians/hatchers and Solakar Flamewreath comes."
+    }
+   ],
+   "source": "instance_blackrock_spire.cpp go_father_flame (175245, guid 81163) -> DATA_SOLAKAR_FLAMEWREATH IN_PROGRESS -> 5 waves every 30s then Solakar at SolakarPosBoss (80,-280,93).",
+   "confidence": "high",
+   "boss": "Solakar Flamewreath"
+  },
+  {
+   "map": 230,
+   "points": [
+    {
+     "x": 916.7,
+     "y": -150.1,
+     "z": -49.8,
+     "hint": "Use the three Thunderbrew Lager Kegs here; Hurley Blackbreath then shows up with his cronies."
+    }
+   ],
+   "source": "smart_scripts 164911 (Thunderbrew Lager Keg, guids 265712-265714) state change -> data on Hurley 9537; 9537 spawns invisible/passive (events 0-2), event 3 on data set -> visible + WP. Hurley static spawn guid 72000 is invisible until then.",
+   "confidence": "medium",
+   "boss": "Hurley Blackbreath"
+  },
+  {
+   "map": 230,
+   "points": [
+    {
+     "x": 878.5,
+     "y": -167.7,
+     "z": -49.7,
+     "hint": "Talk to Ribbly Screwspigot: 'You're good for nothing, Ribbly. It's time to pay for your wickedness!.' He and his cronies turn hostile."
+    }
+   ],
+   "source": "smart_scripts 9543 event 62 menu 1970 -> faction 14 + attack; gossip_menu_option 1970; creature_template faction 735 (friendly) otherwise. Pos = guid 46619.",
+   "confidence": "high",
+   "boss": "Ribbly Screwspigot"
+  },
+  {
+   "map": 230,
+   "points": [
+    {
+     "x": 888.5,
+     "y": -177.9,
+     "z": -43.0,
+     "hint": "Phalanx stays friendly until Plugger Spazzring dies (or Private Rocknot gets 3 ales and breaks the bar door)."
+    }
+   ],
+   "source": "creature_template 9502 faction 35; smart_scripts 9499 on death sets faction 14 on 9502 (and bar patrons); blackrock_depths.cpp npc_rocknot (quest 4295 x3) sets Phalanx FACTION_MONSTER and opens Bar Door 170571. Pos = Plugger guid 47703.",
+   "confidence": "high",
+   "boss": "Phalanx"
+  },
+  {
+   "map": 230,
+   "points": [
+    {
+     "x": 1281.1,
+     "y": -282.2,
+     "z": -78.1,
+     "hint": "Talk to Doom'rel: 'Your bondage is at an end, Doom'rel.  I challenge you!' then 'Continue...'. The Seven attack one at a time."
+    }
+   ],
+   "source": "boss_tomb_of_seven.cpp boss_doomrel sGossipSelect menu 1950 -> TYPE_TOMB_OF_SEVEN IN_PROGRESS; gossip_menu_option 1947/1950; Doom'rel creature_template gossip 1947, faction 35. Pos = guid 91020.",
+   "confidence": "high",
+   "boss": "The Seven"
+  },
+  {
+   "map": 230,
+   "points": [
+    {
+     "x": 1382.6,
+     "y": -397.7,
+     "z": -94.6,
+     "hint": "Kill the Shadowforge Flame Keepers in the Lyceum for Shadowforge Torches."
+    },
+    {
+     "x": 1330.1,
+     "y": -508.9,
+     "z": -88.9,
+     "hint": "Light the south Shadowforge Brazier with a torch..."
+    },
+    {
+     "x": 1431.1,
+     "y": -508.9,
+     "z": -88.9,
+     "hint": "...and the north one; with both lit the doors to Magmus open."
+    }
+   ],
+   "source": "blackrock_depths.cpp go_shadowforge_brazier: TYPE_LYCEUM DONE when both braziers 174744 (S, guid 15229) and 174745 (N, guid 15544) are lit (lock 799); instance SetData(TYPE_LYCEUM, DONE) opens golem doors 170573/170574. creature_loot 9956 Shadowforge Flame Keeper -> 11885 Shadowforge Torch (94%); Flame Keeper guid 47302.",
+   "confidence": "high",
+   "boss": "Magmus"
+  },
+  {
+   "map": 289,
+   "points": [
+    {
+     "x": 325.1,
+     "y": 93.6,
+     "z": 101.6,
+     "hint": "Optional: use the Blood of Innocents on the Brazier of the Herald to summon Kirtonos."
+    }
+   ],
+   "source": "smart_scripts 175564 (Brazier of the Herald, guid 43208, lock 1179) on activate -> instance data 0 IN_PROGRESS -> instance_scholomance.cpp summons Kirtonos 10506 at (315.03,70.54,102.15). No static Kirtonos spawn. Lock 1179 assumed = Blood of Innocents (quest 'Kirtonos the Herald'); not verified (no Lock.dbc).",
+   "confidence": "medium",
+   "boss": "Kirtonos the Herald"
+  },
+  {
+   "map": 289,
+   "points": [
+    {
+     "x": 174.4,
+     "y": 77.9,
+     "z": 104.8,
+     "hint": "The Viewing Room Door is locked: open it with the Skeleton Key (or Lockpicking)."
+    }
+   ],
+   "source": "gameobject 175167 Viewing Room Door (guid 43192) lock 1199, template_addon flags 34 (locked), state 1, AllowSaveToDB in instance script; no script opens it.",
+   "confidence": "medium",
+   "boss": "Vectus"
+  },
+  {
+   "map": 289,
+   "points": [
+    {
+     "x": 180.8,
+     "y": -5.4,
+     "z": 75.6,
+     "hint": "Gandling appears here only after Malicia, Theolen, Polkelt, the Ravenian, Alexei and Illucia Barov are all dead."
+    }
+   ],
+   "source": "boss_darkmaster_gandling.cpp Reset: SetVisible(false) unless GetData(DATA_MINI_BOSSES)==6; smart_scripts 10502/10504/10505/10507/10901/11261 on death increment instance data 1.",
+   "confidence": "high",
+   "boss": "Darkmaster Gandling"
+  },
+  {
+   "map": 329,
+   "points": [
+    {
+     "x": 3651.6,
+     "y": -3190.1,
+     "z": 127.0,
+     "hint": "Clear the Crimson Guardsmen, Conjurors and Gallants in this square; Timmy the Cruel then appears."
+    }
+   ],
+   "source": "smart_scripts 10808 events 3-6 (invisible on reset, visible on update) gated by conditions 22/6: no 10418/10419/10424 within 40yd. Pos = guid 247227.",
+   "confidence": "high",
+   "boss": "Timmy the Cruel"
+  },
+  {
+   "map": 329,
+   "points": [
+    {
+     "x": 3839.7,
+     "y": -3500.1,
+     "z": 144.3,
+     "hint": "Kill the Thuzadin Acolytes in this ziggurat to break its Ash'ari Crystal (all three must break to open the Slaughter Square)."
+    }
+   ],
+   "source": "smart_scripts 10399 on death sets data on nearest Ash'ari Crystal 10415; crystal (-53968) sets instance data TYPE_ZIGGURAT2=2. Acolyte guids 53262-53266. Attached to the next boss in route order.",
+   "confidence": "high",
+   "after": "Nerub'enkan"
+  },
+  {
+   "map": 329,
+   "points": [
+    {
+     "x": 3848.2,
+     "y": -3747.7,
+     "z": 148.2,
+     "hint": "Kill the Thuzadin Acolytes in this ziggurat to break its Ash'ari Crystal (all three must break to open the Slaughter Square)."
+    }
+   ],
+   "source": "same as above; crystal -53955 -> TYPE_ZIGGURAT1=2; acolyte guids 53268-53272. Attached to the next boss in route order.",
+   "confidence": "high",
+   "after": "Baroness Anastari"
+  },
+  {
+   "map": 329,
+   "after": "Maleki the Pallid",
+   "source": "crystal -53963 -> TYPE_ZIGGURAT3=2; instance_stratholme.cpp: all three ==2 opens Gauntlet Gate 175374 / Slaughter Gate 175373; slaughter NPCs 10416/10417 dead -> _slaughterProgress 1 -> SummonCreature(Ramstein 10439, SlaughterPos 4032.20,-3378.06,119.75). No static Ramstein spawn. Point 2 = Slaughter Square Gate 175358 (guid 49594).",
+   "confidence": "high",
+   "points": [
+    {
+     "x": 4057.6,
+     "y": -3666.6,
+     "z": 135.7,
+     "hint": "Kill the Thuzadin Acolytes in this ziggurat to break its Ash'ari Crystal (all three must break to open the Slaughter Square)."
+    }
+   ]
+  },
+  {
+   "map": 329,
+   "points": [
+    {
+     "x": 3960.6,
+     "y": -3392.9,
+     "z": 119.7,
+     "hint": "Kill every Bile Spewer and Venom Belcher in the Slaughter Square; Ramstein the Gorger then charges out."
+    }
+   ],
+   "source": "crystal -53963 -> TYPE_ZIGGURAT3=2; instance_stratholme.cpp: all three ==2 opens Gauntlet Gate 175374 / Slaughter Gate 175373; slaughter NPCs 10416/10417 dead -> _slaughterProgress 1 -> SummonCreature(Ramstein 10439, SlaughterPos 4032.20,-3378.06,119.75). No static Ramstein spawn. Point 2 = Slaughter Square Gate 175358 (guid 49594).",
+   "confidence": "high",
+   "boss": "Ramstein the Gorger"
+  },
+  {
+   "map": 329,
+   "points": [
+    {
+     "x": 4032.7,
+     "y": -3364.5,
+     "z": 115.1,
+     "hint": "After Ramstein, kill the waves of Mindless Undead and then the Black Guard Sentries; Baron Rivendare's gate then opens."
+    }
+   ],
+   "source": "instance_stratholme.cpp _slaughterProgress 2 (Ramstein dead) spawns Mindless Undead at 3941.75,-3393.06; 3 -> Black Guards (EVENT_SPAWN_BLACK_GUARD); 4 -> opens Ziggurat door 5 175796 (guid 35848, 4032.7,-3364.5).",
+   "confidence": "high",
+   "boss": "Baron Rivendare"
+  },
+  {
+   "map": 429,
+   "points": [
+    {
+     "x": -56.6,
+     "y": -269.1,
+     "z": -57.9,
+     "hint": "After Zevrim dies, talk to Ironbark the Redeemed: 'Thank you, Ironbark. We are ready for you to open the door.' He breaks the Conservatory Door."
+    }
+   ],
+   "source": "smart_scripts 11490 death sets instance data 0=1; 14241 (Ironbark the Redeemed, guid 248564) visible via conditions 22 GetData(0)==1, menu 5602 -> WP -> opens Conservatory Door 176907 (guid 268275, 131.3,-278.9,-56.5) and sets data 0=2. gossip_menu_option 5602.",
+   "confidence": "high",
+   "boss": "Alzzin the Wildshaper"
+  },
+  {
+   "map": 429,
+   "points": [
+    {
+     "x": 12.9,
+     "y": 277.9,
+     "z": -8.9,
+     "hint": "Crystal pylon: kill the Arcane Aberrations and Mana Remnants around it to shut it down. With all five off, Immol'thar's force field drops."
+    },
+    {
+     "x": -92.3,
+     "y": 442.7,
+     "z": 28.5,
+     "hint": "Crystal pylon: kill the Arcane Aberrations and Mana Remnants around it to shut it down. With all five off, Immol'thar's force field drops."
+    },
+    {
+     "x": 121.2,
+     "y": 429.1,
+     "z": 28.5,
+     "hint": "Crystal pylon: kill the Arcane Aberrations and Mana Remnants around it to shut it down. With all five off, Immol'thar's force field drops."
+    },
+    {
+     "x": 78.1,
+     "y": 737.4,
+     "z": -24.6,
+     "hint": "Crystal pylon: kill the Arcane Aberrations and Mana Remnants around it to shut it down. With all five off, Immol'thar's force field drops."
+    },
+    {
+     "x": -155.4,
+     "y": 734.2,
+     "z": -24.6,
+     "hint": "Crystal pylon: kill the Arcane Aberrations and Mana Remnants around it to shut it down. With all five off, Immol'thar's force field drops."
+    }
+   ],
+   "source": "smart_scripts 177259/177257/177258/179504/179505 (Doodad_DireMaulCrystalGenerator01-05, guids 29743/29744/29742/29745/29746) on update set TYPE_PYLONS_STATE bits 1/2/4/8/16, gated by conditions 22/1: no 11480 or 11483 within 70yd; instance_dire_maul.cpp ALL_PYLONS_OFF (0x1F) removes UNIT_FLAG_NON_ATTACKABLE from Immol'thar and Highborne Summoners; force field 179503. Pylons 1-3 lie before Tendris/Illyanna, so the route may want them earlier.",
+   "confidence": "high",
+   "boss": "Immol'thar",
+   "any_order": true
+  },
+  {
+   "map": 429,
+   "points": [
+    {
+     "x": 491.2,
+     "y": 515.1,
+     "z": 29.5,
+     "hint": "Gordok Inner Door: open it with the Gordok Inner Door Key (dropped by Guard Mol'dar)."
+    }
+   ],
+   "source": "gameobject 177217 Gordok Inner Door (guid 29756) lock 1564; creature_loot 14326 Guard Mol'dar -> 18268 Gordok Inner Door Key (100%).",
+   "confidence": "medium",
+   "boss": "Captain Kromcrush"
+  },
+  {
+   "map": 429,
+   "points": [
+    {
+     "x": 385.0,
+     "y": 260.3,
+     "z": 11.4,
+     "hint": "Loot the Gordok Courtyard Key from Fengus's Chest..."
+    },
+    {
+     "x": 385.3,
+     "y": 374.2,
+     "z": -1.3,
+     "hint": "...and open the Gordok Courtyard Door with it."
+    }
+   ],
+   "source": "gameobject 179516 Fengus's Chest (guid 35832, loot 16523 -> 18266 Gordok Courtyard Key 100%); 177219 Gordok Courtyard Door (guid 29750) lock 1563. Key also drops rarely from Gordok Brutes/Mage-Lords.",
+   "confidence": "medium",
+   "boss": "Guard Slip'kik"
+  },
+  {
+   "map": 409,
+   "points": [
+    {
+     "x": 848.9,
+     "y": -812.9,
+     "z": -229.6,
+     "hint": "Talk to Majordomo Executus: 'Tell me more.' > 'What else do you have to say?' > 'You challenged us and we have come...' to summon Ragnaros."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/boss_majordomo_executus.cpp:113 (MajordomoRagnaros pos), :485 (teleport+gossip flag after defeat), :503 sGossipSelect menu 4108; gossip_menu_option 4093->4109->4108; creature_template 12018 gossip_menu_id 4093",
+   "confidence": "high",
+   "boss": "Ragnaros"
+  },
+  {
+   "map": 469,
+   "points": [
+    {
+     "x": -7614.8,
+     "y": -1026.6,
+     "z": 413.4,
+     "hint": "Use the Orb of Domination to control Razorgore and destroy every Black Dragon Egg; he becomes killable after the last egg."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/BlackwingLair/boss_razorgore.cpp:250 go_orb_of_domination, :88 JustDied (phase-1 death = FAIL+respawn); instance_blackwing_lair.cpp:255 SPECIAL egg count -> phase 2; gameobject guid 67867 (177808)",
+   "confidence": "high",
+   "boss": "Razorgore the Untamed"
+  },
+  {
+   "map": 469,
+   "points": [
+    {
+     "x": -7483.8,
+     "y": -1016.0,
+     "z": 408.7,
+     "hint": "Talk to Vaelastrasz: 'I cannot Vaelastraz! Surely something can be done to heal you!' > 'Vaelastraz, no!!' to start the fight."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/BlackwingLair/boss_vaelastrasz.cpp:41,267 sGossipSelect(21334); gossip_menu_option 21333->21334; creature guid 84512",
+   "confidence": "high",
+   "boss": "Vaelastrasz the Corrupt"
+  },
+  {
+   "map": 469,
+   "points": [
+    {
+     "x": -7511.0,
+     "y": -1094.7,
+     "z": 476.6,
+     "hint": "Pull the Lever to open Chromaggus' gate; he walks out to fight."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/BlackwingLair/boss_chromaggus.cpp:208 go_chromaggus_lever (opens DATA_GO_CHROMAGGUS_DOOR, starts his path); gameobject guid 56161 (179148)",
+   "confidence": "high",
+   "boss": "Chromaggus"
+  },
+  {
+   "map": 469,
+   "points": [
+    {
+     "x": -7587.8,
+     "y": -1261.4,
+     "z": 482.2,
+     "hint": "Talk to Lord Victor Nefarius: 'I've made no mistakes.' > 'You have lost your mind, Nefarius. You speak in riddles.' > 'Please do.'"
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/BlackwingLair/boss_nefarian.cpp:102,491 sGossipSelect(21332); gossip_menu_option 21330->21331->21332; creature guid 85785 (10162)",
+   "confidence": "high",
+   "boss": "Nefarian"
+  },
+  {
+   "map": 309,
+   "points": [
+    {
+     "x": -11569.2,
+     "y": -1627.9,
+     "z": 41.3,
+     "hint": "Strike the Gong of Bethekk to summon High Priestess Arlokk."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/ZulGurub/boss_arlokk.cpp:407-424 go_gong_of_bethekk summons NPC_ARLOKK; gameobject guid 28667 (180526)",
+   "confidence": "high",
+   "boss": "High Priestess Arlokk"
+  },
+  {
+   "map": 309,
+   "points": [
+    {
+     "x": -11688.5,
+     "y": -1737.7,
+     "z": 10.4,
+     "hint": "Use a Mudskunk Lure at Pagle's Point to summon Gahz'ranka from the water."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/ZulGurub/boss_gahzranka.cpp:97-125 spell_pagles_point_cast (lure GO at -11688.5,-1737.74,10.41, Gahz'ranka summoned at -11688.5,-1723.74); item 19974 Mudskunk Lure spell 24325",
+   "confidence": "high",
+   "boss": "Gahz'ranka"
+  },
+  {
+   "map": 309,
+   "points": [
+    {
+     "x": -11887.1,
+     "y": -1889.8,
+     "z": 63.5,
+     "hint": "Use the Brazier of Madness (needs Gurubashi Mojo Madness) to summon this week's Edge of Madness boss."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/ZulGurub/instance_zulgurub.cpp:205-243 go_brazier_of_madness (boss picked by active game event 27-30, summoned at -11901.2,-1906.4,65.4); gameobject guid 28704 (180327, lock 1619); item 19931 Gurubashi Mojo Madness",
+   "confidence": "medium",
+   "boss": "Edge of Madness"
+  },
+  {
+   "map": 532,
+   "points": [
+    {
+     "x": -10866.7,
+     "y": -1781.0,
+     "z": 90.6,
+     "hint": "Talk to Barnes: 'I'm not an actor.' > 'Ok, I'll give it a try, then.' to start the Opera (Moroes must be dead)."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/Karazhan/karazhan.cpp:67-70,299-360 npc_barnes (option only if Moroes DONE); gossip_menu_option 7421/7422; creature guid 135823",
+   "confidence": "high",
+   "boss": "Opera Event"
+  },
+  {
+   "map": 532,
+   "points": [
+    {
+     "x": -11107.8,
+     "y": -1879.4,
+     "z": 91.5,
+     "hint": "Use the Blackened Urn on the Master's Terrace to summon Nightbane (needs the Blackened Urn item)."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/Karazhan/boss_nightbane.cpp:497-519 go_blackened_urn (DoAction ACTION_START_INTRO); lands at introLandPos -11142.7,-1891.2,92.3 (:104); gameobject guid 268257 (194092, lock 1691)",
+   "confidence": "high",
+   "boss": "Nightbane"
+  },
+  {
+   "map": 532,
+   "points": [
+    {
+     "x": -11098.8,
+     "y": -1853.6,
+     "z": 221.2,
+     "hint": "Talk to the Echo of Medivh: 'We want to play a game against you!', then talk to a chess piece to 'Control' it."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/Karazhan/boss_chess_event.cpp:1349-1383 Echo of Medivh gossip, :1993 'Control <name>' on pieces; creature guid 135827 (16816)",
+   "confidence": "high",
+   "boss": "Chess Event"
+  },
+  {
+   "map": 534,
+   "points": [
+    {
+     "x": 5084.1,
+     "y": -1789.0,
+     "z": 1322.7,
+     "hint": "Talk to Lady Jaina Proudmoore: 'My companions and I are with you, Lady Proudmoore.' Defend the base for 8 waves."
+    }
+   ],
+   "source": "src/server/scripts/Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal.cpp:177-195 (Jaina), :252-270 (Thrall) OnGossipSelect -> DATA_SPAWN_WAVES; instance_hyjal.cpp:364-406; gossip_menu_option 7552/7581 + conditions (15,7552/7581,...); creature guid 139534",
+   "confidence": "high",
+   "boss": "Rage Winterchill"
+  },
+  {
+   "map": 534,
+   "points": [
+    {
+     "x": 5084.1,
+     "y": -1789.0,
+     "z": 1322.7,
+     "hint": "Talk to Lady Jaina Proudmoore: 'We are ready for whatever Archimonde might send our way, Lady Proudmoore.'"
+    }
+   ],
+   "source": "src/server/scripts/Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal.cpp:177-195 (Jaina), :252-270 (Thrall) OnGossipSelect -> DATA_SPAWN_WAVES; instance_hyjal.cpp:364-406; gossip_menu_option 7552/7581 + conditions (15,7552/7581,...)",
+   "confidence": "high",
+   "boss": "Anetheron"
+  },
+  {
+   "map": 534,
+   "points": [
+    {
+     "x": 5450.5,
+     "y": -2724.0,
+     "z": 1485.6,
+     "hint": "Talk to Thrall: 'I am with you, Thrall.' Defend the Horde base for 8 waves."
+    }
+   ],
+   "source": "src/server/scripts/Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal.cpp:177-195 (Jaina), :252-270 (Thrall) OnGossipSelect -> DATA_SPAWN_WAVES; instance_hyjal.cpp:364-406; gossip_menu_option 7552/7581 + conditions (15,7552/7581,...); creature guid 139637",
+   "confidence": "high",
+   "boss": "Kaz'rogal"
+  },
+  {
+   "map": 534,
+   "points": [
+    {
+     "x": 5450.5,
+     "y": -2724.0,
+     "z": 1485.6,
+     "hint": "Talk to Thrall: 'We have nothing to fear.'"
+    }
+   ],
+   "source": "src/server/scripts/Kalimdor/CavernsOfTime/BattleForMountHyjal/hyjal.cpp:177-195 (Jaina), :252-270 (Thrall) OnGossipSelect -> DATA_SPAWN_WAVES; instance_hyjal.cpp:364-406; gossip_menu_option 7552/7581 + conditions (15,7552/7581,...)",
+   "confidence": "high",
+   "boss": "Azgalor"
+  },
+  {
+   "map": 548,
+   "points": [
+    {
+     "x": 40.4,
+     "y": -417.1,
+     "z": -21.8,
+     "hint": "Fish in the Strange Pool from the platform; each cast has a 25% chance to bring up The Lurker Below."
+    }
+   ],
+   "source": "src/server/scripts/Outland/CoilfangReservoir/SerpentShrine/boss_lurker_below.cpp:238-259 go_strange_pool (25% roll, summons Lurker at 38.46,-417.32,-18.92); gameobject guid 16818 (184956, fishing hole)",
+   "confidence": "high",
+   "boss": "The Lurker Below"
+  },
+  {
+   "map": 548,
+   "points": [
+    {
+     "x": 47.8,
+     "y": -582.3,
+     "z": 4.2,
+     "hint": "Use the Lady Vashj Bridge Console to raise the bridge to Vashj."
+    }
+   ],
+   "source": "smart_scripts entryorguid=184568 (On Gossip Hello -> activate bridge parts 26-29); instance_serpent_shrine.cpp:42-45; gameobject guid 268941 (184568)",
+   "confidence": "high",
+   "boss": "Lady Vashj"
+  },
+  {
+   "map": 564,
+   "points": [
+    {
+     "x": 547.5,
+     "y": 400.2,
+     "z": 112.9,
+     "hint": "Talk to Akama: 'I am ready to fight alongside you, Akama.' to start the Shade of Akama event."
+    }
+   ],
+   "source": "src/server/scripts/Outland/BlackTemple/boss_shade_of_akama.cpp:225-232,346 sGossipSelect; gossip_menu_option 21335; creature guid 148235 (23191)",
+   "confidence": "high",
+   "boss": "Shade of Akama"
+  },
+  {
+   "map": 564,
+   "points": [
+    {
+     "x": 660.8,
+     "y": 305.8,
+     "z": 271.7,
+     "hint": "After the Council, talk to Akama: 'I'm ready, Akama.' and follow him to open Illidan's gate."
+    },
+    {
+     "x": 748.4,
+     "y": 235.8,
+     "z": 353.0,
+     "hint": "Talk to Akama again: 'We're ready to face Illidan.' to start the fight."
+    }
+   ],
+   "source": "src/server/scripts/Outland/BlackTemple/boss_illidan.cpp:738 AkamaIllidariCouncilTeleport, :779-793 sGossipSelect, :902-970 PathEndReached (path 230891 ends 660.77,305.77,271.70 gossip; 230892 opens gate -> DATA_AKAMA_ILLIDAN; 230893 ends 748.44,235.81,353.0 gossip); gossip_menu_option 8713; instance_black_temple.cpp:42 GO_ILLIDAN_GATE passage on DATA_AKAMA_ILLIDAN",
+   "confidence": "high",
+   "boss": "Illidan Stormrage"
+  },
+  {
+   "map": 568,
+   "points": [
+    {
+     "x": 121.4,
+     "y": 1675.0,
+     "z": 42.1,
+     "hint": "Talk to Harrison Jones: 'Thanks for the concern, but we intend to explore Zul'Aman.'"
+    },
+    {
+     "x": 134.0,
+     "y": 1642.8,
+     "z": 42.1,
+     "hint": "Help ring the Strange Gong until the Massive Gate opens. This starts the timed hostage run."
+    }
+   ],
+   "source": "src/server/scripts/EasternKingdoms/ZulAman/zulaman.cpp:393-420 npc_harrison_jones sGossipSelect, :440-462 ACTION_COMPLETE_GONG_RITUAL opens Massive Gate, :538-548 spell_ritual_of_power; instance_zulaman.cpp:173 timed run; gossip_menu_option 8932; creature guid 320 (24358); gameobject guid 20584 (187359, ritual)",
+   "confidence": "high",
+   "after": "<start>"
+  },
+  {
+   "map": 269,
+   "points": [
+    {
+     "x": -1547.1,
+     "y": 7113.6,
+     "z": 32.8,
+     "hint": "Optional: ask Sa'at 'I require a chrono-beacon, Sa'at.' (needs The Opening of the Dark Portal quest). Helps vs rift lords."
+    },
+    {
+     "x": -2025.3,
+     "y": 7119.6,
+     "z": 22.7,
+     "hint": "Walk up to Medivh to start. Defend him and close the rifts: Deja comes at portal 6, Temporus at 12, Aeonus at 18."
+    }
+   ],
+   "source": "the_black_morass.cpp:117-139 (npc_medivh MoveInLineOfSight 20yd -> SetData(DATA_MEDIVH) starts portals); instance_the_black_morass.cpp:319-328; Sa'at gossip_menu_option 8088 + smart_scripts 20201 (cast 34975), conditions 14/15 8088 (quest 10297); positions from creature spawns 31754 (Sa'at), 34023 (Medivh)",
+   "confidence": "high",
+   "boss": "Chrono Lord Deja"
+  },
+  {
+   "map": 560,
+   "points": [
+    {
+     "x": 2375.5,
+     "y": 1175.5,
+     "z": 65.3,
+     "hint": "Talk to Erozion: 'I need a pack of incendiary bombs.' (needs quest Taretha's Diversion)."
+    },
+    {
+     "x": 2176.0,
+     "y": 265.2,
+     "z": 53.6,
+     "hint": "Use the incendiary bombs on 5 Barrels in the internment lodges. Lieutenant Drake appears ~18 sec after the 5th."
+    }
+   ],
+   "source": "gossip_menu_option 7769 + smart_scripts 18723 (add item 25853), conditions 15/7769 (quest 10283); instance_old_hillsbrad.cpp:152-162 (5 barrels -> EVENT_SUMMON_LIEUTENANT 18s, at 2172.76,149.54,87.98); Erozion spawn 83475; barrel = GO 182589 spawn 21789 (6 barrels around x2150-2227,y244-273; 9 more around x2056-2119,y42-130)",
+   "confidence": "high",
+   "boss": "Lieutenant Drake"
+  },
+  {
+   "map": 560,
+   "points": [
+    {
+     "x": 2231.9,
+     "y": 120.0,
+     "z": 82.3,
+     "hint": "Talk to Thrall in his cell: 'We are ready to get you out of here, Thrall. Let's go!' Escort him; Skarloc ambushes on the road."
+    }
+   ],
+   "source": "old_hillsbrad.cpp:213-243 (npc_thrall_old_hillsbrad gossip starts escort); gossip_menu_option 7499 + conditions 15/7499 (bombs placed); Skarloc summoned at waypoint 28 (1995.78,277.46,66.64); Thrall spawn 83989",
+   "confidence": "high",
+   "boss": "Captain Skarloc"
+  },
+  {
+   "map": 560,
+   "points": [
+    {
+     "x": 2062.9,
+     "y": 229.9,
+     "z": 64.5,
+     "hint": "Talk to Thrall: 'Taretha cannot see you, Thrall.', then keep going until 'Tarren Mill.' to continue the escort."
+    },
+    {
+     "x": 2486.9,
+     "y": 626.4,
+     "z": 58.1,
+     "hint": "At Tarren Mill talk to Thrall again: 'We're ready, Thrall.'"
+    },
+    {
+     "x": 2660.5,
+     "y": 659.2,
+     "z": 62.0,
+     "hint": "At Taretha talk to Thrall: 'We're ready, Thrall.' The Epoch Hunter's dragons then arrive."
+    }
+   ],
+   "source": "old_hillsbrad.cpp:220-224 (menus 7830/7840/7853 by escort stage); waypoints 60/94 pause the escort; gossip_menu_option 7830->7829->7831 'Tarren Mill.', 7840/7853 'We're ready, Thrall.'; positions = thrallPositions[] in instance_old_hillsbrad.cpp:32-39",
+   "confidence": "high",
+   "boss": "Epoch Hunter"
+  },
+  {
+   "map": 542,
+   "points": [
+    {
+     "x": 456.6,
+     "y": 54.4,
+     "z": 9.6,
+     "hint": "Pull the Cell Door Lever. Kill the 4 cells of orcs as they open; Broggok attacks after the last."
+    }
+   ],
+   "source": "boss_broggok.cpp:96-112 (go_broggok_lever -> ACTION_PREPARE_BROGGOK); instance_blood_furnace.cpp:194-215 PrisonerDied/ActivateCell (4 cells, then rear door + Broggok active); lever GO 181982 spawn 150441",
+   "confidence": "high",
+   "boss": "Broggok"
+  },
+  {
+   "map": 542,
+   "points": [
+    {
+     "x": 326.5,
+     "y": -86.0,
+     "z": -24.6,
+     "hint": "Kill the 5 Shadowmoon Channelers around Keli'dan; he becomes attackable when the last dies."
+    }
+   ],
+   "source": "boss_kelidan_the_breaker.cpp:63,104-114 (NOT_SELECTABLE until no Shadowmoon Channeler within 100yd); channelers 17653 spawns 138519-138523; point = Keli'dan spawn",
+   "confidence": "high",
+   "boss": "Keli'dan the Breaker"
+  },
+  {
+   "map": 543,
+   "points": [
+    {
+     "x": -1378.0,
+     "y": 1718.0,
+     "z": 82.9,
+     "hint": "Kill the two Hellfire Sentries at the foot of the platform; Vazruden and Nazan then come down."
+    }
+   ],
+   "source": "boss_vazruden_the_herald.cpp:68-109 (Herald summons 2 Hellfire Sentries at -1372.56,1724.31 / -1383.39,1711.82; when both die he flies in and summons Vazruden+Nazan); point = midpoint of the two sentry positions",
+   "confidence": "high",
+   "boss": "Vazruden the Herald"
+  },
+  {
+   "map": 545,
+   "points": [
+    {
+     "x": 98.8,
+     "y": -316.3,
+     "z": -6.7,
+     "hint": "Use the Main Chambers Access Panel by Thespia. It is one of two panels for the Warlord's door."
+    }
+   ],
+   "source": "instance_steam_vault.cpp:36-97 (go_main_chambers_access_panel, usable once Thespia DONE); GO 184125 spawn 831",
+   "confidence": "high",
+   "boss": "Mekgineer Steamrigger"
+  },
+  {
+   "map": 545,
+   "points": [
+    {
+     "x": -332.4,
+     "y": -117.2,
+     "z": -6.7,
+     "hint": "Use the Main Chambers Access Panel by Steamrigger. With both panels used, the Main Chambers Door opens."
+    },
+    {
+     "x": -95.6,
+     "y": -437.6,
+     "z": 4.9,
+     "hint": null
+    }
+   ],
+   "source": "instance_steam_vault.cpp:36-97 (gate opens when Thespia and Steamrigger are both DONE and a panel is used); GO 184126 spawn 832; Main Chambers Door GO 183049 spawn 830",
+   "confidence": "high",
+   "boss": "Warlord Kalithresh"
+  },
+  {
+   "map": 552,
+   "points": [
+    {
+     "x": 445.8,
+     "y": -169.0,
+     "z": 43.6,
+     "hint": "Attack Warden Mellichar to start. Kill what comes out of each stasis pod; then Harbinger Skyriss appears."
+    }
+   ],
+   "source": "arcatraz.cpp:386-396 (npc_warden_mellichar DamageTaken starts event); pods DATA_WARDEN_1..5 (instance_arcatraz.cpp:87-96); Skyriss is the last summon (arcatraz.cpp:345-352); Mellichar spawn 138966",
+   "confidence": "high",
+   "boss": "Harbinger Skyriss"
+  },
+  {
+   "map": 554,
+   "points": [
+    {
+     "x": 85.5,
+     "y": 20.2,
+     "z": 15.0,
+     "hint": "Kill Gatewatcher Gyro-Kill. His death opens a Mo'arg door on the way to Sepethrea."
+    },
+    {
+     "x": 181.9,
+     "y": -77.1,
+     "z": 0.0,
+     "hint": "Kill Gatewatcher Iron-Hand. His death opens the other Mo'arg door."
+    }
+   ],
+   "source": "instance_mechanar.cpp:22-28 (GO_DOOR_MOARG_1 184632 <- Iron-Hand, GO_DOOR_MOARG_2 184322 <- Gyro-Kill, both PASSAGE); spawns 138821 (Gyro-Kill 19218), 138832 (Iron-Hand 19710); doors at 236.5,52.4 / 242.9,52.3",
+   "confidence": "high",
+   "boss": "Mechano-Lord Capacitus"
+  },
+  {
+   "map": 554,
+   "points": [
+    {
+     "x": 137.8,
+     "y": 53.2,
+     "z": 25.0,
+     "hint": "Fight through the bridge waves. Pathaleon is invisible until the last group dies, then he appears."
+    }
+   ],
+   "source": "boss_pathaleon_the_calculator.cpp:62-77,143-160 (invisible, can't attack until DATA_BRIDGE_MOB_DEATH_COUNT>=4); smart_scripts -138864 (Tempest-Forge Destroyer, sets data for the next waves) and -138820/-138869/-138893/-138879 ('Do Action on Pathaleon'); point = Destroyer spawn 138864",
+   "confidence": "medium",
+   "boss": "Pathaleon the Calculator"
+  },
+  {
+   "map": 555,
+   "points": [
+    {
+     "x": -157.2,
+     "y": -64.4,
+     "z": 8.2,
+     "hint": "Kill every Cabal Ritualist in this hall. Hellmaw is banished until the last one dies."
+    }
+   ],
+   "source": "instance_shadow_labyrinth.cpp:64-92 (all NPC_CABAL_RITUALIST 18794 dead -> Hellmaw DoAction(1)); boss_ambassador_hellmaw.cpp:57-90 (immune+banish while ritualists alive); ritualists 146113-146130 (+6 heroic-only 146230-146235); point = spawn 146119",
+   "confidence": "high",
+   "boss": "Ambassador Hellmaw"
+  },
+  {
+   "map": 556,
+   "points": [
+    {
+     "x": -87.2,
+     "y": 287.8,
+     "z": 26.5,
+     "hint": "Heroic only: use The Raven's Claw here to summon Anzu."
+    }
+   ],
+   "source": "GO 185554 'The Raven's Claw' spawn 7282 (heroic spawnMask 2, goober lock 1732); instance_sethekk_halls.cpp:62-67 (event 14797 summons Voice of the Raven God at -88.02,288.18 -> Anzu). The GO->event link isn't in the SQL (lock/spell DBC)",
+   "confidence": "medium",
+   "boss": "Anzu"
+  },
+  {
+   "map": 557,
+   "points": [
+    {
+     "x": -235.6,
+     "y": -13.4,
+     "z": 17.1,
+     "hint": "Heroic only: open Shaffar's Stasis Chamber (needs a key, likely The Eye of Haramad) to release Yor."
+    }
+   ],
+   "source": "smart_scripts 185522 (Shaffar's Stasis Chamber, on state change -> summon Yor 22930, set faction 16); GO 185522 spawn 2134514 (spawnMask 2), lock 1731 (key item can't be confirmed without Lock.dbc)",
+   "confidence": "medium",
+   "boss": "Yor"
+  },
+  {
+   "map": 575,
+   "points": [
+    {
+     "x": 238.518,
+     "y": -460.827,
+     "z": 105.476,
+     "hint": "Click the Stasis Generator to start the Gortok Palehoof event: his frozen beasts wake one by one, then Gortok."
+    }
+   ],
+   "source": "UtgardePinnacle/boss_palehoof.cpp:791-810 go_palehoof_sphere OnGossipHello -> Palehoof DoAction(ACTION_START_EVENT); GO 188593 'Stasis Generator' spawn guid 65513 (gameobject.pkl)",
+   "confidence": "high",
+   "boss": "Gortok Palehoof"
+  },
+  {
+   "map": 575,
+   "points": [
+    {
+     "x": 488.826,
+     "y": -517.705,
+     "z": 105.877,
+     "hint": "Loot Harpoons from Ymirjar Harpooners, then click a Harpoon Launcher as Grauf flies past. 3 hits bring Skadi down to fight."
+    }
+   ],
+   "source": "UtgardePinnacle/boss_skadi.cpp: Skadi rides Grauf (EVENT_GRAUF_START), ACTION_PHASE2 on drake death; spell_skadi_launch_harpoon (48642) deals 35% of Grauf's max HP per hit; item 37372 'Harpoon' (item_template); Harpoon Launchers GO 192175/192176/192177 at (491.5,-508.2), (488.8,-517.7), (480.4,-524.0), middle one used",
+   "confidence": "high",
+   "boss": "Skadi the Ruthless"
+  },
+  {
+   "map": 576,
+   "points": [
+    {
+     "x": 281.923,
+     "y": -25.4521,
+     "z": -16.9398,
+     "hint": "Click Telestra's Containment Sphere (usable once Telestra is dead)."
+    },
+    {
+     "x": 322.153,
+     "y": 14.6832,
+     "z": -16.8019,
+     "hint": "Click Anomalus' Containment Sphere (usable once Anomalus is dead)."
+    },
+    {
+     "x": 281.783,
+     "y": 15.2074,
+     "z": -16.621,
+     "hint": "Click Ormorok's Containment Sphere. With all three spheres opened, Keristrasza is freed."
+    }
+   ],
+   "source": "Nexus/instance_nexus.cpp:28-30,108-157 (spheres are passage doors, selectable after DATA_*_EVENT DONE; SmartGameObjectAI sets data); boss_keristrasza.cpp:95-115 CanRemovePrison needs all three ORB states DONE; GO 188526/188527/188528 spawns",
+   "confidence": "high",
+   "boss": "Keristrasza",
+   "any_order": true
+  },
+  {
+   "map": 578,
+   "points": [
+    {
+     "x": 941.355,
+     "y": 1044.26,
+     "z": 359.967,
+     "hint": "Talk to Belgaristrasz, Verdisa or Eternos for a drake: e.g. 'I want to fly on the wings of the red flight.', then use the Essence to summon it."
+    },
+    {
+     "x": 1023.65,
+     "y": 1190.88,
+     "z": 439.515,
+     "hint": "Kill all 10 Centrifuge Constructs around the rings (counter on screen) to drop Varos's shield."
+    },
+    {
+     "x": 1124.4,
+     "y": 1109.75,
+     "z": 432.963,
+     "hint": null
+    },
+    {
+     "x": 1041.18,
+     "y": 877.575,
+     "z": 439.515,
+     "hint": null
+    }
+   ],
+   "source": "Oculus/oculus.cpp:166-300 npc_oculus_drakegiver (gossip only after Drakos DONE; Belgaristrasz first shows menu 9708 'So where do we go from here?' then 9575 opt0 'I want to fly on the wings of the red flight.'; Verdisa 9573 opt1 '...green flight.'; Eternos 9574 opt1 '...bronze flight.'); givers move to VerdisaPOS/BelgaristraszPOS/EternosPOS (oculus.h:28-30) after Drakos; instance_oculus.cpp:129-133,182-194 Varos attackable after 10 Centrifuge Construct (27641) deaths; construct spawns from creature.pkl (3 clusters)",
+   "confidence": "high",
+   "boss": "Varos Cloudstrider"
+  },
+  {
+   "map": 595,
+   "points": [
+    {
+     "x": 1550.08,
+     "y": 574.412,
+     "z": 92.7899,
+     "hint": "Talk to Chromie: 'Why have I been sent back...' > 'What was this decision?' > 'So how does the Infinite Dragonflight plan to interfere?'"
+    },
+    {
+     "x": 1579.42,
+     "y": 621.446,
+     "z": 99.7329,
+     "hint": "Use the Arcane Disruptor next to the Suspicious Grain Crate (5 crates in total)."
+    },
+    {
+     "x": 1570.92,
+     "y": 669.933,
+     "z": 102.309,
+     "hint": "Use the Arcane Disruptor next to the Suspicious Grain Crate."
+    },
+    {
+     "x": 1629.68,
+     "y": 731.367,
+     "z": 112.847,
+     "hint": "Use the Arcane Disruptor next to the Suspicious Grain Crate."
+    },
+    {
+     "x": 1628.98,
+     "y": 812.142,
+     "z": 120.689,
+     "hint": "Use the Arcane Disruptor next to the Suspicious Grain Crate."
+    },
+    {
+     "x": 1674.39,
+     "y": 872.307,
+     "z": 120.394,
+     "hint": "Use the Arcane Disruptor next to the last Suspicious Grain Crate. Chromie then appears at the city gate."
+    },
+    {
+     "x": 1813.298,
+     "y": 1283.578,
+     "z": 142.326,
+     "hint": "Talk to Chromie: 'What do you think they're up to?' > 'You want me to do what?' > 'Very well, Chromie.' to start Arthas's intro."
+    },
+    {
+     "x": 2050.66,
+     "y": 1287.33,
+     "z": 142.671,
+     "hint": "Talk to Arthas: 'Yes, my Prince. We are ready.' to enter the city; the waves (Meathook, then Salramm) follow."
+    }
+   ],
+   "source": "CullingOfStratholme/culling_of_stratholme.cpp:1493-1560 npc_cos_chromie_start (menu 9586, interfere menu 9595 casts SPELL_SUMMON_ARCANE_DISRUPTOR; gossip_menu_option 9586/9594/9595); crates GO 190094 x5 (gameobject.pkl), npc_crate_helper + instance DATA_CRATE_COUNT==5 -> COS_PROGRESS_CRATES_FOUND (instance:141-155) -> Chromie 27915 summoned at EventPos[0] (culling_of_stratholme.h:155); npc_cos_chromie_middle:1583-1594 menu 9612 'Very well, Chromie.' -> START_INTRO; Arthas WP8 = LeaderIntroPos2 (script_waypoint 26499 #8) sets FINISHED_INTRO + gossip 9653",
+   "confidence": "high",
+   "boss": "Meathook"
+  },
+  {
+   "map": 595,
+   "points": [
+    {
+     "x": 2365.63,
+     "y": 1194.84,
+     "z": 131.974,
+     "hint": "Talk to Arthas at the town hall: 'We're only doing what is best for Lordaeron, your Highness.' > 'Lead the way, Prince Arthas.'"
+    }
+   ],
+   "source": "culling_of_stratholme.cpp:362-364,316-325 (menus 9680 -> 9681); Arthas pauses at script_waypoint 26499 #20 (= LeaderIntroPos3) setting COS_PROGRESS_REACHED_TOWN_HALL (line 589-595)",
+   "confidence": "high",
+   "boss": "Chrono-Lord Epoch"
+  },
+  {
+   "map": 595,
+   "points": [
+    {
+     "x": 2423.12,
+     "y": 1119.43,
+     "z": 148.076,
+     "hint": "After Epoch, talk to Arthas: 'I'm ready.'"
+    },
+    {
+     "x": 2540.48,
+     "y": 1129.06,
+     "z": 130.868,
+     "hint": "Talk to Arthas behind the secret passage: 'For Lordaeron!'"
+    },
+    {
+     "x": 2327.39,
+     "y": 1412.47,
+     "z": 127.692,
+     "hint": "Talk to Arthas: 'I'm ready to battle the dreadlord, sire.' to start Mal'ganis."
+    }
+   ],
+   "source": "culling_of_stratholme.cpp:366-376 (menus 9695, 9696, 9676), states KILLED_EPOCH/LAST_CITY/BEFORE_MALGANIS; positions = ReorderInstance waypoints 31/45/54 = LeaderIntroPos4/5/6 (culling_of_stratholme.h:149-151, script_waypoint 26499)",
+   "confidence": "medium",
+   "boss": "Mal'ganis"
+  },
+  {
+   "map": 599,
+   "points": [
+    {
+     "x": 1077.41,
+     "y": 474.16,
+     "z": 207.803,
+     "hint": "Talk to Brann Bronzebeard: 'Brann, it would be our honor!' and escort him to the Tribunal."
+    },
+    {
+     "x": 939.6467,
+     "y": 375.48926,
+     "z": 207.41608,
+     "hint": "Talk to Brann again: 'Let's move Brann, enough of the history lesson!' then protect him at the console for the whole event."
+    }
+   ],
+   "source": "HallsOfStone/brann_bronzebeard.cpp:107-115,183-230 (TRIBUNAL_BEFORE 9669 -> escort PATH_ESCORT, TRIBUNAL_START 9670 -> console event); escort end = brannEscortDonePoint (line 116); Brann spawn creature guid 126801; gossip texts from updates/db_world/2026_08_01_00.sql (base DB lacks menu 9670 option)",
+   "confidence": "high",
+   "boss": "Tribunal of Ages"
+  },
+  {
+   "map": 599,
+   "points": [
+    {
+     "x": 917.253,
+     "y": 351.925,
+     "z": 203.69878,
+     "hint": "After the Tribunal, talk to Brann: 'There will be plenty of time for this later Brann, we need to get moving!'"
+    },
+    {
+     "x": 1199.685,
+     "y": 667.15497,
+     "z": 196.32364,
+     "hint": "At Sjonnir's door, talk to Brann: 'We're with you Brann! Open it!'"
+    }
+   ],
+   "source": "brann_bronzebeard.cpp:197-201,231-247,313-336 (TRIBUNAL_END 10206 at POINT_TRIBUNAL_LORE 917.253,351.925; Brann respawns at brannTribunalEventDonePoint with SJONNIR_DOOR 10012; reaching POINT_SJONNIR_DOOR sets BRANN_DOOR DONE which opens GO 191296 at 1206.56,666.98)",
+   "confidence": "high",
+   "boss": "Sjonnir the Ironshaper"
+  },
+  {
+   "map": 604,
+   "points": [
+    {
+     "x": 1772.22,
+     "y": 804.963,
+     "z": 129.236,
+     "hint": "Click the Altar of Moorabi (one of three altars needed for the bridge to Gal'darah)."
+    }
+   ],
+   "source": "Gundrak/instance_gundrak.cpp:79-81,137-161,164-191 (altar selectable when its boss is DONE; using it sets the statue; all 3 statues -> bridge); GO 192519 spawn",
+   "confidence": "high",
+   "after": "Moorabi"
+  },
+  {
+   "map": 604,
+   "points": [
+    {
+     "x": 1775.29,
+     "y": 679.68,
+     "z": 129.236,
+     "hint": "Click the Altar of Slad'ran (needed for the bridge to Gal'darah)."
+    }
+   ],
+   "source": "instance_gundrak.cpp:71-73,140-143; GO 192518 spawn",
+   "confidence": "high",
+   "after": "Slad'ran"
+  },
+  {
+   "map": 604,
+   "points": [
+    {
+     "x": 1693.51,
+     "y": 743.595,
+     "z": 142.788,
+     "hint": "Click the Altar of the Drakkari Colossus. When all three altars are used the bridge to Gal'darah rises."
+    }
+   ],
+   "source": "instance_gundrak.cpp:75-77,145-161,214-225 (_activateTimer -> bridge GOs set ACTIVE_ALTERNATIVE after all 3 statues READY); GO 192520 spawn",
+   "confidence": "high",
+   "after": "Drakkari Colossus"
+  },
+  {
+   "map": 604,
+   "points": [
+    {
+     "x": 1708.48,
+     "y": 926.962,
+     "z": 116.094,
+     "hint": "Heroic only: kill a whole group of Ruins Dwellers here (or the group at 1647,939) to summon Eck the Ferocious."
+    }
+   ],
+   "source": "instance_gundrak.cpp:193-212 OnUnitDeath: heroic, when a Ruins Dweller (29920) formation is all dead, summons Eck at (1624.70,891.43,95.08); Ruins Dweller spawns 127201-127206 (two groups of 3); Eck door GO 192632 opens with Moorabi (doorData line 26)",
+   "confidence": "high",
+   "boss": "Eck the Ferocious"
+  },
+  {
+   "map": 608,
+   "points": [
+    {
+     "x": 1830.95,
+     "y": 799.463,
+     "z": 44.418,
+     "hint": "Talk to Sinclari: 'Activate the crystals when we get in trouble, right.' > 'Get your people to safety, we'll keep the Blue Dragonflight's forces at bay.'"
+    }
+   ],
+   "source": "smart_scripts 30658 (On Gossip Select menu 9998 -> DoAction ACTION_START_INSTANCE), gossip_menu_option 9997 opt0 -> 9998 opt0, confirmed in updates/db_world/2026_04_14_00.sql; Sinclari spawn guid 102911",
+   "confidence": "high",
+   "boss": "First Prisoner"
+  },
+  {
+   "map": 619,
+   "points": [
+    {
+     "x": 655.729,
+     "y": -719.049,
+     "z": 18.0264,
+     "hint": "Click the Ancient Nerubian Device (one of two) to break Prince Taldaram's barrier."
+    },
+    {
+     "x": 692.465,
+     "y": -783.911,
+     "z": 18.0264,
+     "hint": "Click the second Ancient Nerubian Device; Taldaram's platform then lowers."
+    }
+   ],
+   "source": "AzjolNerub/ahnkahet/instance_ahnkahet.cpp:68-127 (platform GO 193564 opens when IsAllSpheresActivated); smart_scripts GO 193093/193094 On Gossip Hello -> Set Instance Data; GO spawns 67331/67332",
+   "confidence": "high",
+   "boss": "Prince Taldaram"
+  },
+  {
+   "map": 650,
+   "points": [
+    {
+     "x": 710.325,
+     "y": 660.708,
+     "z": 412.387,
+     "hint": "Take an Argent Lance from a Lance Rack and equip it, then mount an Argent Warhorse / Argent Battleworg."
+    },
+    {
+     "x": 748.309,
+     "y": 619.488,
+     "z": 411.172,
+     "hint": "While mounted, talk to the herald (Jaeren Sunsworn / Arelas Brightstar): 'I am ready.' (or 'I am ready.  However, I'd like to skip the pageantry.')"
+    }
+   ],
+   "source": "CrusadersColiseum/TrialOfTheChampion/trial_of_the_champion.cpp:47-104 (INSTANCE_PROGRESS_INITIAL: options only shown if player->GetVehicle(); menu 10614 opt0/opt3); vehicles 35644/36558 spellclick 67830 (npc_spellclick_spells); Lance Rack GO 196398 spawns; herald 35004 spawn guid 200038",
+   "confidence": "high",
+   "boss": "Grand Champions"
+  },
+  {
+   "map": 650,
+   "points": [
+    {
+     "x": 748.309,
+     "y": 619.488,
+     "z": 411.172,
+     "hint": "Talk to the herald: 'I am ready for the next challenge.'"
+    }
+   ],
+   "source": "trial_of_the_champion.cpp:74-77 (INSTANCE_PROGRESS_CHAMPIONS_DEAD, menu 10614 opt1); herald position = spawn",
+   "confidence": "high",
+   "boss": "Argent Champion"
+  },
+  {
+   "map": 650,
+   "points": [
+    {
+     "x": 748.309,
+     "y": 619.488,
+     "z": 411.172,
+     "hint": "Talk to the herald: 'I am ready.' to start the final challenge."
+    }
+   ],
+   "source": "trial_of_the_champion.cpp:78-81 (INSTANCE_PROGRESS_ARGENT_CHALLENGE_DIED, menu 10614 opt2); herald position = spawn",
+   "confidence": "high",
+   "boss": "The Black Knight"
+  },
+  {
+   "map": 668,
+   "points": [
+    {
+     "x": 5236.67,
+     "y": 1929.91,
+     "z": 707.778,
+     "hint": "Talk to Lady Jaina Proudmoore / Lady Sylvanas Windrunner: 'Can you remove the sword?' (or the 'I think I hear Arthas coming' option to skip)."
+    }
+   ],
+   "source": "FrozenHalls/HallsOfReflection/halls_of_reflection.cpp:140-200 npc_hor_leader (menu 11031/10950 opt0 start, opt1 skip); Sylvanas 37223 spawn guid 1971981 (instance swaps to Jaina 37221 for Alliance)",
+   "confidence": "high",
+   "boss": "Falric"
+  },
+  {
+   "map": 668,
+   "points": [
+    {
+     "x": 5413.92,
+     "y": 2116.5,
+     "z": 707.695,
+     "hint": "Kill the Frostsworn General in the corridor; this reveals the Lich King and your leader."
+    },
+    {
+     "x": 5576.80566,
+     "y": 2235.55004,
+     "z": 733.012268,
+     "hint": "After the Lich King scene, talk to Jaina/Sylvanas: 'We're ready! Let's go!' then follow her and kill each wave at the ice walls."
+    }
+   ],
+   "source": "instance_halls_of_reflection.cpp:411-419 (FROSTSWORN_GENERAL DONE -> Lich King 36954 and leader set visible); at_hor_shadow_throne areatrigger starts LK intro; halls_of_reflection.cpp:1746-1760 npc_hor_leader_second gossip -> ACTION_START_LK_FIGHT_REAL; gossip_menu_option 10909; leader stops at LeaderEscapePos (halls_of_reflection.h:345) with EVENT_ADD_GOSSIP; Frostsworn General spawn guid 1972019",
+   "confidence": "high",
+   "boss": "Escaped from Arthas"
+  },
+  {
+   "map": 603,
+   "points": [
+    {
+     "x": -716.568,
+     "y": -54.8669,
+     "z": 429.924,
+     "hint": "Talk to Brann Bronzebeard: \"We're ready. Begin the assault!\" The Kirin Tor drop the shield and unlock the vehicles."
+    },
+    {
+     "x": -718.451,
+     "y": -112.609,
+     "z": 430.231,
+     "hint": "Board a vehicle: Salvaged Chopper, Siege Engine or Demolisher (parked around the camp)."
+    },
+    {
+     "x": 367.9,
+     "y": -17.0,
+     "z": 409.887,
+     "hint": "Kill the two Ulduar Colossi at the gate; Flame Leviathan then rolls out."
+    }
+   ],
+   "source": "smart_scripts 33579 gossip 10355 -> actionlist 3357900 (updates/2026_08_27_09.sql: Set Instance Data 107 = DATA_LEVIATHAN_VEHICLES_USABLE) + 3357901 (Instance Data 800=3 MAGE_BARRIER_LOWERED, despawns Ulduar Protective Bubble 194484); instance_ulduar.cpp SummonLeviathanVehicle removes SPELLCLICK until unlocked, vehiclePositions[]; boss_flame_leviathan.cpp UpdateAI _startTimer waits until no NPC_ULDUAR_COLOSSUS within 250yd. Brann spawn guid 136253, chopper pos vehiclePositions[5], Colossi guids 137479/137480 (midpoint)",
+   "confidence": "high",
+   "boss": "Flame Leviathan"
+  },
+  {
+   "map": 603,
+   "points": [
+    {
+     "x": 585.667,
+     "y": -104.448,
+     "z": 391.6,
+     "hint": "Talk to the Expedition Commander: \"We are ready to help!\" to start the Razorscale fight."
+    }
+   ],
+   "source": "boss_razorscale.cpp npc_ulduar_expedition_commander sGossipSelect -> razorscale SetImmuneToPC(false), ACTION_START_FIGHT; gossip_menu_option 10314; creature guid 137612",
+   "confidence": "high",
+   "boss": "Razorscale"
+  },
+  {
+   "map": 603,
+   "points": [
+    {
+     "x": 2306.87,
+     "y": 274.237,
+     "z": 424.288,
+     "hint": "Board the Tram and click Activate Tram to ride to Mimiron. If the tram is gone, click Call Tram on the platform first."
+    }
+   ],
+   "source": "smart_scripts GO 194437 'Activate Tram' (Set Instance Data 710=1) / 194914 'Call Tram' center (710=0) / 194912 Mimiron side; instance_ulduar.cpp DATA_CALL_TRAM; GO guids 268559 (Activate Tram, on Tram 34057 @2307,284.6), Call Tram 42867 @2277.42,298.69,419.25",
+   "confidence": "high",
+   "boss": "Mimiron"
+  },
+  {
+   "map": 603,
+   "points": [
+    {
+     "x": 2173.27,
+     "y": -252.867,
+     "z": 420.146,
+     "hint": "Kill the arena pack to start. Pull the Lever to open the gate; part of the raid runs the tunnel and kills the Ancient Rune Giant so Thorim can be hit."
+    }
+   ],
+   "source": "boss_thorim.cpp DoAction ACTION_START_TRASH_DIED (6 start-pack deaths unlock lever, start fight); go_thorim_lever opens GO_ARENA_LEVER_GATE 194560 'Dark Iron Portcullis'; Ancient Rune Giant JustDied -> ACTION_ALLOW_HIT; lever GO guid 55194",
+   "confidence": "medium",
+   "boss": "Thorim"
+  },
+  {
+   "map": 603,
+   "points": [
+    {
+     "x": 1646.18,
+     "y": -174.688,
+     "z": 427.254,
+     "hint": "Use the Celestial Planetarium Access console (needs a Celestial Planetarium Key) to summon Algalon."
+    }
+   ],
+   "source": "boss_algalon_the_observer.cpp go_celestial_planetarium_access GossipHello checks lock (579 10-man / 1831 25-man) item, summons Brann, ACTION_START_INTRO; GO guids 281/285; key item 45796 / 45798 (Heroic)",
+   "confidence": "high",
+   "boss": "Algalon the Observer"
+  },
+  {
+   "map": 631,
+   "points": [
+    {
+     "x": -556.007,
+     "y": 2211.42,
+     "z": 539.371,
+     "hint": "Talk to High Overlord Saurfang (Horde) or Muradin Bronzebeard (Alliance) and pick the \"We are ready...\" option to start."
+    }
+   ],
+   "source": "boss_deathbringer_saurfang.cpp OnGossipHello/Select menus 10953 Horde 'We are ready to go, High Overlord. The Lich King must fall!' / 10933 Alliance 'We're ready, Muradin' -> ACTION_START_EVENT; intro removes Deathbringer's immunity (SetImmuneToPC(false)); MoveInLineOfSight is empty; creature guid 200982",
+   "confidence": "high",
+   "boss": "Deathbringer Saurfang"
+  },
+  {
+   "map": 631,
+   "points": [
+    {
+     "x": 4529.09,
+     "y": 2769.0,
+     "z": 351.184,
+     "hint": "Kill the Darkfallen group (Advisor, Archmage, Blood Knight, Noble) to open the Crimson Hall door."
+    }
+   ],
+   "source": "icecrown_citadel.cpp at_icc_saurfang_portal (areatrigger 5698) teleports to 4126.35,2769.23,350.96 when Saurfang DONE; DoorData GO_CRIMSON_HALL_DOOR PASSAGE on DATA_BLOOD_PRINCE_TRASH, set by DATA_BPC_TRASH_DIED from spawn guids 201479/201482/201646/201659 (positions averaged)",
+   "confidence": "high",
+   "boss": "Blood Council"
+  },
+  {
+   "map": 631,
+   "points": [
+    {
+     "x": 4356.9,
+     "y": 2673.27,
+     "z": 349.47,
+     "hint": "Crok Scourgebane and his captains start pushing down the hall; follow them."
+    },
+    {
+     "x": 4356.71,
+     "y": 2484.33,
+     "z": 371.531,
+     "hint": "Kill Sister Svalna to open the door to Valithria."
+    },
+    {
+     "x": 4203.65,
+     "y": 2483.89,
+     "z": 364.961,
+     "hint": "Don't attack Valithria Dreamwalker: heal her to full health while killing the adds."
+    }
+   ],
+   "source": "icecrown_citadel.cpp at_icc_start_frostwing_gauntlet (areatrigger 5616) starts Crok event; DoorData GO_GREEN_DRAGON_BOSS_ENTRANCE PASSAGE on DATA_SISTER_SVALNA; Crok guid 151767, Svalna guid 137753, Valithria guid 137746",
+   "confidence": "high",
+   "boss": "Valithria Dreamwalker"
+  },
+  {
+   "map": 631,
+   "points": [
+    {
+     "x": 4181.28,
+     "y": 2483.65,
+     "z": 211.032,
+     "hint": "Entering starts the gauntlet: kill all the spider waves to open Sindragosa's door."
+    },
+    {
+     "x": 4396.57,
+     "y": 2482.97,
+     "z": 203.376,
+     "hint": "Kill the Frostwarden trash on both sides; Rimefang and Spinestalker land. Kill both and Sindragosa arrives."
+    }
+   ],
+   "source": "icecrown_citadel.cpp at_icc_gauntlet_event (areatrigger 5623) -> NPC_SINDRAGOSA_GAUNTLET DoAction, JustDied sets DATA_SINDRAGOSA_GAUNTLET DONE; DoorData GO_SINDRAGOSA_ENTRANCE_DOOR PASSAGE on gauntlet; boss_sindragosa.cpp at_sindragosa_lair (areatrigger 5604) lands Rimefang/Spinestalker when their trash count is 0 and Sindragosa when DATA_SINDRAGOSA_FROSTWYRMS==0; instance CheckFrostwingHalls requires Valithria + gauntlet",
+   "confidence": "high",
+   "boss": "Sindragosa"
+  },
+  {
+   "map": 649,
+   "points": [
+    {
+     "x": 559.172,
+     "y": 90.5816,
+     "z": 395.273,
+     "hint": "Talk to Barrett Ramsey and choose \"We are ready!\" to start the next fight."
+    }
+   ],
+   "source": "trial_of_the_crusader.cpp npc_announcer_toc10 gossip 'We are ready!' -> TYPE_ANNOUNCER_GOSSIP_SELECT -> next EVENT_SCENE_xxx per InstanceProgress; Barrett guid 202957",
+   "confidence": "high",
+   "boss": "Northrend Beasts"
+  },
+  {
+   "map": 649,
+   "points": [
+    {
+     "x": 559.172,
+     "y": 90.5816,
+     "z": 395.273,
+     "hint": "Talk to Barrett Ramsey and choose \"We are ready!\" to start the next fight."
+    }
+   ],
+   "source": "trial_of_the_crusader.cpp npc_announcer_toc10 gossip 'We are ready!' -> TYPE_ANNOUNCER_GOSSIP_SELECT -> next EVENT_SCENE_xxx per InstanceProgress; Barrett guid 202957",
+   "confidence": "high",
+   "boss": "Lord Jaraxxus"
+  },
+  {
+   "map": 649,
+   "points": [
+    {
+     "x": 559.172,
+     "y": 90.5816,
+     "z": 395.273,
+     "hint": "Talk to Barrett Ramsey and choose \"We are ready!\" to start the next fight."
+    }
+   ],
+   "source": "trial_of_the_crusader.cpp npc_announcer_toc10 gossip 'We are ready!' -> TYPE_ANNOUNCER_GOSSIP_SELECT -> next EVENT_SCENE_xxx per InstanceProgress; Barrett guid 202957",
+   "confidence": "high",
+   "boss": "Faction Champions"
+  },
+  {
+   "map": 649,
+   "points": [
+    {
+     "x": 559.172,
+     "y": 90.5816,
+     "z": 395.273,
+     "hint": "Talk to Barrett Ramsey and choose \"We are ready!\" to start the next fight."
+    }
+   ],
+   "source": "trial_of_the_crusader.cpp npc_announcer_toc10 gossip 'We are ready!' -> TYPE_ANNOUNCER_GOSSIP_SELECT -> next EVENT_SCENE_xxx per InstanceProgress; Barrett guid 202957",
+   "confidence": "high",
+   "boss": "Val'kyr Twins"
+  },
+  {
+   "map": 649,
+   "points": [
+    {
+     "x": 559.172,
+     "y": 90.5816,
+     "z": 395.273,
+     "hint": "After the Val'kyr die, wait ~1 min or tell Barrett Ramsey \"We are ready!\"; the floor breaks and drops you to Anub'arak."
+    }
+   ],
+   "source": "instance_trial_of_the_crusader.cpp EVENT_SCENE_VALKYR_DEAD schedules EVENT_SCENE_401 in 60s, or gossip at INSTANCE_PROGRESS_VALKYR_DEAD runs it at once; EVENT_SCENE_409 damages Argent Coliseum Floor and SpawnAnubArak",
+   "confidence": "high",
+   "boss": "Anub'arak"
+  },
+  {
+   "map": 616,
+   "points": [
+    {
+     "x": 754.255,
+     "y": 1301.72,
+     "z": 266.17,
+     "hint": "Click The Focusing Iris to start the Malygos fight."
+    }
+   ],
+   "source": "instance_eye_of_eternity.cpp ProcessEvent EVENT_IRIS_ACTIVATED (20711, cast by GO 193958/193960) -> Malygos AttackStart; boss_malygos.cpp starts NON_ATTACKABLE|PACIFIED with empty MoveInLineOfSight; GO guids 268038/268039",
+   "confidence": "high",
+   "boss": "Malygos"
+  }
+ ],
+ "order": [
+  {
+   "map": 33,
+   "before": "Rethilgore",
+   "after": "Razorclaw the Butcher",
+   "source": "smart_scripts 3914 death sets data on 3849/3850 (prisoners speak); courtyard door via their gossip"
+  },
+  {
+   "map": 33,
+   "before": "Fenrus the Devourer",
+   "after": "Wolf Master Nandos",
+   "source": "smart_scripts 4274 -> 427500 -> voidwalkers 4627 open Sorcerer's Gate 18972"
+  },
+  {
+   "map": 33,
+   "before": "Wolf Master Nandos",
+   "after": "Archmage Arugal",
+   "source": "smart_scripts 3927 id 4: Nandos death sets GO 33241 (Arugal's Lair door 18971) open; instance_shadowfang_keep.cpp GO_ARUGAL_DOOR"
+  },
+  {
+   "map": 36,
+   "before": "Rhahk'zor",
+   "after": "Sneed",
+   "source": "smart_scripts 644 death activates Factory Door 13965"
+  },
+  {
+   "map": 36,
+   "before": "Sneed",
+   "after": "Gilnid",
+   "source": "smart_scripts 643 death opens Mast Room Door 16400"
+  },
+  {
+   "map": 36,
+   "before": "Gilnid",
+   "after": "Mr. Smite",
+   "source": "smart_scripts 1763 death opens Foundry Door 16399"
+  },
+  {
+   "map": 43,
+   "before": "Lady Anacondra",
+   "after": "Mutanus the Devourer",
+   "source": "conditions 15/201 (GetData 0-3 == DONE) on Disciple gossip"
+  },
+  {
+   "map": 43,
+   "before": "Lord Cobrahn",
+   "after": "Mutanus the Devourer",
+   "source": "conditions 15/201 (GetData 0-3 == DONE) on Disciple gossip"
+  },
+  {
+   "map": 43,
+   "before": "Lord Pythas",
+   "after": "Mutanus the Devourer",
+   "source": "conditions 15/201 (GetData 0-3 == DONE) on Disciple gossip"
+  },
+  {
+   "map": 43,
+   "before": "Lord Serpentis",
+   "after": "Mutanus the Devourer",
+   "source": "conditions 15/201 (GetData 0-3 == DONE) on Disciple gossip"
+  },
+  {
+   "map": 109,
+   "before": "Jammal'an the Prophet",
+   "after": "Shade of Eranikus",
+   "source": "instance_sunken_temple.cpp OnUnitDeath(Jammal'an) removes UNIT_FLAG_NOT_SELECTABLE from Shade of Eranikus"
+  },
+  {
+   "map": 229,
+   "before": "Halycon",
+   "after": "Gizrul the Slavener",
+   "source": "boss_halycon.cpp JustDied summons NPC_GIZRUL_THE_SLAVENER at (-167.96,-411.78,76.23)"
+  },
+  {
+   "map": 229,
+   "before": "Pyroguard Emberseer",
+   "after": "Solakar Flamewreath",
+   "source": "boss_pyroguard_emberseer.cpp opens GO_EMBERSEER_OUT 175153 (113.8,-258.9,91.6) on death"
+  },
+  {
+   "map": 229,
+   "before": "Pyroguard Emberseer",
+   "after": "Warchief Rend Blackhand",
+   "source": "same door"
+  },
+  {
+   "map": 229,
+   "before": "Warchief Rend Blackhand",
+   "after": "The Beast",
+   "source": "instance doorData GO_GYTH_EXIT_DOOR 175186 (93.0,-435.6,111.0) DOOR_TYPE_PASSAGE on DATA_WARCHIEF_REND_BLACKHAND"
+  },
+  {
+   "map": 229,
+   "before": "Warchief Rend Blackhand",
+   "after": "General Drakkisath",
+   "source": "same door"
+  },
+  {
+   "map": 230,
+   "before": "The Seven",
+   "after": "Magmus",
+   "source": "instance_blackrock_depths.cpp: tomb exit door 170577 (1262.8,-293.8) opens on TYPE_TOMB_OF_SEVEN DONE (7 kills)"
+  },
+  {
+   "map": 230,
+   "before": "Magmus",
+   "after": "Emperor Dagran Thaurissan",
+   "source": "instance_blackrock_depths.cpp TYPE_IRON_HALL DONE (Magmus death) opens Throne Room Doors 170575 (1380.1,-710.5)"
+  },
+  {
+   "map": 230,
+   "before": "Plugger Spazzring",
+   "after": "Phalanx",
+   "source": "smart_scripts 9499 on death -> faction 14 on Phalanx"
+  },
+  {
+   "map": 289,
+   "before": "Instructor Malicia",
+   "after": "Darkmaster Gandling",
+   "source": "DATA_MINI_BOSSES == 6"
+  },
+  {
+   "map": 289,
+   "before": "Doctor Theolen Krastinov",
+   "after": "Darkmaster Gandling",
+   "source": "DATA_MINI_BOSSES == 6"
+  },
+  {
+   "map": 289,
+   "before": "Lorekeeper Polkelt",
+   "after": "Darkmaster Gandling",
+   "source": "DATA_MINI_BOSSES == 6"
+  },
+  {
+   "map": 289,
+   "before": "The Ravenian",
+   "after": "Darkmaster Gandling",
+   "source": "DATA_MINI_BOSSES == 6"
+  },
+  {
+   "map": 289,
+   "before": "Lord Alexei Barov",
+   "after": "Darkmaster Gandling",
+   "source": "DATA_MINI_BOSSES == 6"
+  },
+  {
+   "map": 289,
+   "before": "Lady Illucia Barov",
+   "after": "Darkmaster Gandling",
+   "source": "DATA_MINI_BOSSES == 6"
+  },
+  {
+   "map": 329,
+   "before": "Baroness Anastari",
+   "after": "Ramstein the Gorger",
+   "source": "instance_stratholme.cpp ziggurat states + Slaughter gates"
+  },
+  {
+   "map": 329,
+   "before": "Nerub'enkan",
+   "after": "Ramstein the Gorger",
+   "source": "instance_stratholme.cpp ziggurat states + Slaughter gates"
+  },
+  {
+   "map": 329,
+   "before": "Maleki the Pallid",
+   "after": "Ramstein the Gorger",
+   "source": "instance_stratholme.cpp ziggurat states + Slaughter gates"
+  },
+  {
+   "map": 329,
+   "before": "Ramstein the Gorger",
+   "after": "Baron Rivendare",
+   "source": "instance_stratholme.cpp _slaughterProgress -> ZIGGURAT_DOORS5"
+  },
+  {
+   "map": 429,
+   "before": "Zevrim Thornhoof",
+   "after": "Alzzin the Wildshaper",
+   "source": "conditions 22 on 14241 GetData(0)==1 set by Zevrim death"
+  },
+  {
+   "map": 429,
+   "before": "Guard Mol'dar",
+   "after": "Captain Kromcrush",
+   "source": "Gordok Inner Door Key drops from Mol'dar"
+  },
+  {
+   "map": 409,
+   "before": "Lucifron",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Magmadar",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Gehennas",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Garr",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Shazzrah",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Baron Geddon",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Sulfuron Harbinger",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Golemagg the Incinerator",
+   "after": "Majordomo Executus",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/instance_molten_core.cpp:285-300,340-358 CheckMajordomoExecutus (all bosses with id < DATA_MAJORDOMO_EXECUTUS DONE)"
+  },
+  {
+   "map": 409,
+   "before": "Majordomo Executus",
+   "after": "Ragnaros",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/boss_majordomo_executus.cpp:485-510"
+  },
+  {
+   "map": 469,
+   "before": "Razorgore the Untamed",
+   "after": "Vaelastrasz the Corrupt",
+   "source": "src/server/scripts/EasternKingdoms/BlackrockMountain/BlackwingLair/instance_blackwing_lair.cpp:35 portcullis passage on Razorgore"
+  },
+  {
+   "map": 469,
+   "before": "Vaelastrasz the Corrupt",
+   "after": "Broodlord Lashlayer",
+   "source": "instance_blackwing_lair.cpp:37 passage door + :299-302 CheckRequiredBosses"
+  },
+  {
+   "map": 469,
+   "before": "Broodlord Lashlayer",
+   "after": "Firemaw",
+   "source": "instance_blackwing_lair.cpp:38 GO_PORTCULLIS_BROODLORD passage"
+  },
+  {
+   "map": 469,
+   "before": "Chromaggus",
+   "after": "Nefarian",
+   "source": "instance_blackwing_lair.cpp:39 GO_PORTCULLIS_CHROMAGGUS_EXIT passage"
+  },
+  {
+   "map": 532,
+   "before": "Moroes",
+   "after": "Opera Event",
+   "source": "src/server/scripts/EasternKingdoms/Karazhan/karazhan.cpp:336"
+  },
+  {
+   "map": 532,
+   "before": "Opera Event",
+   "after": "The Curator",
+   "source": "instance_karazhan.cpp:314-319,372-376 (stage doors + Side Entrance Door unlocked on Opera DONE)"
+  },
+  {
+   "map": 532,
+   "before": "Chess Event",
+   "after": "Prince Malchezaar",
+   "source": "instance_karazhan.cpp:261-262 Gamesman's Hall Exit Door opens on chess DONE"
+  },
+  {
+   "map": 534,
+   "before": "Rage Winterchill",
+   "after": "Anetheron",
+   "source": "src/server/scripts/Kalimdor/CavernsOfTime/BattleForMountHyjal/instance_hyjal.cpp:364-406 + conditions 15/7552"
+  },
+  {
+   "map": 534,
+   "before": "Anetheron",
+   "after": "Kaz'rogal",
+   "source": "instance_hyjal.cpp:36 Horde Encampment Portal passage on Anetheron; conditions 15/7581"
+  },
+  {
+   "map": 534,
+   "before": "Kaz'rogal",
+   "after": "Azgalor",
+   "source": "instance_hyjal.cpp:385-398"
+  },
+  {
+   "map": 534,
+   "before": "Azgalor",
+   "after": "Archimonde",
+   "source": "instance_hyjal.cpp:37 Night Elf Village Portal passage on Azgalor; boss_archimonde.cpp:200-212 REACT_PASSIVE until Azgalor DONE"
+  },
+  {
+   "map": 531,
+   "before": "The Prophet Skeram",
+   "after": "Silithid Royalty",
+   "source": "src/server/scripts/Kalimdor/TempleOfAhnQiraj/instance_temple_of_ahnqiraj.cpp:44 AQ40_DOOR_SKERAM passage"
+  },
+  {
+   "map": 531,
+   "before": "Princess Huhuran",
+   "after": "Twin Emperors",
+   "source": "instance_temple_of_ahnqiraj.cpp:45 door passage + :200-203 CheckRequiredBosses"
+  },
+  {
+   "map": 531,
+   "before": "Twin Emperors",
+   "after": "C'thun",
+   "source": "instance_temple_of_ahnqiraj.cpp:47 + :204-206 CheckRequiredBosses"
+  },
+  {
+   "map": 565,
+   "before": "High King Maulgar",
+   "after": "Gruul the Dragonkiller",
+   "source": "src/server/scripts/Outland/GruulsLair/instance_gruuls_lair.cpp:24 GO_MAULGAR_DOOR passage"
+  },
+  {
+   "map": 564,
+   "before": "High Warlord Naj'entus",
+   "after": "Supremus",
+   "source": "src/server/scripts/Outland/BlackTemple/instance_black_temple.cpp:29 GO_NAJENTUS_GATE passage"
+  },
+  {
+   "map": 564,
+   "before": "Supremus",
+   "after": "Shade of Akama",
+   "source": "instance_black_temple.cpp:31 GO_SUPREMUS_GATE (Main Temple Doors 703.9,544.5) passage"
+  },
+  {
+   "map": 564,
+   "before": "Gurtogg Bloodboil",
+   "after": "Reliquary of Souls",
+   "source": "instance_black_temple.cpp:35 GO_GURTOGG_DOOR (752.1,159.7,112.8) passage"
+  },
+  {
+   "map": 564,
+   "before": "Teron Gorefiend",
+   "after": "Mother Shahraz",
+   "source": "instance_black_temple.cpp:36-38 GO_TEMPLE_DOOR (855.7,393.0,112.8) passage on all three"
+  },
+  {
+   "map": 564,
+   "before": "Gurtogg Bloodboil",
+   "after": "Mother Shahraz",
+   "source": "instance_black_temple.cpp:36-38 GO_TEMPLE_DOOR (855.7,393.0,112.8) passage on all three"
+  },
+  {
+   "map": 564,
+   "before": "Reliquary of Souls",
+   "after": "Mother Shahraz",
+   "source": "instance_black_temple.cpp:36-38 GO_TEMPLE_DOOR (855.7,393.0,112.8) passage on all three"
+  },
+  {
+   "map": 564,
+   "before": "Mother Shahraz",
+   "after": "The Illidari Council",
+   "source": "instance_black_temple.cpp:39 GO_MOTHER_SHAHRAZ_DOOR passage"
+  },
+  {
+   "map": 564,
+   "before": "The Illidari Council",
+   "after": "Illidan Stormrage",
+   "source": "instance_black_temple.cpp:181-184 (Council DONE -> Akama DoAction), :42 Illidan gate on DATA_AKAMA_ILLIDAN"
+  },
+  {
+   "map": 568,
+   "before": "Nalorakk",
+   "after": "Hex Lord Malacrass",
+   "source": "src/server/scripts/EasternKingdoms/ZulAman/instance_zulaman.cpp:197-201 CheckInstanceStatus"
+  },
+  {
+   "map": 568,
+   "before": "Akil'zon",
+   "after": "Hex Lord Malacrass",
+   "source": "src/server/scripts/EasternKingdoms/ZulAman/instance_zulaman.cpp:197-201 CheckInstanceStatus"
+  },
+  {
+   "map": 568,
+   "before": "Jan'alai",
+   "after": "Hex Lord Malacrass",
+   "source": "src/server/scripts/EasternKingdoms/ZulAman/instance_zulaman.cpp:197-201 CheckInstanceStatus"
+  },
+  {
+   "map": 568,
+   "before": "Halazzi",
+   "after": "Hex Lord Malacrass",
+   "source": "src/server/scripts/EasternKingdoms/ZulAman/instance_zulaman.cpp:197-201 CheckInstanceStatus"
+  },
+  {
+   "map": 568,
+   "before": "Hex Lord Malacrass",
+   "after": "Zul'jin",
+   "source": "instance_zulaman.cpp:321-324 (Zul'jin gate unlocked on Hex Lord DONE)"
+  },
+  {
+   "map": 580,
+   "before": "Brutallus",
+   "after": "Felmyst",
+   "source": "src/server/scripts/EasternKingdoms/SunwellPlateau/boss_brutallus.cpp:116-117 (Madrigosa ACTION_SPAWN_FELMYST); instance_sunwell_plateau.cpp:100-102"
+  },
+  {
+   "map": 580,
+   "before": "Felmyst",
+   "after": "Eredar Twins",
+   "source": "boss_felmyst.cpp:525-540 spell_felmyst_open_brutallus_back_doors -> DATA_FELMYST_DOORS; instance_sunwell_plateau.cpp:29 GO_FIRE_BARRIER passage"
+  },
+  {
+   "map": 580,
+   "before": "M'uru",
+   "after": "Kil'jaeden",
+   "source": "instance_sunwell_plateau.cpp:31 GO_MURUS_GATE_2 passage"
+  },
+  {
+   "map": 542,
+   "before": "The Maker",
+   "after": "Broggok",
+   "source": "instance_blood_furnace.cpp doorData: GO_MAKER_DOOR_REAR 181812 PASSAGE on The Maker (327.2,149.8)"
+  },
+  {
+   "map": 542,
+   "before": "Broggok",
+   "after": "Keli'dan the Breaker",
+   "source": "instance_blood_furnace.cpp doorData: GO_BROGGOK_DOOR_REAR 181819 PASSAGE on Broggok (456.3,34.2)"
+  },
+  {
+   "map": 540,
+   "before": "Grand Warlock Nethekurse",
+   "after": "Warbringer O'mrogg",
+   "source": "instance_shattered_halls.cpp doorData: Grand Warlock Chamber Doors 182539/182540 PASSAGE on Nethekurse (141.5,266.4 / 214.5,266.2)"
+  },
+  {
+   "map": 540,
+   "before": "Grand Warlock Nethekurse",
+   "after": "Warchief Kargath Bladefist",
+   "source": "same as above"
+  },
+  {
+   "map": 545,
+   "before": "Hydromancer Thespia",
+   "after": "Warlord Kalithresh",
+   "source": "instance_steam_vault.cpp:69"
+  },
+  {
+   "map": 545,
+   "before": "Mekgineer Steamrigger",
+   "after": "Warlord Kalithresh",
+   "source": "instance_steam_vault.cpp:69"
+  },
+  {
+   "map": 552,
+   "before": "Wrath-Scryer Soccothrates",
+   "after": "Harbinger Skyriss",
+   "source": "instance_arcatraz.cpp doorData: Containment Core Security Field Alpha 184318 PASSAGE on Soccothrates (199.8,117.5)"
+  },
+  {
+   "map": 552,
+   "before": "Dalliah the Doomsayer",
+   "after": "Harbinger Skyriss",
+   "source": "instance_arcatraz.cpp doorData: Security Field Beta 184319 PASSAGE on Dalliah (199.9,102.0)"
+  },
+  {
+   "map": 555,
+   "before": "Blackheart the Inciter",
+   "after": "Grandmaster Vorpil",
+   "source": "instance_shadow_labyrinth.cpp doorData: Refectory Door 183296 PASSAGE on Blackheart (-381.3,-39.0)"
+  },
+  {
+   "map": 555,
+   "before": "Grandmaster Vorpil",
+   "after": "Murmur",
+   "source": "instance_shadow_labyrinth.cpp doorData: Screaming Hall Door 183295 PASSAGE on Vorpil (-156.5,-313.8)"
+  },
+  {
+   "map": 556,
+   "before": "Darkweaver Syth",
+   "after": "Talon King Ikiss",
+   "source": "instance_sethekk_halls.cpp doorData: GO_IKISS_DOOR 183398 PASSAGE on Ikiss (door at 44.8,150.7)"
+  },
+  {
+   "map": 585,
+   "before": "Selin Fireheart",
+   "after": "Vexallus",
+   "source": "instance_magisters_terrace.cpp doorData: GO_SELIN_DOOR 187979 PASSAGE on Selin"
+  },
+  {
+   "map": 585,
+   "before": "Vexallus",
+   "after": "Priestess Delrissa",
+   "source": "instance_magisters_terrace.cpp doorData: GO_VEXALLUS_DOOR 187896 PASSAGE on Vexallus"
+  },
+  {
+   "map": 585,
+   "before": "Priestess Delrissa",
+   "after": "Kael'thas Sunstrider",
+   "source": "instance_magisters_terrace.cpp doorData: GO_DELRISSA_DOOR 187770 PASSAGE on Delrissa"
+  },
+  {
+   "map": 560,
+   "before": "Lieutenant Drake",
+   "after": "Captain Skarloc",
+   "source": "instance_old_hillsbrad.cpp:152-162; conditions 15/7499"
+  },
+  {
+   "map": 560,
+   "before": "Captain Skarloc",
+   "after": "Epoch Hunter",
+   "source": "old_hillsbrad.cpp escort stages (ENCOUNTER_PROGRESS_*)"
+  },
+  {
+   "map": 575,
+   "before": "Skadi the Ruthless",
+   "after": "King Ymiron",
+   "source": "instance_utgarde_pinnacle.cpp:134-138,175-179 GO 192173 (477.5,-477.2) opens when Skadi DONE"
+  },
+  {
+   "map": 576,
+   "before": "Grand Magus Telestra",
+   "after": "Keristrasza",
+   "source": "boss_keristrasza.cpp:100-106 CanRemovePrison"
+  },
+  {
+   "map": 576,
+   "before": "Anomalus",
+   "after": "Keristrasza",
+   "source": "boss_keristrasza.cpp:100-106"
+  },
+  {
+   "map": 576,
+   "before": "Ormorok the Tree-Shaper",
+   "after": "Keristrasza",
+   "source": "boss_keristrasza.cpp:100-106"
+  },
+  {
+   "map": 578,
+   "before": "Drakos the Interrogator",
+   "after": "Varos Cloudstrider",
+   "source": "oculus.cpp:171 drake gossip only after DATA_DRAKOS DONE; instance_oculus.cpp:93-107 cage doors"
+  },
+  {
+   "map": 578,
+   "before": "Varos Cloudstrider",
+   "after": "Mage-Lord Urom",
+   "source": "instance_oculus.cpp:151-159"
+  },
+  {
+   "map": 578,
+   "before": "Mage-Lord Urom",
+   "after": "Ley-Guardian Eregos",
+   "source": "instance_oculus.cpp:161-166"
+  },
+  {
+   "map": 595,
+   "before": "Salramm the Fleshcrafter",
+   "after": "Chrono-Lord Epoch",
+   "source": "culling_of_stratholme.cpp ReorderInstance / COS_PROGRESS order"
+  },
+  {
+   "map": 595,
+   "before": "Chrono-Lord Epoch",
+   "after": "Mal'ganis",
+   "source": "culling_of_stratholme.cpp:1314-1317 Shkaf gate opens at KILLED_EPOCH"
+  },
+  {
+   "map": 599,
+   "before": "Tribunal of Ages",
+   "after": "Sjonnir the Ironshaper",
+   "source": "brann_bronzebeard.cpp:159-172,324-336; instance_halls_of_stone.cpp:144-147"
+  },
+  {
+   "map": 601,
+   "before": "Krik'thir the Gatewatcher",
+   "after": "Hadronox",
+   "source": "AzjolNerub/instance_azjol_nerub.cpp:29 GO_KRIKTHIR_DOORS DOOR_TYPE_PASSAGE on DATA_KRIKTHIR"
+  },
+  {
+   "map": 601,
+   "before": "Krik'thir the Gatewatcher",
+   "after": "Anub'arak",
+   "source": "instance_azjol_nerub.cpp:29"
+  },
+  {
+   "map": 602,
+   "before": "Volkhan",
+   "after": "Ionar",
+   "source": "HallsOfLightning/instance_halls_of_lightning.cpp:27 GO_VOLKHAN_DOOR 191325 (1277.4,-164.7) passage on DATA_VOLKHAN"
+  },
+  {
+   "map": 602,
+   "before": "Ionar",
+   "after": "Loken",
+   "source": "instance_halls_of_lightning.cpp:28 GO_IONAR_DOOR 191326 (1074.3,-232.2) passage on DATA_IONAR"
+  },
+  {
+   "map": 604,
+   "before": "Moorabi",
+   "after": "Eck the Ferocious",
+   "source": "instance_gundrak.cpp:26 GO_ECK_DOORS passage on DATA_MOORABI"
+  },
+  {
+   "map": 619,
+   "before": "Prince Taldaram",
+   "after": "Jedoga Shadowseeker",
+   "source": "ahnkahet/instance_ahnkahet.cpp:38 GO_TELDARAM_DOOR 192236 (550.1,-865.1) passage on DATA_PRINCE_TALDARAM"
+  },
+  {
+   "map": 658,
+   "before": "Forgemaster Garfrost",
+   "after": "Scourgelord Tyrannus",
+   "source": "PitOfSaron/instance_pit_of_saron.cpp:238-272 GO_ICE_WALL opens when Garfrost AND Ick DONE; pit_of_saron.cpp:1476 tunnel event needs both"
+  },
+  {
+   "map": 658,
+   "before": "Krick",
+   "after": "Scourgelord Tyrannus",
+   "source": "instance_pit_of_saron.cpp:264-272"
+  },
+  {
+   "map": 668,
+   "before": "Falric",
+   "after": "Marwyn",
+   "source": "instance_halls_of_reflection.cpp:344-361 waves"
+  },
+  {
+   "map": 668,
+   "before": "Marwyn",
+   "after": "Escaped from Arthas",
+   "source": "instance_halls_of_reflection.cpp:353-361 front door + Arthas door open on Marwyn DONE"
+  },
+  {
+   "map": 533,
+   "before": "Maexxna",
+   "after": "Sapphiron",
+   "source": "instance_naxxramas.cpp at_naxxramas_hub_portal"
+  },
+  {
+   "map": 533,
+   "before": "Loatheb",
+   "after": "Sapphiron",
+   "source": "instance_naxxramas.cpp at_naxxramas_hub_portal"
+  },
+  {
+   "map": 533,
+   "before": "Thaddius",
+   "after": "Sapphiron",
+   "source": "instance_naxxramas.cpp at_naxxramas_hub_portal"
+  },
+  {
+   "map": 533,
+   "before": "The Four Horsemen",
+   "after": "Sapphiron",
+   "source": "instance_naxxramas.cpp at_naxxramas_hub_portal"
+  },
+  {
+   "map": 533,
+   "before": "Sapphiron",
+   "after": "Kel'Thuzad",
+   "source": "instance_naxxramas.cpp SetBossState BOSS_SAPPHIRON DONE -> EVENT_FROSTWYRM_WATERFALL_DOOR opens GO 181225"
+  },
+  {
+   "map": 533,
+   "before": "Gluth",
+   "after": "Thaddius",
+   "source": "instance_naxxramas.cpp doorData GO_THADDIUS_GATE PASSAGE on BOSS_GLUTH"
+  },
+  {
+   "map": 533,
+   "before": "Gothik the Harvester",
+   "after": "The Four Horsemen",
+   "source": "doorData GO_HORSEMEN_GATE PASSAGE on BOSS_GOTHIK"
+  },
+  {
+   "map": 603,
+   "before": "Flame Leviathan",
+   "after": "XT-002 Deconstructor",
+   "source": "instance_ulduar.cpp doorData GO_LIGHTNING_WALL1 PASSAGE on BOSS_LEVIATHAN"
+  },
+  {
+   "map": 603,
+   "before": "Kologarn",
+   "after": "Auriaya",
+   "source": "instance_ulduar.cpp GO_KOLOGARN_BRIDGE OpenIfDone(BOSS_KOLOGARN)"
+  },
+  {
+   "map": 603,
+   "before": "Mimiron",
+   "after": "General Vezax",
+   "source": "instance_ulduar.cpp GO_KEEPERS_GATE PASSAGE on Hodir/Mimiron/Thorim/Freya; lock removed only when AllBossesDone"
+  },
+  {
+   "map": 603,
+   "before": "Hodir",
+   "after": "General Vezax",
+   "source": "same"
+  },
+  {
+   "map": 603,
+   "before": "Freya",
+   "after": "General Vezax",
+   "source": "same"
+  },
+  {
+   "map": 603,
+   "before": "Thorim",
+   "after": "General Vezax",
+   "source": "same"
+  },
+  {
+   "map": 603,
+   "before": "General Vezax",
+   "after": "Yogg-Saron",
+   "source": "instance_ulduar.cpp doorData GO_VEZAX_DOOR PASSAGE on BOSS_VEZAX"
+  },
+  {
+   "map": 631,
+   "before": "Lady Deathwhisper",
+   "after": "Icecrown Gunship Battle",
+   "source": "instance_icecrown_citadel.cpp CheckLowerSpire"
+  },
+  {
+   "map": 631,
+   "before": "Deathbringer Saurfang",
+   "after": "Blood Council",
+   "source": "CheckLowerSpire + at_icc_saurfang_portal"
+  },
+  {
+   "map": 631,
+   "before": "Blood Council",
+   "after": "Queen Lana'thel",
+   "source": "CheckCrimsonHalls"
+  },
+  {
+   "map": 631,
+   "before": "Valithria Dreamwalker",
+   "after": "Sindragosa",
+   "source": "CheckFrostwingHalls"
+  },
+  {
+   "map": 631,
+   "before": "Festergut",
+   "after": "Professor Putricide",
+   "source": "CheckPlagueworks"
+  },
+  {
+   "map": 631,
+   "before": "Rotface",
+   "after": "Professor Putricide",
+   "source": "CheckPlagueworks"
+  },
+  {
+   "map": 631,
+   "before": "Professor Putricide",
+   "after": "The Lich King",
+   "source": "at_frozen_throne_teleport / CheckRequiredBosses"
+  },
+  {
+   "map": 631,
+   "before": "Queen Lana'thel",
+   "after": "The Lich King",
+   "source": "same"
+  },
+  {
+   "map": 631,
+   "before": "Sindragosa",
+   "after": "The Lich King",
+   "source": "same"
+  },
+  {
+   "map": 724,
+   "before": "Saviana Ragefire",
+   "after": "General Zarithrian",
+   "source": "instance_ruby_sanctum.cpp SetBossState: Zarithrian made selectable/attackable only when Baltharus AND Saviana DONE; doorData GO_FLAME_WALLS PASSAGE on Saviana + Baltharus"
+  },
+  {
+   "map": 724,
+   "before": "Baltharus the Warborn",
+   "after": "General Zarithrian",
+   "source": "same"
+  },
+  {
+   "map": 724,
+   "before": "General Zarithrian",
+   "after": "Halion",
+   "source": "instance_ruby_sanctum.cpp DATA_GENERAL_ZARITHRIAN DONE -> ACTION_INTRO_HALION"
+  },
+  {
+   "map": 649,
+   "before": "Val'kyr Twins",
+   "after": "Anub'arak",
+   "source": "instance_trial_of_the_crusader.cpp InstanceProgress chain"
+  },
+  {
+   "map": 309,
+   "before": "High Priestess Jeklik",
+   "after": "Hakkar",
+   "source": "notes (Hakkar's Power per living priest)"
+  },
+  {
+   "map": 309,
+   "before": "High Priest Venoxis",
+   "after": "Hakkar",
+   "source": "notes (Hakkar's Power per living priest)"
+  },
+  {
+   "map": 309,
+   "before": "High Priestess Mar'li",
+   "after": "Hakkar",
+   "source": "notes (Hakkar's Power per living priest)"
+  },
+  {
+   "map": 309,
+   "before": "High Priest Thekal",
+   "after": "Hakkar",
+   "source": "notes (Hakkar's Power per living priest)"
+  },
+  {
+   "map": 309,
+   "before": "High Priestess Arlokk",
+   "after": "Hakkar",
+   "source": "notes (Hakkar's Power per living priest)"
+  }
+ ],
+ "dropped": [
+  {
+   "map": 43,
+   "boss": "Mutanus the Devourer",
+   "why": "hand-made entry kept (gossip line merged into it)"
+  },
+  {
+   "map": 189,
+   "boss": "Herod",
+   "why": "low confidence: locked door may not be on the normal way"
+  },
+  {
+   "map": 189,
+   "boss": "High Inquisitor Fairbanks",
+   "why": "low confidence: same"
+  },
+  {
+   "map": 429,
+   "boss": "Prince Tortheldrin",
+   "why": "low confidence: Crescent Key door may not be on the normal way"
+  },
+  {
+   "map": 533,
+   "boss": "Patchwerk",
+   "why": "route already has the wing-portal teleport and its hint"
+  },
+  {
+   "map": 533,
+   "boss": "Anub'Rekhan",
+   "why": "same"
+  },
+  {
+   "map": 533,
+   "boss": "Instructor Razuvious",
+   "why": "same"
+  },
+  {
+   "map": 533,
+   "boss": "Sapphiron",
+   "why": "same (portal + hub teleport)"
+  },
+  {
+   "map": 631,
+   "boss": "Icecrown Gunship Battle",
+   "why": "route handles the elevator/teleport and the gunship ride itself"
+  },
+  {
+   "map": 631,
+   "boss": "The Lich King",
+   "why": "off-navmesh boss reached through the Frozen Throne teleport; no via possible"
+  },
+  {
+   "map": 724,
+   "boss": "Halion",
+   "why": "informational, nothing to do"
+  }
+ ]
+}

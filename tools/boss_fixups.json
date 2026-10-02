@@ -1,0 +1,868 @@
+{
+ "positions": {
+  "162": {
+   "x": -289.5,
+   "y": -513.0,
+   "z": 49.7,
+   "source": "Sneed ejects from Sneed's Shredder (642); shredder static spawn guid 79223, creature.sql"
+  },
+  "592": {
+   "x": 151.27,
+   "y": 252.26,
+   "z": -102.82,
+   "source": "SmartAI summon by Disciple of Naralex (3678), smart_scripts.sql"
+  },
+  "379": {
+   "x": -495.24,
+   "y": -90.808,
+   "z": -149.493,
+   "source": "creature_summon_groups summoner 7998 (Emi Shortfuse event) group 4"
+  },
+  "492": {
+   "x": -466.795,
+   "y": 272.863,
+   "z": -90.447,
+   "source": "Shade of Hakkar summon pos (Avatar summoned on Shade), src/server/scripts/EasternKingdoms/SunkenTemple/instance_sunken_temple.cpp:268"
+  },
+  "434": {
+   "x": 2487.94,
+   "y": 804.222,
+   "z": 43.1073,
+   "source": "creature_summon_groups summoner GO 148917 (Gong) group 3"
+  },
+  "594": {
+   "x": 1659.43,
+   "y": 1180.5,
+   "z": 1.05,
+   "source": "SmartAI summon by Gong of Zul'Farrak (141832), smart_scripts.sql"
+  },
+  "598": {
+   "x": 1881.06,
+   "y": 1199.7,
+   "z": 8.87,
+   "source": "pyramid wave 3 spawn, src/server/scripts/Kalimdor/ZulFarrak/instance_zulfarrak.cpp:103 (z from line 397)"
+  },
+  "599": {
+   "x": 1886.3,
+   "y": 1199.65,
+   "z": 8.87,
+   "source": "pyramid wave 3 spawn, src/server/scripts/Kalimdor/ZulFarrak/instance_zulfarrak.cpp:102 (z from line 397)"
+  },
+  "271": {
+   "x": -28.57,
+   "y": -395.78,
+   "z": 48.78,
+   "source": "SmartAI script9 17558400 summon Urok, smart_scripts.sql"
+  },
+  "273": {
+   "x": -167.9561,
+   "y": -411.7844,
+   "z": 76.23057,
+   "source": "summoned on Halycon death, src/server/scripts/EasternKingdoms/BlackrockMountain/BlackrockSpire/boss_halycon.cpp:39"
+  },
+  "277": {
+   "x": 80.0,
+   "y": -280.0,
+   "z": 93.0,
+   "source": "SolakarPosBoss, src/server/scripts/EasternKingdoms/BlackrockMountain/BlackrockSpire/instance_blackrock_spire.cpp:52"
+  },
+  "230": {
+   "x": 595.289,
+   "y": -186.56,
+   "z": -53.9,
+   "source": "CenterOfRingOfLaw (z from arena summons), src/server/scripts/EasternKingdoms/BlackrockMountain/BlackrockDepths/instance_blackrock_depths.cpp:166"
+  },
+  "287": {
+   "x": -2025.3,
+   "y": 7119.6,
+   "z": 22.7,
+   "source": "LOWCONF: spawns at a random rift (instance_the_black_morass.cpp:24-29) and walks to Medivh; Medivh spawn guid 34023"
+  },
+  "289": {
+   "x": -2025.3,
+   "y": 7119.6,
+   "z": 22.7,
+   "source": "LOWCONF: spawns at a random rift (instance_the_black_morass.cpp:24-29) and walks to Medivh; Medivh spawn guid 34023"
+  },
+  "291": {
+   "x": -2025.3,
+   "y": 7119.6,
+   "z": 22.7,
+   "source": "Aeonus walks to Medivh; Medivh spawn guid 34023 (rifts: instance_the_black_morass.cpp:24)"
+  },
+  "451": {
+   "x": 314.8673,
+   "y": 90.3021,
+   "z": 101.6459,
+   "source": "Kirtonos PosMove[1] after spawn, src/server/scripts/EasternKingdoms/Scholomance/boss_kirtonos_the_herald.cpp:68"
+  },
+  "788": {
+   "x": -11901.229,
+   "y": -1906.366,
+   "z": 65.358,
+   "source": "edgeOfMagnessSummonPos, src/server/scripts/EasternKingdoms/ZulGurub/instance_zulgurub.cpp:205"
+  },
+  "790": {
+   "x": -11688.5,
+   "y": -1737.74,
+   "z": 10.41,
+   "source": "Mudskunk lure pos; Gahz'ranka summoned at -11688.5,-1723.7,-5.8 (underwater), src/server/scripts/EasternKingdoms/ZulGurub/boss_gahzranka.cpp:111-119"
+  },
+  "791": {
+   "x": -11561.9,
+   "y": -1627.868,
+   "z": 41.29941,
+   "source": "PosMoveOnSpawn (summoned at gong -11507,-1628), src/server/scripts/EasternKingdoms/ZulGurub/boss_arlokk.cpp:78"
+  },
+  "478": {
+   "x": 3415.8,
+   "y": -3044.5,
+   "z": 136.8,
+   "source": "Grand Crusader Dathrohan (10812) static spawn guid 52149; transforms into Balnazzar"
+  },
+  "483": {
+   "x": 4032.2,
+   "y": -3378.06,
+   "z": 119.75,
+   "source": "SlaughterPos, src/server/scripts/EasternKingdoms/Stratholme/instance_stratholme.cpp:58"
+  },
+  "671": {
+   "x": 759.542,
+   "y": -1173.43,
+   "z": -118.974,
+   "source": "MajordomoSummonPos, src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/boss_majordomo_executus.cpp:114"
+  },
+  "672": {
+   "x": 838.3082,
+   "y": -831.4665,
+   "z": -232.1853,
+   "source": "RagnarosSummonPos, src/server/scripts/EasternKingdoms/BlackrockMountain/MoltenCore/boss_majordomo_executus.cpp:116"
+  },
+  "617": {
+   "x": -7502.0,
+   "y": -1256.5,
+   "z": 476.758,
+   "source": "final waypoint of NEFARIAN_PATH 11583 (lands there), waypoint_data.sql; boss_nefarian.cpp:335"
+  },
+  "716": {
+   "x": -9173.1,
+   "y": 2107.3,
+   "z": -65.1,
+   "source": "Ouro Spawner (15957) static spawn guid 88073"
+  },
+  "652": {
+   "x": -11126.3,
+   "y": -1929.1,
+   "z": 49.3,
+   "source": "Midnight (16151) spawn guid 135159; Attumen summoned beside Midnight; DATA_ATTUMEN boundary centre instance_karazhan.cpp:71"
+  },
+  "692": {
+   "x": 2524.3,
+   "y": -2951.3,
+   "z": 245.6,
+   "source": "Four Horsemen static spawns (16063/16064/16065/30549) guids 130961-130964"
+  },
+  "618": {
+   "x": 5024.15,
+   "y": -1743.28,
+   "z": 1322.64,
+   "source": "end of ALLIANCE_BASE_CHARGE path 177721 (waypoint_data.sql); boss_rage_winterchill.cpp:97"
+  },
+  "619": {
+   "x": 5024.15,
+   "y": -1743.28,
+   "z": 1322.64,
+   "source": "end of ALLIANCE_BASE_CHARGE path 177721 (waypoint_data.sql); boss_anetheron.cpp:94"
+  },
+  "620": {
+   "x": 5464.58,
+   "y": -2728.47,
+   "z": 1484.94,
+   "source": "end of HORDE_BOSS_PATH 178527 (waypoint_data.sql); boss_kazrogal.cpp:103"
+  },
+  "621": {
+   "x": 5464.58,
+   "y": -2728.47,
+   "z": 1484.94,
+   "source": "end of HORDE_BOSS_PATH 178527 (waypoint_data.sql); boss_azgalor.cpp:82"
+  },
+  "624": {
+   "x": 38.4567,
+   "y": -417.324,
+   "z": -18.916666,
+   "source": "Lurker summon at Strange Pool, src/server/scripts/Outland/CoilfangReservoir/SerpentShrine/boss_lurker_below.cpp:249"
+  },
+  "500": {
+   "x": 445.763,
+   "y": -191.639,
+   "z": 44.64,
+   "source": "Skyriss summon, src/server/scripts/Outland/TempestKeep/arcatraz/arcatraz.cpp:546"
+  },
+  "253": {
+   "x": -87.61,
+   "y": 287.84,
+   "z": 26.5,
+   "source": "SmartAI summon Anzu (script 2185100), smart_scripts.sql"
+  },
+  "250": {
+   "x": -235.6,
+   "y": -13.4,
+   "z": 17.1,
+   "source": "Shaffar's Stasis Chamber GO 185522 guid 2134514 (summons Yor on self), gameobject.sql + smart_scripts.sql"
+  },
+  "285": {
+   "x": 2172.76,
+   "y": 149.54,
+   "z": 87.981,
+   "source": "Lieutenant Drake summon pos, src/server/scripts/Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/instance_old_hillsbrad.cpp:29"
+  },
+  "283": {
+   "x": 2058.77,
+   "y": 236.04,
+   "z": 63.92,
+   "source": "end of Skarloc startPath, src/server/scripts/Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/boss_captain_skarloc.cpp:50"
+  },
+  "281": {
+   "x": 2640.49,
+   "y": 696.15,
+   "z": 56.2,
+   "source": "Epoch Hunter summon x,y (z lowered from 64.3 to ground), src/server/scripts/Kalimdor/CavernsOfTime/EscapeFromDurnholdeKeep/old_hillsbrad.cpp:722"
+  },
+  "606": {
+   "x": 497.8,
+   "y": 184.2,
+   "z": 94.6,
+   "source": "Reliquary of the Lost (22856) spawn guid 148523; essences rise from it"
+  },
+  "577": {
+   "x": 296.6,
+   "y": -346.1,
+   "z": 90.6,
+   "source": "Svala (29281) static spawn guid 126115; transforms into Svala Sorrowgrave"
+  },
+  "726": {
+   "x": 1473.35,
+   "y": 611.05,
+   "z": 21.64,
+   "source": "midpoint of Felmyst LandingLeftPos/LandingRightPos, src/server/scripts/EasternKingdoms/SunwellPlateau/boss_felmyst.cpp:111-112"
+  },
+  "293": {
+   "x": 2351.45,
+   "y": 1197.81,
+   "z": 130.45,
+   "source": "meathook spawn pos EventPos, src/server/scripts/Kalimdor/CavernsOfTime/CullingOfStratholme/culling_of_stratholme.h:171"
+  },
+  "294": {
+   "x": 2351.45,
+   "y": 1197.81,
+   "z": 130.45,
+   "source": "salramm spawn pos EventPos, src/server/scripts/Kalimdor/CavernsOfTime/CullingOfStratholme/culling_of_stratholme.h:172"
+  },
+  "295": {
+   "x": 2451.809,
+   "y": 1112.901,
+   "z": 149.22,
+   "source": "epoch move pos, src/server/scripts/Kalimdor/CavernsOfTime/CullingOfStratholme/culling_of_stratholme.h:177"
+  },
+  "296": {
+   "x": 2298.25,
+   "y": 1500.56,
+   "z": 128.37,
+   "source": "malganis final pos, src/server/scripts/Kalimdor/CavernsOfTime/CullingOfStratholme/culling_of_stratholme.h:179"
+  },
+  "567": {
+   "x": 894.8,
+   "y": 330.1,
+   "z": 203.7,
+   "source": "Tribunal Control Console GO 193907 guid 65563 (event area)"
+  },
+  "748": {
+   "x": 1587.2,
+   "y": 121.0,
+   "z": 427.3,
+   "source": "Steelbreaker (32867) static spawn guid 136421 (council room)"
+  },
+  "756": {
+   "x": 1980.28,
+   "y": -25.5868,
+   "z": 329.397,
+   "source": "Yogg summoned at Sara/Middle, src/server/scripts/Northrend/Ulduar/Ulduar/boss_yoggsaron.cpp:389,774"
+  },
+  "757": {
+   "x": 1632.668,
+   "y": -302.7656,
+   "z": 417.3211,
+   "source": "AlgalonLandPos, src/server/scripts/Northrend/Ulduar/Ulduar/ulduar.h:447"
+  },
+  "389": {
+   "x": 1638.55,
+   "y": 919.76,
+   "z": 104.95,
+   "source": "EckCombatStartPosition, src/server/scripts/Northrend/Gundrak/boss_eck.cpp:41"
+  },
+  "545": {
+   "x": 1892.29126,
+   "y": 805.696838,
+   "z": 38.438862,
+   "source": "MiddleRoomLocation (Cyanigosa jumps down from 1930,804,52), src/server/scripts/Northrend/VioletHold/violet_hold.h:202"
+  },
+  "847": {
+   "x": -556.0,
+   "y": 2211.4,
+   "z": 539.4,
+   "source": "LOWCONF: Rampart of Skulls (High Overlord Saurfang 37187 guid 200982); ships fight alongside it; Deathbringer's Rise is at -461,2211,541"
+  },
+  "855": {
+   "x": 4419.19,
+   "y": 2484.57,
+   "z": 203.3848,
+   "source": "SindragosaLandPos, src/server/scripts/Northrend/IcecrownCitadel/boss_sindragosa.cpp:172"
+  },
+  "629": {
+   "x": 563.672974,
+   "y": 139.571,
+   "z": 393.837006,
+   "source": "arena LOC_CENTER, src/server/scripts/Northrend/CrusadersColiseum/TrialOfTheCrusader/trial_of_the_crusader.h:279"
+  },
+  "633": {
+   "x": 563.672974,
+   "y": 139.571,
+   "z": 393.837006,
+   "source": "arena LOC_CENTER, trial_of_the_crusader.h:279"
+  },
+  "637": {
+   "x": 563.672974,
+   "y": 139.571,
+   "z": 393.837006,
+   "source": "arena LOC_CENTER (champions' final pos ~528,124), trial_of_the_crusader.h:279"
+  },
+  "641": {
+   "x": 563.672974,
+   "y": 139.571,
+   "z": 393.837006,
+   "source": "arena LOC_CENTER, trial_of_the_crusader.h:279"
+  },
+  "645": {
+   "x": 785.9,
+   "y": 133.42,
+   "z": 142.612,
+   "source": "LOC_ANUB (Anub'arak summon), trial_of_the_crusader.h:291; instance_trial_of_the_crusader.cpp:88"
+  },
+  "334": {
+   "x": 748.309,
+   "y": 619.448,
+   "z": 411.3,
+   "source": "arena centre used by instance MovePoint, src/server/scripts/Northrend/CrusadersColiseum/TrialOfTheChampion/instance_trial_of_the_champion.cpp:832"
+  },
+  "338": {
+   "x": 746.881,
+   "y": 635.263,
+   "z": 411.7,
+   "source": "Eadric/Paletress combat MovePoint, instance_trial_of_the_champion.cpp:1068"
+  },
+  "340": {
+   "x": 748.309,
+   "y": 619.448,
+   "z": 411.3,
+   "source": "arena centre, instance_trial_of_the_champion.cpp:832 (BK vehicle summoned 769.8,651.9,447 in air)"
+  },
+  "843": {
+   "x": 5262.773926,
+   "y": 1669.980103,
+   "z": 784.301697,
+   "source": "last PathWaypoints (dead end / final ice wall), src/server/scripts/Northrend/FrozenHalls/HallsOfReflection/halls_of_reflection.h:376"
+  }
+ },
+ "killsets": {
+  "548": {
+   "npcs": [
+    6906,
+    6907,
+    6908
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Baelog, Eric 'The Swift', Olaf"
+  },
+  "230": {
+   "npcs": [
+    9027,
+    9028,
+    9029,
+    9030,
+    9031,
+    9032,
+    16059
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "one random arena boss (Gorosh/Grizzle/Eviscerator/Ok'thor/Anub'shiah/Hedrum) or Theldren 16059 is summoned; its death gives credit (UpdateEncounterState for Grimstone, blackrock_depths.cpp:248). Grimstone 10096 never dies"
+  },
+  "243": {
+   "npcs": [
+    9034,
+    9035,
+    9036,
+    9037,
+    9038,
+    9039,
+    9040
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Hate'rel, Anger'rel, Vile'rel, Gloom'rel, Seeth'rel, Doom'rel, Dope'rel; Doom'rel usually last"
+  },
+  "788": {
+   "npcs": [
+    15082,
+    15083,
+    15084,
+    15085
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "only one of Gri'lek/Hazza'rah/Renataki/Wushoolay is summoned per brazier use"
+  },
+  "710": {
+   "npcs": [
+    15511,
+    15543,
+    15544
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Lord Kri, Princess Yauj, Vem"
+  },
+  "715": {
+   "npcs": [
+    15275,
+    15276
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Vek'nilash, Vek'lor (shared health, die together)"
+  },
+  "717": {
+   "npcs": [
+    15727
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "C'Thun body 15727 (Eye of C'Thun 15589 dies in phase 1, does not end encounter)"
+  },
+  "652": {
+   "npcs": [
+    16152
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Attumen 16152 (Midnight 16151 merges into him)"
+  },
+  "655": {
+   "npcs": [
+    17521,
+    18168,
+    17533,
+    17534
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "random play: Big Bad Wolf 17521 / The Crone 18168 (after Dorothee 17535, Tito 17548, Roar 17546, Strawman 17543, Tinhead 17547) / Romulo 17533 + Julianne 17534 (earlier deaths are PretendToDie = no UNIT_DIED; real death only in final phase). Barnes 16812 never dies"
+  },
+  "660": {
+   "npcs": [
+    21684,
+    21752
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": true,
+   "note": "Chess: Echo of Medivh 16816 / status bar 22520 never die; win = enemy King dies (King Llane 21684 when playing Horde, Warchief Blackhand 21752 when playing Alliance). LOWCONF whether king death emits UNIT_DIED"
+  },
+  "692": {
+   "npcs": [
+    16063,
+    16064,
+    16065,
+    30549
+   ],
+   "mode": "all",
+   "spell": 59450,
+   "noDeath": false,
+   "note": "Sir Zeliek, Thane Korth'azz, Lady Blaumeux, Baron Rivendare (WotLK 4th horseman)"
+  },
+  "396": {
+   "npcs": [
+    17536,
+    17537
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Nazan + Vazruden (Vazruden the Herald 17307 lands as 17537)"
+  },
+  "606": {
+   "npcs": [
+    23420,
+    22856
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Essence of Anger death kills Reliquary of the Lost; Suffering 23418 / Desire 23419 do not die"
+  },
+  "608": {
+   "npcs": [
+    23426,
+    22949,
+    22950,
+    22951,
+    22952
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "shared health; controller 23426 kills all members on death (boss_illidari_council.cpp:185)"
+  },
+  "649": {
+   "npcs": [
+    18831
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "credit on Maulgar; council adds Krosh 18832, Olm 18834, Kiggler 18835, Blindeye 18836 usually die first"
+  },
+  "573": {
+   "npcs": [
+    24200,
+    24201
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Skarvald + Dalronn (first one killed returns as a ghost)"
+  },
+  "519": {
+   "npcs": [
+    26796,
+    26798
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Commander Stoutbeard (Horde groups) or Commander Kolurg (Alliance groups)"
+  },
+  "724": {
+   "npcs": [
+    24892
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": true,
+   "note": "Sathrovarr the Corruptor dies in spectral realm; Kalecgos 24850 does not die (freed as Kalec 24891)"
+  },
+  "727": {
+   "npcs": [
+    25165,
+    25166
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Lady Sacrolash, Grand Warlock Alythess"
+  },
+  "728": {
+   "npcs": [
+    25840
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "M'uru 25741 transforms; Entropius 25840 death ends it"
+  },
+  "296": {
+   "npcs": [
+    26533
+   ],
+   "mode": "any",
+   "spell": 58630,
+   "noDeath": true,
+   "note": "Mal'Ganis flees at low HP, never dies; credit via spell"
+  },
+  "567": {
+   "npcs": [],
+   "mode": "any",
+   "spell": 59046,
+   "noDeath": true,
+   "note": "Tribunal of Ages: Brann defend event, no boss death; credit via spell"
+  },
+  "375": {
+   "npcs": [
+    26632
+   ],
+   "mode": "any",
+   "spell": 61863,
+   "noDeath": false,
+   "note": "Tharon'ja dies normally; credit also via spell"
+  },
+  "748": {
+   "npcs": [
+    32857,
+    32867,
+    32927
+   ],
+   "mode": "all",
+   "spell": 65195,
+   "noDeath": false,
+   "note": "Stormcaller Brundir, Steelbreaker, Runemaster Molgeim"
+  },
+  "751": {
+   "npcs": [
+    32845
+   ],
+   "mode": "any",
+   "spell": 64899,
+   "noDeath": true,
+   "note": "Hodir becomes friendly, no death"
+  },
+  "752": {
+   "npcs": [
+    32865
+   ],
+   "mode": "any",
+   "spell": 64985,
+   "noDeath": true,
+   "note": "Thorim becomes friendly, no death"
+  },
+  "753": {
+   "npcs": [
+    32906
+   ],
+   "mode": "any",
+   "spell": 65074,
+   "noDeath": true,
+   "note": "Freya becomes friendly, no death"
+  },
+  "754": {
+   "npcs": [
+    33432,
+    33651,
+    33670
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": true,
+   "note": "Mimiron 33350 surrenders; Leviathan Mk II / VX-001 / Aerial Command Unit do not die in final phase - credit given by script (boss_mimiron.cpp:750). creditType 0 but no UNIT_DIED for the credit creature"
+  },
+  "757": {
+   "npcs": [
+    32871
+   ],
+   "mode": "any",
+   "spell": 65184,
+   "noDeath": true,
+   "note": "Algalon leaves, no death"
+  },
+  "385": {
+   "npcs": [
+    29573,
+    29307
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Drakkari Elemental death kills the Colossus (boss_drakkari_colossus.cpp:193)"
+  },
+  "541": {
+   "npcs": [
+    29266,
+    29312,
+    29313,
+    29314,
+    29315,
+    29316
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Violet Hold: first random portal boss (Xevozz, Lavanthor, Ichoron, Zuramat, Erekem, Moragg)"
+  },
+  "543": {
+   "npcs": [
+    29266,
+    29312,
+    29313,
+    29314,
+    29315,
+    29316
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Violet Hold: second random portal boss (different from first)"
+  },
+  "847": {
+   "npcs": [
+    37215,
+    37540
+   ],
+   "mode": "any",
+   "spell": 72959,
+   "noDeath": true,
+   "note": "enemy ship never actually dies (damage capped at HP-1, boss_icecrown_gunship_battle.cpp:562-566); credit via spell"
+  },
+  "852": {
+   "npcs": [
+    37970,
+    37972,
+    37973
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Valanar, Keleseth, Taldaram (shared health, die together)"
+  },
+  "854": {
+   "npcs": [
+    36789
+   ],
+   "mode": "any",
+   "spell": 72706,
+   "noDeath": true,
+   "note": "Valithria healed to full, no death"
+  },
+  "629": {
+   "npcs": [
+    34796,
+    35144,
+    34799,
+    34797
+   ],
+   "mode": "last",
+   "spell": null,
+   "noDeath": false,
+   "note": "Gormok, Acidmaw, Dreadscale, Icehowl; 'last' = death of the last listed (Icehowl) ends encounter"
+  },
+  "637": {
+   "npcs": [
+    34441,
+    34444,
+    34445,
+    34447,
+    34448,
+    34449,
+    34450,
+    34451,
+    34453,
+    34454,
+    34455,
+    34456,
+    34458,
+    34459,
+    34460,
+    34461,
+    34463,
+    34465,
+    34466,
+    34467,
+    34468,
+    34469,
+    34470,
+    34471,
+    34472,
+    34473,
+    34474,
+    34475
+   ],
+   "mode": "all",
+   "spell": 68184,
+   "noDeath": false,
+   "note": "only 6 (10-man) / 10 (25-man) of the opposing-faction champions spawn; done when all spawned ones are dead; credit via spell"
+  },
+  "641": {
+   "npcs": [
+    34496,
+    34497
+   ],
+   "mode": "all",
+   "spell": null,
+   "noDeath": false,
+   "note": "Eydis Darkbane, Fjola Lightbane (shared health)"
+  },
+  "334": {
+   "npcs": [
+    34657,
+    34701,
+    34702,
+    34703,
+    34705,
+    35569,
+    35570,
+    35571,
+    35572,
+    35617
+   ],
+   "mode": "any",
+   "spell": 68572,
+   "noDeath": true,
+   "note": "Grand Champions yield, no death (Alliance-side champions 346xx/347xx vs Horde-side 355xx/35617; opposite faction to group)"
+  },
+  "338": {
+   "npcs": [
+    35119,
+    34928
+   ],
+   "mode": "any",
+   "spell": 68574,
+   "noDeath": true,
+   "note": "Eadric the Pure or Argent Confessor Paletress yields, no death"
+  },
+  "340": {
+   "npcs": [
+    35451
+   ],
+   "mode": "any",
+   "spell": 68663,
+   "noDeath": false,
+   "note": "Black Knight: phases 1-2 are fake deaths (damage capped, boss_black_knight.cpp:130); real death in phase 3"
+  },
+  "835": {
+   "npcs": [
+    36476,
+    36477
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Ick death ends fight; Krick killed afterwards in outro"
+  },
+  "837": {
+   "npcs": [
+    36658
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Scourgelord Tyrannus; Rimefang 36661 flies off"
+  },
+  "843": {
+   "npcs": [
+    36954
+   ],
+   "mode": "any",
+   "spell": 72830,
+   "noDeath": true,
+   "note": "Escape from the Lich King: Lich King 36954 does not die; credit via spell at final wall"
+  }
+ }
+}
