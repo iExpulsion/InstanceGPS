@@ -279,6 +279,60 @@ class NavMesh:
                 best = max(best, math.degrees(math.acos(min(1.0, abs(ny) / L))))
         return best
 
+    def add_floor(self, center, radius, z, sides=32, reach=12.0):
+        """A flat round floor the navmesh lacks because it's a game object (Trial of the Crusader's
+        arena, which breaks for Anub'arak): one convex polygon at height z, joined to the navmesh
+        polygons whose open edges lie along its rim (within `reach` yards, at about that height).
+        Its rim is a wall everywhere else. Returns the number of polygons it was joined to."""
+        cx, cy = center
+        verts = [wow_to_rc((cx + radius * math.cos(2 * math.pi * k / sides),
+                            cy + radius * math.sin(2 * math.pi * k / sides), z)) for k in range(sides)]
+        p = Poly()
+        p.verts = verts
+        p.tile = None
+        p.links = {}
+        p.area = 0
+        p.center = tuple(sum(v[k] for v in verts) / sides for k in range(3))
+        p.bmin = tuple(min(v[k] for v in verts) for k in range(3))
+        p.bmax = tuple(max(v[k] for v in verts) for k in range(3))
+        me = len(self.polys)
+        # neighbours: open edges of other polygons near the rim, at the floor's height
+        portals = []
+        rc_c = wow_to_rc((cx, cy, z))
+        r = int((radius + reach) // self.cell) + 1
+        gx, gz = int(rc_c[0] // self.cell), int(rc_c[2] // self.cell)
+        seen = set()
+        for ix in range(gx - r, gx + r + 1):
+            for iz in range(gz - r, gz + r + 1):
+                for i in self.grid.get((ix, iz), ()):
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    q = self.polys[i]
+                    shared = set(q.links.values())
+                    n = len(q.verts)
+                    for e in range(n):
+                        a, c = q.verts[e], q.verts[(e + 1) % n]
+                        mx, my, mz = (a[0] + c[0]) / 2, (a[1] + c[1]) / 2, (a[2] + c[2]) / 2
+                        if abs(math.hypot(mx - rc_c[0], mz - rc_c[2]) - radius) <= reach \
+                                and abs(my - z) < 3 and (a, c) not in shared:
+                            q.links[me] = (a, c)
+                            p.links[i] = (c, a)
+                            p.area = q.area
+                            portals.append((mx, mz))
+                            break
+        self.polys.append(p)
+        self.steep.append(False)
+        for ix in range(int(p.bmin[0] // self.cell), int(p.bmax[0] // self.cell) + 1):
+            for iz in range(int(p.bmin[2] // self.cell), int(p.bmax[2] // self.cell) + 1):
+                self.grid[(ix, iz)].append(me)
+        for k in range(sides):
+            a, c = verts[k], verts[(k + 1) % sides]
+            mid = ((a[0] + c[0]) / 2, (a[2] + c[2]) / 2)
+            if all(math.hypot(mid[0] - px, mid[1] - pz) > reach + 6 for px, pz in portals):
+                self.walls.append((a, c))
+        return len(p.links)
+
     def neighbours(self, i):
         return self.polys[i].links
 

@@ -768,6 +768,10 @@ def build(D, fixups):
             return sum(1 << f for f in set(pick))
 
         navm = navmesh.NavMesh(cfg.MMAPS_DIR, mapid) if cfg.USE_NAVMESH else None
+        if navm is not None and navm.ok:
+            for centre_xy, radius, z in cfg.ADD_FLOORS.get(mapid, []):
+                if not navm.add_floor(centre_xy, radius, z):
+                    report.append('FLOOR-UNJOINED %d %s %s' % (mapid, m[5], centre_xy))
         # positions from a server module's overrides have no height (the game gives addons none):
         # the navmesh floor there on the map level they name
         for b in blist:

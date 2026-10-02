@@ -184,6 +184,14 @@ DOORS = {
     229: [((93.0, -435.6, 111.0), 6.0, ['Warchief Rend Blackhand'])],
 }
 
+# Floors the navmesh lacks because they're game objects: {map: [((x, y), radius, z)]}, added as a
+# flat round floor joined to the navmesh along its rim (navmesh.add_floor).
+ADD_FLOORS = {
+    # Trial of the Crusader: the Argent Coliseum's arena floor (GO 195527, broken for Anub'arak);
+    # without it the routes went round the outside of the arena
+    649: [((563.7, 139.6), 62.0, 394.0)],
+}
+
 # Bosses fought in a different place per faction: {(map, name): {'Alliance': pos, 'Horde': pos}}.
 # Instances with any of these get one route per faction.
 FACTION_POSITIONS = {
@@ -258,7 +266,13 @@ WING_GROUPS = {
           ['Patchwerk', 'Grobbulus', 'Gluth', 'Thaddius']],
 }
 
-# Passages missing from the navmesh, walked in a straight line: map -> [(from, to, oneway)].
+# Trial of the Crusader: every phase starts at Barrett Ramsey (34816, npc_announcer_toc10), who
+# stands on the arena floor
+_BARRETT = (559.2, 90.6, 395.3)
+_READY = 'Talk to Barrett Ramsey: "We are ready!" '
+
+# Passages missing from the navmesh, walked in a straight line: map -> [(from, to, oneway)], or
+# (from, to, oneway, hint, cost) with the arrow hint at its start and its cost in yards.
 # Points are navmesh edge points found next to each gap.
 WALK_LINKS = {
     43: [
@@ -284,6 +298,11 @@ WALK_LINKS = {
         # (11 yd higher), which isn't; hop only that step
         ((3498.7, -2940.5, 292.8), (3503.5, -2934.0, 304.0), True),
     ],
+    649: [
+        # Trial of the Crusader: Barrett breaks the arena floor for Anub'arak and everyone falls into
+        # the chamber below. A fall takes no walking, so it costs next to nothing (the 5th value).
+        (_BARRETT, (559.2, 90.6, 141.7), True, None, 5.0),
+    ],
 }
 
 # Encounter names the client's DungeonEncounter.dbc misspells
@@ -299,9 +318,17 @@ HARD_MODES = {
     615: {'name': 'Hard mode', 'bosses': ['Sartharion']},   # Obsidian Sanctum: Sartharion with all drakes up
 }
 
-# Places the route has to pass on the way to a boss, in order: [((x, y, z), arrow hint or None)].
+# Places the route has to pass on the way to a boss, in order: [((x, y, z), arrow hint or None)],
+# or ((x, y, z), hint, lead) to show the hint for `lead` yards on the way there too.
 # For an escort or event that makes the boss appear, or a way the navmesh gets wrong.
 BOSS_VIA = {
+    649: {
+        'Northrend Beasts': [(_BARRETT, _READY + 'Gormok the Impaler comes in first.', 60)],
+        'Lord Jaraxxus': [(_BARRETT, _READY + 'to bring in Lord Jaraxxus.', 60)],
+        'Faction Champions': [(_BARRETT, _READY + 'to start the Faction Champions.', 60)],
+        "Val'kyr Twins": [(_BARRETT, _READY + "to bring in the Twin Val'kyr.", 60)],
+        "Anub'arak": [(_BARRETT, _READY + "(or wait about a minute): the floor breaks and drops you to Anub'arak.", 60)],
+    },
     209: {
         # the pyramid event starts at the troll cages on top of the pyramid (zulfarrak.cpp, go_troll_cage)
         "Shadowpriest Sezz'ziz": [((1886.0, 1296.0, 48.2),

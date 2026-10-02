@@ -48,14 +48,15 @@ class NavRouter:
             self.kind[(pb, pa)] = ('tele', ptb, pta)
             self.req[(pb, pa)] = frozenset(req_ba)
 
-    def add_walk(self, a, b, oneway=True, label=None):
-        """A passage the navmesh lacks (a drop, a door it treats as shut): walk straight a -> b."""
+    def add_walk(self, a, b, oneway=True, label=None, cost=None):
+        """A passage the navmesh lacks (a drop, a door it treats as shut): walk straight a -> b.
+        It costs its length, or `cost` yards (a long fall takes no walking)."""
         pa, pta = self.locate(a, 10)
         pb, ptb = self.locate(b, 10)
         if pa is None or pb is None:
             self.report.append('WALKLINK-UNPLACED %s %s -> %s' % (self.tag, a, b))
             return
-        L = math.dist(pta, ptb)
+        L = math.dist(pta, ptb) if cost is None else cost
         self.extra[pa][pb] = L
         self.kind[(pa, pb)] = ('bridge', pta, ptb)
         if label:
@@ -173,6 +174,33 @@ class NavRouter:
         return [([navmesh.rc_to_wow(v) for v in pts], t, h) for pts, t, h in pieces]
 
 
+def spread(seg, lead, step=12.0):
+    """For a hint shown on the way to its spot (the end of seg): points every `step` yards over the
+    last `lead` yards of seg, added where it has none (the arrow shows a hint within 15 yards of
+    its point). Returns the new seg and the indices of the points to give the hint."""
+    out, marks = [tuple(seg[-1])], [0]
+    walked, nxt = 0.0, step
+    for i in range(len(seg) - 1, 0, -1):
+        a, b = seg[i], seg[i - 1]   # walking back from a to b
+        L = math.dist(a[:2], b[:2])
+        while L > 0 and nxt <= min(walked + L, lead) and (nxt - walked) / L < 0.95:
+            t = (nxt - walked) / L
+            out.append(tuple(a[k] + (b[k] - a[k]) * t for k in range(len(a))))
+            marks.append(len(out) - 1)
+            nxt += step
+        walked += L
+        out.append(tuple(b))
+        if walked <= lead:
+            marks.append(len(out) - 1)
+        if walked >= lead:
+            break
+    else:
+        i = 0
+    out = list(seg[:i - 1]) + out[::-1] if i > 0 else out[::-1]   # out already holds seg[i - 1]
+    n = len(out)
+    return out, sorted({n - 1 - m for m in marks})
+
+
 def name_for(mapid, pos):
     for p, text in cfg.TELEPORT_NAMES.get(mapid, []):
         if math.dist(p[:2], pos[:2]) < 10:
@@ -226,15 +254,17 @@ def nav_routes(M, mapid, m, routes_in, blist, go_by_map, got, report, order_boss
         # bosses reached through a place first (an escort that summons them)
         via = {}   # boss index -> [(poly, point, hint)] to pass first
         for k, b in enumerate(bl):
-            for pos, text in cfg.BOSS_VIA.get(mapid, {}).get(b['name'], []):
+            for entry in cfg.BOSS_VIA.get(mapid, {}).get(b['name'], []):
+                pos, text = entry[0], entry[1]
                 if pos == 'any-order':   # marker: the points may be visited in any order
                     continue
+                lead = entry[2] if len(entry) > 2 else 0   # show the hint this far before the spot
                 vp, vpt = R0.locate(pos)
                 if vp is None:
                     report.append('VIA-UNPLACED %s %s %s' % (tag, b['name'], pos))
                 else:
-                    via.setdefault(k, []).append((vp, vpt, text))
-        any_order = {k: any(pos == 'any-order' for pos, _ in cfg.BOSS_VIA.get(mapid, {}).get(b['name'], []))
+                    via.setdefault(k, []).append((vp, vpt, (text, lead) if text and lead else text))
+        any_order = {k: any(e[0] == 'any-order' for e in cfg.BOSS_VIA.get(mapid, {}).get(b['name'], []))
                      for k, b in enumerate(bl)}
         nb = R0.bridge(spoly, [p for p, _ in located] + [v[0] for vs in via.values() for v in vs])
         if nb:
@@ -312,15 +342,21 @@ def nav_routes(M, mapid, m, routes_in, blist, go_by_map, got, report, order_boss
                     if cfg.STRAIGHTEN_PATHS:
                         pts = centre.straighten(pts, walls, M, cfg.STRAIGHT_CLEARANCE)
                 seg = rdp(pts, cfg.NAV_SIMPLIFY_EPS)
+                text, lead = hint_after if isinstance(hint_after, tuple) else (hint_after, 0)
+                marks = [len(seg) - 1] if text else []
+                if lead:
+                    seg, marks = spread(seg, lead)   # before dropping a repeated first point: it's needed
                 if tele_before:
                     tele_idx.append(len(poly))   # poly[len] -> poly[len+1] is a teleport
                     if tele_before is not True:
                         tele_text[len(poly)] = tele_before
                 elif poly and math.dist(poly[-1][:2], seg[0][:2]) < 1.0:
                     seg = seg[1:]   # same point as the end of the previous run
+                    marks = [j - 1 for j in marks if j > 0]
+                base = len(poly)
                 poly.extend(seg)
-                if hint_after:
-                    hints[len(poly)] = hint_after   # shown while heading for / standing at this point
+                for j in marks:
+                    hints[base + j + 1] = text   # shown while heading for / standing at this point
 
         # places to visit right after a boss, whichever comes next (an altar its death unlocks)
         after = {}
