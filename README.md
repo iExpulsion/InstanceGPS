@@ -91,7 +91,7 @@ If a route sends you through a wall, a closed door or the long way round, record
 
 1. `/igps record start` where the wrong stretch begins (at the entrance, or right after a boss).
 2. Walk the way you'd want others to go. Each boss kill ends a stretch; `/igps record pause` and `resume` let you step off the route to loot or regroup, and `/igps record mark <text>` leaves a hint at a spot ("Pull the lever").
-3. `/igps record show` draws what you recorded on the map, in green. `/igps record undo` or `drop` takes back a mistake.
+3. `/igps record show` draws what you recorded on the map, in green. `/igps record undo` takes back the last few yards (or back to your last mark), and `drop` deletes the last stretch to walk it again.
 4. `/igps record export` and copy the text (Ctrl+A, Ctrl+C).
 
 Detours that come back to where they left (a dead end, running back for loot) are cut out by themselves, and the wobble is straightened. Send the export to your server's module, or [open an issue](../../issues) with it, the instance, and a screenshot of the map.
@@ -114,11 +114,12 @@ Detours that come back to where they left (a dead end, running back for loot) ar
 /igps view          toggle the 3D path view
 /igps lock          lock / unlock frames
 /igps resetpos      reset frame positions
-/igps record start  record a route (each boss kill ends a stretch)
-/igps record pause | resume | stop
-/igps record mark <text>     a hint at this spot
-/igps record undo | drop     take back the last stretch | the last leg
-/igps record show | export   the recording on the map | as text to copy
+/igps record start            record a route (each boss kill ends a stretch)
+/igps record pause | resume   step off the route and back
+/igps record mark <text>      a hint at this spot
+/igps record undo | drop      take back the last few yards | the last stretch
+/igps record show | export    the recording on the map | as text to copy
+/igps record stop             stop recording
 ```
 
 ## Notes
