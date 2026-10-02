@@ -4,6 +4,8 @@ A dungeon and raid helper for WoW 3.3.5a, built on AzerothCore's data. InstanceG
 
 Type `/igps` for the tracker and `/igps help` for every command.
 
+![Heading for Gluth in Naxxramas: the arrow, HUD and 3D path view with a hint, the route on the minimap and the boss tracker](docs/images/hero.png)
+
 ## Installing
 
 1. Download `InstanceGPS-<version>.zip` from the [latest release](../../releases/latest) and extract it into `World of Warcraft\Interface\AddOns`. You should end up with `Interface\AddOns\InstanceGPS\InstanceGPS.toc`.
@@ -37,6 +39,10 @@ InstanceGPS doesn't need any other addons or libraries.
   - numbered boss pins in route order: yellow for the next boss, red for the rest, green with a check mark for kills.
 
   Click a pin to navigate straight to that boss.
+
+  ![The route through Wailing Caverns on the dungeon map, with the tracker](docs/images/map-wailing-caverns.jpg)
+
+  ![Naxxramas mid-run: finished wings ticked off, the leg to Anub'Rekhan highlighted](docs/images/map-naxxramas.jpg)
 - **Path to follow.** The route ahead, drawn three ways. Each can be turned on or off:
   - **On the minimap:** gold dots along the route, with a ring for the boss or teleporter at the end.
   - **HUD around your character:** a see-through radar in the middle of the screen, turned to the way you face, with chevrons along the path. You can set its size, range, opacity and height, and it hides in combat by default.
@@ -48,6 +54,8 @@ InstanceGPS doesn't need any other addons or libraries.
   - NPCs to talk to, with the gossip line to pick: Majordomo Executus, Barrett Ramsey, Arthas in The Culling of Stratholme;
   - escorts and events: Brann in Halls of Stone, Thrall in Old Hillsbrad, the Disciple of Naralex, the Zul'Farrak prisoners;
   - groups to kill to open a door: the Stratholme ziggurats, the Dire Maul pylons.
+
+  ![Hints on the arrow and the 3D path view: the Gluth slime pipe and the Naxxramas portal](docs/images/hints.png)
 - **Hard-mode routes (off by default).** Where a hard mode changes the way through an instance, the route can follow it instead. So far that's The Obsidian Sanctum: straight to Sartharion with the three drakes left up.
 - **Kill statistics.** `/igps stats` shows your lifetime kills of each boss per difficulty, read from your achievement statistics. The tracker shows the same count when you hover over a boss. Every Wrath boss has a statistic; in Classic and Burning Crusade only the raid bosses and some dungeon bosses do.
 - **Progress that survives logging out and zoning.** A 5-man run starts over when the instance is reset or a new group forms. Raid and heroic kills follow your lockout. The ↻ button on the tracker starts a new run by hand, and `/igps saved` lists your lockouts with the bosses you killed.
@@ -63,6 +71,8 @@ InstanceGPS doesn't need any other addons or libraries.
 | Move frames | Drag the tracker title or the arrow (`/igps lock` to lock them) |
 
 The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance. InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow me" in the menu turns it back on.
+
+![The options panel: Interface > AddOns > InstanceGPS](docs/images/options.png)
 
 ## Commands
 
