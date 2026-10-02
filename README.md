@@ -80,6 +80,7 @@ No module for your server? Anyone can make one, without programming tools: see [
 | Switch wing or route | Click the "Route:" line in the tracker, or `/igps route library` |
 | Options | Interface > AddOns > InstanceGPS (`/igps options`), or right-click the tracker title or the arrow |
 | Move frames | Drag the tracker title or the arrow (`/igps lock` to lock them) |
+| Use it only in some instances | Interface > AddOns > InstanceGPS > Instances (`/igps instances`) ticks the instances it works in; in one you're in, `/igps off` or the menu's "Off in ..." |
 
 The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance. InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow me" in the menu turns it back on.
 
@@ -114,6 +115,8 @@ Detours that come back to where they left (a dead end, running back for loot) ar
 /igps view          toggle the 3D path view
 /igps lock          lock / unlock frames
 /igps resetpos      reset frame positions
+/igps off | on      switch InstanceGPS off or back on in this instance
+/igps instances     choose the instances InstanceGPS works in
 /igps record start            record a route (each boss kill ends a stretch)
 /igps record pause | resume   step off the route and back
 /igps record mark <text>      a hint at this spot

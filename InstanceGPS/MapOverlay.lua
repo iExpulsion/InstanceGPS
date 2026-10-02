@@ -82,7 +82,7 @@ function DN:RefreshMap()
 			if i.file and i.file:lower() == file:lower() then inst = i break end
 		end
 	end
-	if not inst then return end
+	if not inst or self:IsOff(inst.mapId) then return end
 	local level = GetCurrentMapDungeonLevel() or 0
 	if not inst.floors[level] then
 		if inst.floors[0] then level = 0 else return end

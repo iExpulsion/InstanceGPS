@@ -3,7 +3,7 @@ local _, ns = ...
 local DN = ns.DN
 local floor = math.floor
 
-StaticPopupDialogs["DUNGEONNAV_RESET"] = {
+StaticPopupDialogs["INSTANCEGPS_RESET"] = {
 	text = "Reset InstanceGPS progress for this instance?\n(The instance itself is not reset.)",
 	button1 = YES, button2 = NO,
 	OnAccept = function() DN:ResetRun() end,
@@ -65,8 +65,14 @@ function DN:ShowMenu(anchor)
 	end
 	if inst then
 		table.insert(menu, { text = "Reset progress for this run", notCheckable = true,
-			func = function() StaticPopup_Show("DUNGEONNAV_RESET") end })
+			func = function() StaticPopup_Show("INSTANCEGPS_RESET") end })
+		table.insert(menu, { text = "Off in " .. inst.name, notCheckable = true,
+			func = function() DN:SetOff(inst.mapId, true) end })
+	elseif self.offHere then
+		table.insert(menu, { text = "On in " .. self.offHere.name, notCheckable = true,
+			func = function() DN:SetOff(DN.offHere.mapId, false) end })
 	end
+	table.insert(menu, { text = "Instances...", notCheckable = true, func = function() DN:OpenOptions(true) end })
 	table.insert(menu, { text = "All options...", notCheckable = true, func = function() DN:OpenOptions() end })
 	table.insert(menu, { text = CLOSE, notCheckable = true, func = function() CloseDropDownMenus() end })
 	EasyMenu(menu, menuFrame, anchor or "cursor", 0, 0, "MENU")
@@ -174,7 +180,7 @@ SlashCmdList.INSTANCEGPS = function(msg)
 		o.lockFrames = not o.lockFrames
 		DN:Print("Frames %s.", o.lockFrames and "locked" or "unlocked")
 	elseif cmd == "reset" then
-		if DN.inst then StaticPopup_Show("DUNGEONNAV_RESET") else DN:Print("Not in a dungeon or raid.") end
+		if DN.inst then StaticPopup_Show("INSTANCEGPS_RESET") else DN:Print("Not in a dungeon or raid.") end
 	elseif cmd == "route" or cmd == "wing" then
 		if not DN.inst then return end
 		local inst = DN.inst
@@ -202,6 +208,16 @@ SlashCmdList.INSTANCEGPS = function(msg)
 		ReloadUI()
 	elseif cmd == "record" then
 		DN:RecordCommand(rest)
+	elseif cmd == "off" or cmd == "on" then
+		local here = DN.inst or DN.offHere
+		if not here then
+			DN:Print("Not in a dungeon or raid. Interface > AddOns > InstanceGPS > Instances lists them all.")
+		else
+			DN:SetOff(here.mapId, cmd == "off")
+			if cmd == "on" then DN:Print("On in %s.", here.name) end
+		end
+	elseif cmd == "instances" then
+		DN:OpenOptions(true)
 	else
 		DN:Print("%s commands:", DN:Title())
 		local lines = {
@@ -217,6 +233,8 @@ SlashCmdList.INSTANCEGPS = function(msg)
 			"/igps options - all options (Interface > AddOns > InstanceGPS)",
 			"/igps minimap | hud | view - toggle the path on the minimap / around you / 3D view",
 			"/igps lock - lock/unlock frames",  "/igps resetpos - reset frame positions",
+			"/igps off | on - switch InstanceGPS off or back on in this instance",
+			"/igps instances - choose the instances InstanceGPS works in",
 			"/igps record - record a route to fix or add one for your server (/igps record for more)",
 		}
 		for _, l in ipairs(lines) do DEFAULT_CHAT_FRAME:AddMessage("   " .. l) end
@@ -321,13 +339,90 @@ panel:SetScript("OnShow", function()
 	for _, c in ipairs(controls) do c.Refresh() end
 end)
 
+-------------------------------------------------------------------------------- Instances panel
+
+-- Which instances InstanceGPS works in: a tick per instance (dungeons, then raids). The list is made
+-- the first time it's shown, once server modules have added or removed instances.
+local instPanel = CreateFrame("Frame", "InstanceGPSInstances", UIParent)
+instPanel.name = "Instances"
+instPanel.parent = "InstanceGPS"
+instPanel:Hide()
+local instChecks = {}
+
+local function SetAll(on)
+	DN.db.off = {}
+	if not on then
+		for mapId in pairs(ns.Instances) do DN.db.off[mapId] = true end
+	end
+	DN:DetectInstance()
+	for _, cb in ipairs(instChecks) do cb:SetChecked(on) end
+end
+
+local function BuildInstances()
+	local t = instPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	t:SetPoint("TOPLEFT", 16, -16)
+	t:SetText("Instances")
+	local sub = instPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+	sub:SetPoint("TOPLEFT", 16, -40)
+	sub:SetWidth(560)
+	sub:SetJustifyH("LEFT")
+	sub:SetText("InstanceGPS works in the instances ticked here. In the others it stays out of the way, as if you weren't in an instance.")
+	for i, on in ipairs({ true, false }) do
+		local b = CreateFrame("Button", nil, instPanel, "UIPanelButtonTemplate")
+		b:SetSize(80, 22)
+		b:SetPoint("TOPRIGHT", -16 - (2 - i) * 86, -14)
+		b:SetText(on and "All on" or "All off")
+		b:SetScript("OnClick", function() SetAll(on) end)
+	end
+	local scroll = CreateFrame("ScrollFrame", "InstanceGPSInstancesScroll", instPanel, "UIPanelScrollFrameTemplate")
+	scroll:SetPoint("TOPLEFT", 12, -64)
+	scroll:SetPoint("BOTTOMRIGHT", -32, 12)
+	local child = CreateFrame("Frame", nil, scroll)
+	child:SetSize(560, 10)
+	scroll:SetScrollChild(child)
+	local groups = { { "party", "Dungeons" }, { "raid", "Raids" } }
+	local y = 0
+	for _, g in ipairs(groups) do
+		local list = {}
+		for mapId, inst in pairs(ns.Instances) do
+			if inst.type == g[1] then list[#list + 1] = { mapId = mapId, name = inst.name } end
+		end
+		table.sort(list, function(a, b) return a.name < b.name end)
+		local h = child:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		h:SetPoint("TOPLEFT", 4, -y)
+		h:SetText(g[2])
+		y = y + 20
+		local rows = math.ceil(#list / 2)
+		for k, e in ipairs(list) do
+			local col, row = (k - 1) >= rows and 1 or 0, (k - 1) % rows
+			local name = "InstanceGPSInst_" .. e.mapId
+			local cb = CreateFrame("CheckButton", name, child, "InterfaceOptionsCheckButtonTemplate")
+			cb:SetPoint("TOPLEFT", col * 280, -(y + row * 24))
+			_G[name .. "Text"]:SetText(e.name)
+			cb.mapId = e.mapId
+			cb:SetScript("OnClick", function(self) DN:SetOff(self.mapId, not self:GetChecked()) end)
+			instChecks[#instChecks + 1] = cb
+		end
+		y = y + rows * 24 + 12
+	end
+	child:SetHeight(y)
+end
+
+instPanel:SetScript("OnShow", function()
+	if #instChecks == 0 then BuildInstances() end
+	for _, cb in ipairs(instChecks) do cb:SetChecked(not DN:IsOff(cb.mapId)) end
+end)
+
 DN:On("LOADED", function()
 	BuildPanel()
 	InterfaceOptions_AddCategory(panel)
+	InterfaceOptions_AddCategory(instPanel)
 end)
 
-function DN:OpenOptions()
+-- toInstances: open the Instances page instead of the main one
+function DN:OpenOptions(toInstances)
+	local p = toInstances and instPanel or panel
 	-- called twice: the first call only opens the frame on some clients
-	InterfaceOptionsFrame_OpenToCategory(panel)
-	InterfaceOptionsFrame_OpenToCategory(panel)
+	InterfaceOptionsFrame_OpenToCategory(p)
+	InterfaceOptionsFrame_OpenToCategory(p)
 end

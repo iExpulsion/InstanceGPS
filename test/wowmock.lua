@@ -25,6 +25,8 @@ local function Stub(name)
 		elseif k == "ClearAllPoints" then f = function(self) self.point = nil end
 		elseif k == "SetTexCoord" then f = function(self, ...) self.tc = { ... } end
 		elseif k == "SetVertexColor" then f = function(self, r, g, b, a) self.color = { r, g, b, a or 1 } end
+		elseif k == "SetChecked" then f = function(self, v) self.checked = v and 1 or nil end
+		elseif k == "GetChecked" then f = function(self) return self.checked end
 		elseif k == "SetText" then f = function(self, v) self.text = v end
 		elseif k == "GetText" then f = function(self) return self.text end
 		elseif k == "CreateTexture" then f = function(self, ...)

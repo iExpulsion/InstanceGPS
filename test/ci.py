@@ -22,6 +22,9 @@ CHECKS = [
     # the overridden routes walk cleanly (rough routes to the custom and the moved boss)
     ("override walk Lower", "scenario.lua", dict(OVERRIDE, DN_MAP="229", DN_ROUTE="1"), ["route walk done, 0 waypoint problems"]),
     ("override walk Upper", "scenario.lua", dict(OVERRIDE, DN_MAP="229", DN_ROUTE="2"), ["route walk done, 0 waypoint problems"]),
+    ("instances", "instances.lua", {},
+     ["off:\ttrue\ttracker hidden:\ttrue\tarrow hidden:\ttrue", "stays off:\ttrue", "back on:\ttrue\tkill kept:\ttrue",
+      "listed:\ttrue\toff unticked:\ttrue", "ticked back on:\ttrue"]),
     ("recorder", "recorder.lua", {},
      ["leg recorded:\ttrue\ttrue\ttrue", "detour cut:\ttrue", "mark kept:\ttrue", "export loads:\ttrue",
       "export registers:\ttrue", "leg replaced:\ttrue", "mark exported as hint:\ttrue"]),
