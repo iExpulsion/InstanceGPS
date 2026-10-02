@@ -1202,7 +1202,7 @@ ns.Instances = {
   bosses={
    {name="Northrend Beasts", id=629, diff=15, npcs={34797,35447,35448,35449}, stats={[1]={4028},[2]={4031},[3]={4030},[4]={4029}}, x=563.7, y=139.6, z=393.8, f=2},
    {name="Lord Jaraxxus", id=633, diff=15, npcs={34780,35216,35268,35269}, stats={[1]={4032},[2]={4034},[3]={4033},[4]={4035}}, x=563.7, y=139.6, z=393.8, f=2},
-   {name="Faction Champions", id=637, diff=15, npcs={}, spell=68184, stats={[1]={4036},[2]={4038},[3]={4037},[4]={4039}}, x=563.7, y=139.6, z=393.8, f=2},
+   {name="Faction Champions", id=637, diff=15, npcs={}, spell=68184, yells={"A shallow and tragic victory. We are weaker as a whole from the losses suffered today. Who but the Lich King could benefit from such foolishness? Great warriors have lost their lives. And for what? The true threat looms ahead - the Lich King awaits us all in death."}, stats={[1]={4036},[2]={4038},[3]={4037},[4]={4039}}, x=563.7, y=139.6, z=393.8, f=2},
    {name="Val'kyr Twins", id=641, diff=15, npcs={34496,34497,35347,35348,35349,35350,35351,35352}, all={{34496,35347,35348,35349},{34497,35350,35351,35352}}, stats={[1]={4040},[2]={4042},[3]={4041},[4]={4043}}, x=563.7, y=139.6, z=393.8, f=2},
    {name="Anub'arak", id=645, diff=15, npcs={34564,34566,35615,35616}, stats={[1]={4044,4045},[2]={4046,4047}}, x=785.9, y=133.4, z=142.6, f=4},
   },

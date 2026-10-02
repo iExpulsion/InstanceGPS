@@ -368,6 +368,10 @@ KILL_YELLS = {
     (595, "Mal'ganis"): [(26533, 10)],
     (599, 'Tribunal of Ages'): [(28070, 29)],                       # Brann, end of the event
     (650, 'Argent Champion'): [(34928, 6), (35119, 6)],             # Paletress / Eadric defeated
+    # Tirion's "A shallow and tragic victory..." once the last champion dies. The credit spell
+    # (68184) is cast by Tirion on himself, up in the stands, and doesn't always reach the
+    # combat log; the yell is the same for both factions and every difficulty.
+    (649, 'Faction Champions'): [(34996, 12)],
 }
 
 # Arrival radius (yards) for fights that don't happen at a fixed spot.
