@@ -22,6 +22,16 @@ Without a map patch, everything works in Wrath instances. In Classic and Burning
 
 InstanceGPS doesn't need any other addons or libraries.
 
+### Server modules
+
+InstanceGPS follows AzerothCore's version of each instance. If your server changes some (moved or custom bosses, different events), it may have a module that adjusts InstanceGPS for it. Install it next to InstanceGPS, the same way.
+
+| Server | Module |
+|---|---|
+| Synastria | [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria) |
+
+No module for your server? Anyone can make one, without programming tools: see [docs/MODULES.md](docs/MODULES.md).
+
 ## What you get
 
 - **Boss tracker.** A small window that lists the instance's bosses in route order. It shows:
@@ -58,6 +68,7 @@ InstanceGPS doesn't need any other addons or libraries.
   ![Hints on the arrow and the 3D path view: the Gluth slime pipe and the Naxxramas portal](docs/images/hints.png)
 - **Hard-mode routes (off by default).** Where a hard mode changes the way through an instance, the route can follow it instead. So far that's The Obsidian Sanctum: straight to Sartharion with the three drakes left up.
 - **Kill statistics.** `/igps stats` shows your lifetime kills of each boss per difficulty, read from your achievement statistics. The tracker shows the same count when you hover over a boss. Every Wrath boss has a statistic; in Classic and Burning Crusade only the raid bosses and some dungeon bosses do.
+- **Your server's own changes.** A server module can remove bosses or whole instances, add custom bosses, move them, change hints or replace a route, and InstanceGPS follows it. `/igps record` records a route as you walk it, for a module or a bug report.
 - **Progress that survives logging out and zoning.** A 5-man run starts over when the instance is reset or a new group forms. Raid and heroic kills follow your lockout. The ↻ button on the tracker starts a new run by hand, and `/igps saved` lists your lockouts with the bosses you killed.
 
 ## Using it
@@ -73,6 +84,17 @@ InstanceGPS doesn't need any other addons or libraries.
 The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance. InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow me" in the menu turns it back on.
 
 ![The options panel: Interface > AddOns > InstanceGPS](docs/images/options.png)
+
+## Route wrong on your server?
+
+If a route sends you through a wall, a closed door or the long way round, record the right one:
+
+1. `/igps record start` where the wrong stretch begins (at the entrance, or right after a boss).
+2. Walk the way you'd want others to go. Each boss kill ends a stretch; `/igps record pause` and `resume` let you step off the route to loot or regroup, and `/igps record mark <text>` leaves a hint at a spot ("Pull the lever").
+3. `/igps record show` draws what you recorded on the map, in green. `/igps record undo` or `drop` takes back a mistake.
+4. `/igps record export` and copy the text (Ctrl+A, Ctrl+C).
+
+Detours that come back to where they left (a dead end, running back for loot) are cut out by themselves, and the wobble is straightened. Send the export to your server's module, or [open an issue](../../issues) with it, the instance, and a screenshot of the map.
 
 ## Commands
 
@@ -92,20 +114,23 @@ The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock 
 /igps view          toggle the 3D path view
 /igps lock          lock / unlock frames
 /igps resetpos      reset frame positions
-/igps record        record a route for your server (see below)
+/igps record start  record a route (each boss kill ends a stretch)
+/igps record pause | resume | stop
+/igps record mark <text>     a hint at this spot
+/igps record undo | drop     take back the last stretch | the last leg
+/igps record show | export   the recording on the map | as text to copy
 ```
 
 ## Notes
 
 - Routes are worked out from AzerothCore's navigation data and world database, so they fit AzerothCore-based 3.3.5 servers. A server that moves bosses or changes an instance may get some wrong routes.
-- **Server modules:** where a server changes instances, a module (`InstanceGPS_<Server>`) carries the changes. Install it next to InstanceGPS if your server has one. Anyone can make one for their server: it's a single Lua file, and `/igps record` records routes for it as you walk them. See [docs/MODULES.md](docs/MODULES.md). Modules so far: [Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria).
 - Classic and Burning Crusade dungeon maps are from [WoW Dungeon Maps](https://github.com/Trimitor/WDM-addons).
 
 ## Building from source
 
 The routes, hints and boss data in `InstanceGPS/Data.lua` are generated from the 3.3.5a client files and AzerothCore's navmesh and world database. See [docs/BUILDING.md](docs/BUILDING.md) to rebuild them or fix a route, and [docs/ROUTES.md](docs/ROUTES.md) for how routes are worked out.
 
-Found a route that doesn't work? Open an issue with the instance, the bosses involved and a screenshot of the map.
+Found a route that doesn't work? See [Route wrong on your server?](#route-wrong-on-your-server) above.
 
 ## License
 
