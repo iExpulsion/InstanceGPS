@@ -354,8 +354,8 @@ local function ViewIdle()
 	local b, text = DN:NextBoss(), nil
 	if not b then
 		local run = DN.run
-		text = run and run.cleared and ("All bosses down|n|cffffffffCleared in %s|r"):format(DN.FormatTime(run.cleared))
-			or "All bosses down"
+		text = run and run.cleared and ("All Bosses Down|n|cffffffffCleared in %s|r"):format(DN.FormatTime(run.cleared))
+			or "All Bosses Down"
 	elseif not b.x then
 		text = b.name .. "|n|cffffffffno known position for this fight|r"
 	else

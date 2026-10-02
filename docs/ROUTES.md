@@ -1,4 +1,4 @@
-# How the routes are made
+# How the Routes Are Made
 
 `Data.lua` is generated offline by `tools/build.py` from the 3.3.5a client files and the AzerothCore world database. The builder works in these steps:
 

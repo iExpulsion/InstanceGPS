@@ -1,10 +1,10 @@
-# Server modules
+# Server Modules
 
 InstanceGPS is built from AzerothCore's data. Where your server differs (a boss it moved, a custom boss, a door that works differently, an instance it doesn't have), a **server module** carries the difference. It's a small addon of its own that players of your server install next to InstanceGPS. Nothing in it needs any tools: it's one Lua file you write by hand, or record in game.
 
 Modules live in repos of their own. [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria) is one to copy: the addon folder, a check for the file, and a workflow that releases a zip when its version goes up.
 
-## Making one
+## Making One
 
 1. Make a folder `Interface\AddOns\InstanceGPS_<YourServer>` with two files.
 
@@ -27,7 +27,7 @@ Modules live in repos of their own. [InstanceGPS-Synastria](https://github.com/i
 
 Instances are keyed by their map ID: `[229]` is Blackrock Spire. The map IDs are the `[n] = {` keys in `InstanceGPS/Data.lua`, next to each instance's name.
 
-## What you can change
+## What You Can Change
 
 ```lua
 InstanceGPS:Override("My Server", {
@@ -57,7 +57,7 @@ InstanceGPS:Override("My Server", {
         -- remove built-in hints, by how their text starts
         removeHints = { "Kill every Blackhand" },
 
-        -- a recorded way to a boss, from the previous one (see "Recording routes")
+        -- a recorded way to a boss, from the previous one (see "Recording Routes")
         paths = {
             ["The Beast"] = { from = "Warchief Rend Blackhand", points = { 90.1, -440.2, 3, 92.5, -455.0, 3 } },
         },
@@ -71,7 +71,7 @@ InstanceGPS:Override("My Server", {
 
 **Moved and custom bosses** get a rough route straight away: along InstanceGPS's route to its nearest point, then straight to the boss and back. Where that cuts through a wall, record the way (below) or have the module's routes built (further down).
 
-## Recording routes
+## Recording Routes
 
 In game, inside the instance:
 
@@ -90,7 +90,7 @@ When a leg ends it's cleaned up. Detours that come back to where they left (a de
 
 A recording follows the way you walked it, so walk the way you'd want others to go.
 
-## Built routes (optional)
+## Built Routes (Optional)
 
 The game can only give rough routes to moved and custom bosses. InstanceGPS's own routes are worked out on AzerothCore's navmesh, and the same tools can do that for a module. That needs the build setup in [BUILDING.md](BUILDING.md): a 3.3.5 client, an AzerothCore checkout and its navmesh. Then, from InstanceGPS's `tools/`, pointing at your module (its repo or its addon folder):
 
@@ -110,7 +110,7 @@ It reads the same `Overrides.lua`, routes every instance whose bosses it changes
 
 These need a height `z`, which `.gps` shows.
 
-## Sharing it
+## Sharing It
 
 - **Your own repo:** copy [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria), rename the folder and the `.toc`, and put your changes in `Overrides.lua`. Raising `## Version` and pushing releases a zip. Its check runs `tools/check.py` against InstanceGPS's latest data, so a typo in a boss name or a key is caught before players see it.
 - **A module that already exists:** send it a pull request, saying where each change comes from (seen in game, a patch note).

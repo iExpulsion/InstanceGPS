@@ -11,7 +11,7 @@ Type `/igps` for the tracker and `/igps help` for every command.
 1. Download `InstanceGPS-<version>.zip` from the [latest release](../../releases/latest) and extract it into `World of Warcraft\Interface\AddOns`. You should end up with `Interface\AddOns\InstanceGPS\InstanceGPS.toc`.
 2. Restart the game, or `/reload` if you're already logged in.
 
-### Recommended: a dungeon map patch
+### Recommended: A Dungeon Map Patch
 
 The 3.3.5 client has no maps for Classic and Burning Crusade instances, and without a map the game doesn't tell addons where you are inside them. Install one of these to get the arrow and the path views there:
 
@@ -22,7 +22,7 @@ Without a map patch, everything works in Wrath instances. In Classic and Burning
 
 InstanceGPS doesn't need any other addons or libraries.
 
-### Server modules
+### Server Modules
 
 InstanceGPS follows AzerothCore's version of each instance. If your server changes some (moved or custom bosses, different events), it may have a module that adjusts InstanceGPS for it. Install it next to InstanceGPS, the same way.
 
@@ -32,7 +32,7 @@ InstanceGPS follows AzerothCore's version of each instance. If your server chang
 
 No module for your server? Anyone can make one, without programming tools: see [docs/MODULES.md](docs/MODULES.md).
 
-## What you get
+## What You Get
 
 - **Boss tracker.** A small window that lists the instance's bosses in route order. It shows:
   - which bosses are dead, with the run time of each kill;
@@ -71,7 +71,7 @@ No module for your server? Anyone can make one, without programming tools: see [
 - **Your server's own changes.** A server module can remove bosses or whole instances, add custom bosses, move them, change hints or replace a route, and InstanceGPS follows it. `/igps record` records a route as you walk it, for a module or a bug report.
 - **Progress that survives logging out and zoning.** A 5-man run starts over when the instance is reset or a new group forms. Raid and heroic kills follow your lockout. The ↻ button on the tracker starts a new run by hand, and `/igps saved` lists your lockouts with the bosses you killed.
 
-## Using it
+## Using It
 
 | Action | How |
 |---|---|
@@ -82,11 +82,11 @@ No module for your server? Anyone can make one, without programming tools: see [
 | Move frames | Drag the tracker title or the arrow (`/igps lock` to lock them) |
 | Navigation only in some instances | Interface > AddOns > InstanceGPS > Instances (`/igps instances`): tick instances on or off by expansion. Where it's off there's no arrow, path or hints, but the boss tracker still runs (an option there hides it too). In the instance you're in: `/igps off` / `on`, or "Navigation in ..." in the menu |
 
-The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance. InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow me" in the menu turns it back on.
+The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance. InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow Me" in the menu turns it back on.
 
 ![The options panel: Interface > AddOns > InstanceGPS](docs/images/options.png)
 
-## Route wrong on your server?
+## Route Wrong on Your Server?
 
 If a route sends you through a wall, a closed door or the long way round, record the right one:
 
@@ -130,11 +130,11 @@ Detours that come back to where they left (a dead end, running back for loot) ar
 - Routes are worked out from AzerothCore's navigation data and world database, so they fit AzerothCore-based 3.3.5 servers. A server that moves bosses or changes an instance may get some wrong routes.
 - Classic and Burning Crusade dungeon maps are from [WoW Dungeon Maps](https://github.com/Trimitor/WDM-addons).
 
-## Building from source
+## Building from Source
 
 The routes, hints and boss data in `InstanceGPS/Data.lua` are generated from the 3.3.5a client files and AzerothCore's navmesh and world database. See [docs/BUILDING.md](docs/BUILDING.md) to rebuild them or fix a route, and [docs/ROUTES.md](docs/ROUTES.md) for how routes are worked out.
 
-Found a route that doesn't work? See [Route wrong on your server?](#route-wrong-on-your-server) above.
+Found a route that doesn't work? See [Route Wrong on Your Server?](#route-wrong-on-your-server) above.
 
 ## License
 

@@ -61,7 +61,7 @@ python suite.py [mapid ...]          walk every route for each faction and diffi
 python hintcheck.py                  check every hint shows during the walks (needs a local build cache)
 ```
 
-## Server modules
+## Server Modules
 
 InstanceGPS itself is built only from AzerothCore. A server's differences live in a module, an addon `InstanceGPS_<Server>` in a repo of its own, whose `Overrides.lua` calls `InstanceGPS:Override`. [MODULES.md](MODULES.md) has the format; anyone can write one without these tools, and the game applies it itself (`InstanceGPS/Override.lua`), with rough routes to moved and custom bosses.
 

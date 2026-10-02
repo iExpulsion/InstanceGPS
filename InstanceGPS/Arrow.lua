@@ -73,7 +73,7 @@ arrow:SetScript("OnUpdate", function(self, elapsed)
 		SetRotation(tex, 0)
 		local b = DN:NextBoss()
 		if not b then
-			title:SetText(DN.inst and "All bosses down" or "")
+			title:SetText(DN.inst and "All Bosses Down" or "")
 			sub:SetText("")
 		else
 			title:SetText(b.name)

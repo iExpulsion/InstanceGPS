@@ -30,28 +30,28 @@ function DN:ShowMenu(anchor)
 	local o = self.opt
 	local menu = {
 		{ text = "InstanceGPS", isTitle = true, notCheckable = true },
-		{ text = "Show arrow", checked = o.arrow, func = Toggle("arrow", ApplyVisibility), keepShownOnClick = true },
-		{ text = "Show boss tracker", checked = o.tracker, func = Toggle("tracker", ApplyVisibility), keepShownOnClick = true },
-		{ text = "Route on the dungeon map", checked = o.mapOverlay, func = Toggle("mapOverlay", ApplyVisibility), keepShownOnClick = true },
-		{ text = "Path on the minimap", checked = o.pathMinimap, func = Toggle("pathMinimap", ApplyVisibility), keepShownOnClick = true },
-		{ text = "Path HUD around the character", checked = o.pathHud, func = Toggle("pathHud", ApplyVisibility), keepShownOnClick = true },
-		{ text = "3D path view", checked = o.pathView, func = Toggle("pathView", ApplyVisibility), keepShownOnClick = true },
-		{ text = "Hard-mode routes", checked = o.hardModes, func = Toggle("hardModes", function() DN:ApplyHardModes() ApplyVisibility() end), keepShownOnClick = true },
-		{ text = "Announce kills in chat", checked = o.announce, func = Toggle("announce"), keepShownOnClick = true },
-		{ text = "Lock frames", checked = o.lockFrames, func = Toggle("lockFrames"), keepShownOnClick = true },
+		{ text = "Show Arrow", checked = o.arrow, func = Toggle("arrow", ApplyVisibility), keepShownOnClick = true },
+		{ text = "Show Boss Tracker", checked = o.tracker, func = Toggle("tracker", ApplyVisibility), keepShownOnClick = true },
+		{ text = "Route on the Dungeon Map", checked = o.mapOverlay, func = Toggle("mapOverlay", ApplyVisibility), keepShownOnClick = true },
+		{ text = "Path on the Minimap", checked = o.pathMinimap, func = Toggle("pathMinimap", ApplyVisibility), keepShownOnClick = true },
+		{ text = "Path HUD Around the Character", checked = o.pathHud, func = Toggle("pathHud", ApplyVisibility), keepShownOnClick = true },
+		{ text = "3D Path View", checked = o.pathView, func = Toggle("pathView", ApplyVisibility), keepShownOnClick = true },
+		{ text = "Hard-Mode Routes", checked = o.hardModes, func = Toggle("hardModes", function() DN:ApplyHardModes() ApplyVisibility() end), keepShownOnClick = true },
+		{ text = "Announce Kills in Chat", checked = o.announce, func = Toggle("announce"), keepShownOnClick = true },
+		{ text = "Lock Frames", checked = o.lockFrames, func = Toggle("lockFrames"), keepShownOnClick = true },
 	}
 	local scales = {}
 	for _, s in ipairs({ 0.75, 1, 1.25, 1.5 }) do
 		table.insert(scales, { text = ("%d%%"):format(s * 100), checked = o.arrowScale == s,
 			func = function() o.arrowScale = s ApplyVisibility() end })
 	end
-	table.insert(menu, { text = "Arrow size", hasArrow = true, notCheckable = true, menuList = scales })
+	table.insert(menu, { text = "Arrow Size", hasArrow = true, notCheckable = true, menuList = scales })
 	local tscales = {}
 	for _, s in ipairs({ 0.8, 0.9, 1, 1.1, 1.25 }) do
 		table.insert(tscales, { text = ("%d%%"):format(s * 100), checked = o.trackerScale == s,
 			func = function() o.trackerScale = s ApplyVisibility() end })
 	end
-	table.insert(menu, { text = "Tracker size", hasArrow = true, notCheckable = true, menuList = tscales })
+	table.insert(menu, { text = "Tracker Size", hasArrow = true, notCheckable = true, menuList = tscales })
 	local inst = self.inst
 	if inst and #inst.routes > 1 then
 		local routes = {}
@@ -59,19 +59,19 @@ function DN:ShowMenu(anchor)
 			table.insert(routes, { text = r.name or ("Route " .. i), checked = self.routeIndex == i,
 				func = function() DN:SetRoute(i, true) end })
 		end
-		table.insert(routes, { text = "Follow me (automatic)", checked = not self.routeManual,
+		table.insert(routes, { text = "Follow Me (Automatic)", checked = not self.routeManual,
 			func = function() DN.routeManual = false end })
-		table.insert(menu, { text = "Route / wing", hasArrow = true, notCheckable = true, menuList = routes })
+		table.insert(menu, { text = "Route / Wing", hasArrow = true, notCheckable = true, menuList = routes })
 	end
 	if inst then
-		table.insert(menu, { text = "Reset progress for this run", notCheckable = true,
+		table.insert(menu, { text = "Reset Progress for This Run", notCheckable = true,
 			func = function() StaticPopup_Show("INSTANCEGPS_RESET") end })
 		local off = self:IsOff(inst.mapId)
 		table.insert(menu, { text = "Navigation in " .. inst.name, checked = not off, keepShownOnClick = true,
 			func = function() DN:SetOff(inst.mapId, not DN:IsOff(inst.mapId)) end })
 	end
 	table.insert(menu, { text = "Instances...", notCheckable = true, func = function() DN:OpenOptions(true) end })
-	table.insert(menu, { text = "All options...", notCheckable = true, func = function() DN:OpenOptions() end })
+	table.insert(menu, { text = "All Options...", notCheckable = true, func = function() DN:OpenOptions() end })
 	table.insert(menu, { text = CLOSE, notCheckable = true, func = function() CloseDropDownMenus() end })
 	EasyMenu(menu, menuFrame, anchor or "cursor", 0, 0, "MENU")
 end
@@ -301,34 +301,34 @@ local function BuildPanel()
 	title:SetPoint("TOPLEFT", 16, -16)
 
 	Header("General", -46)
-	Check("arrow", "Navigation arrow", "Points along the route to the next boss.", 16, -64)
-	Check("tracker", "Boss tracker", "Bosses, kills and the run timer.", 16, -90)
-	Check("mapOverlay", "Route on the dungeon map", "Draws the route and numbered bosses on the world map.", 16, -116)
-	Check("announce", "Announce kills in chat", nil, 16, -142)
-	Check("hardModes", "Hard-mode routes",
+	Check("arrow", "Navigation Arrow", "Points along the route to the next boss.", 16, -64)
+	Check("tracker", "Boss Tracker", "Bosses, kills and the run timer.", 16, -90)
+	Check("mapOverlay", "Route on the Dungeon Map", "Draws the route and numbered bosses on the world map.", 16, -116)
+	Check("announce", "Announce Kills in Chat", nil, 16, -142)
+	Check("hardModes", "Hard-Mode Routes",
 		"Where a hard mode changes the way through an instance, follow it: in The Obsidian Sanctum, go straight to Sartharion and leave the drakes up.",
 		330, -168, function() DN:ApplyHardModes() end)
-	Check("lockFrames", "Lock frames", "Stops the arrow, tracker and 3D view from being dragged.", 16, -168)
-	Slider("arrowScale", "Arrow size", 0.5, 2, 0.05, "%.2f", 330, -74)
-	Slider("trackerScale", "Tracker size", 0.5, 2, 0.05, "%.2f", 330, -120)
+	Check("lockFrames", "Lock Frames", "Stops the arrow, tracker and 3D view from being dragged.", 16, -168)
+	Slider("arrowScale", "Arrow Size", 0.5, 2, 0.05, "%.2f", 330, -74)
+	Slider("trackerScale", "Tracker Size", 0.5, 2, 0.05, "%.2f", 330, -120)
 
-	Header("Path to follow", -206)
-	Check("pathMinimap", "Path on the minimap", "Dots along the route on the minimap, with the boss or teleporter at the end.", 16, -224)
-	Check("pathHud", "Path HUD around the character",
+	Header("Path to Follow", -206)
+	Check("pathMinimap", "Path on the Minimap", "Dots along the route on the minimap, with the boss or teleporter at the end.", 16, -224)
+	Check("pathHud", "Path HUD Around the Character",
 		"A see-through radar in the middle of the screen with the path under your feet, turned to the way you face.", 16, -250)
-	Check("hudHideCombat", "Hide the HUD in combat", nil, 40, -276)
-	Check("pathView", "3D path view",
+	Check("hudHideCombat", "Hide the HUD in Combat", nil, 40, -276)
+	Check("pathView", "3D Path View",
 		"A small panel showing the path ahead in perspective. Drag to move, right-click for options.", 16, -302)
-	Slider("hudSize", "HUD size", 160, 500, 10, "%d px", 330, -234)
-	Slider("hudRange", "HUD range", 15, 100, 5, "%d yd", 330, -280)
-	Slider("hudAlpha", "HUD opacity", 0.1, 1, 0.05, "%.2f", 330, -326)
-	Slider("hudOffset", "HUD height", -250, 250, 5, "%d", 330, -372)
-	Slider("pathViewScale", "3D view size", 0.6, 2, 0.05, "%.2f", 16, -352)
+	Slider("hudSize", "HUD Size", 160, 500, 10, "%d px", 330, -234)
+	Slider("hudRange", "HUD Range", 15, 100, 5, "%d yd", 330, -280)
+	Slider("hudAlpha", "HUD Opacity", 0.1, 1, 0.05, "%.2f", 330, -326)
+	Slider("hudOffset", "HUD Height", -250, 250, 5, "%d", 330, -372)
+	Slider("pathViewScale", "3D View Size", 0.6, 2, 0.05, "%.2f", 16, -352)
 
 	local reset = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
 	reset:SetSize(160, 22)
 	reset:SetPoint("TOPLEFT", 16, -410)
-	reset:SetText("Reset frame positions")
+	reset:SetText("Reset Frame Positions")
 	reset:SetScript("OnClick", function() DN.db.pos = {} ReloadUI() end)
 end
 
@@ -376,12 +376,12 @@ local function BuildInstances()
 	sub:SetJustifyH("LEFT")
 	sub:SetText("Navigation (the arrow, path views, route on the map and hints) works in the instances ticked here. "
 		.. "In the others the boss tracker still runs.")
-	SmallButton(instPanel, "All on", 70, function() SetMany(instChecks, true) end):SetPoint("TOPRIGHT", -92, -16)
-	SmallButton(instPanel, "All off", 70, function() SetMany(instChecks, false) end):SetPoint("TOPRIGHT", -16, -16)
+	SmallButton(instPanel, "All On", 70, function() SetMany(instChecks, true) end):SetPoint("TOPRIGHT", -92, -16)
+	SmallButton(instPanel, "All Off", 70, function() SetMany(instChecks, false) end):SetPoint("TOPRIGHT", -16, -16)
 	local name = "InstanceGPSOpt_offHidesTracker"
 	local hide = CreateFrame("CheckButton", name, instPanel, "InterfaceOptionsCheckButtonTemplate")
 	hide:SetPoint("TOPLEFT", 12, -66)
-	_G[name .. "Text"]:SetText("Hide the boss tracker too where navigation is off")
+	_G[name .. "Text"]:SetText("Also Hide the Boss Tracker Where Navigation Is Off")
 	hide:SetScript("OnClick", function(self)
 		DN.opt.offHidesTracker = self:GetChecked() and true or false
 		DN:NavChanged()
