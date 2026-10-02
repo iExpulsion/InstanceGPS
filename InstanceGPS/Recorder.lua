@@ -280,11 +280,8 @@ local function ShowExport(text)
 		edit:SetScript("OnEscapePressed", function() f:Hide() end)
 		scroll:SetScrollChild(edit)
 		f.edit = edit
-		local close = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-		close:SetSize(100, 22)
+		local close = DN.Button(f, CLOSE or "Close", function() f:Hide() end, 96)
 		close:SetPoint("BOTTOM", 0, 16)
-		close:SetText(CLOSE or "Close")
-		close:SetScript("OnClick", function() f:Hide() end)
 		exportFrame = f
 	end
 	exportFrame.edit:SetText(text)

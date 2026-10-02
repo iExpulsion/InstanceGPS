@@ -325,11 +325,8 @@ local function BuildPanel()
 	Slider("hudOffset", "HUD Height", -250, 250, 5, "%d", 330, -372)
 	Slider("pathViewScale", "3D View Size", 0.6, 2, 0.05, "%.2f", 16, -352)
 
-	local reset = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-	reset:SetSize(160, 22)
+	local reset = DN.Button(panel, "Reset Frame Positions", function() DN.db.pos = {} ReloadUI() end)
 	reset:SetPoint("TOPLEFT", 16, -410)
-	reset:SetText("Reset Frame Positions")
-	reset:SetScript("OnClick", function() DN.db.pos = {} ReloadUI() end)
 end
 
 panel:SetScript("OnShow", function()
@@ -359,11 +356,7 @@ local function SetMany(checks, on)
 end
 
 local function SmallButton(parent, text, w, fn)
-	local b = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-	b:SetSize(w, 20)
-	b:SetText(text)
-	b:SetScript("OnClick", fn)
-	return b
+	return DN.Button(parent, text, fn, w)
 end
 
 local function BuildInstances()
