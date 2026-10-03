@@ -29,9 +29,11 @@ CHECKS = [
     ("recorder", "recorder.lua", {},
      ["leg recorded:\ttrue\ttrue\ttrue", "detour cut:\ttrue", "mark kept:\ttrue", "export loads:\ttrue",
       "export registers:\ttrue", "leg replaced:\ttrue", "mark exported as hint:\ttrue"]),
-    # Faction Champions: Tirion's yell counts the kill, every difficulty, both factions
-    ("champions Alliance", "champions.lua", {"DN_FACTION": "Alliance"}, ["champions credited:\ttrue"]),
-    ("champions Horde", "champions.lua", {"DN_FACTION": "Horde"}, ["champions credited:\ttrue"]),
+    # Faction Champions / Grand Champions: Tirion's line counts the kill, every difficulty, both factions
+    ("champions Alliance", "champions.lua", {"DN_FACTION": "Alliance"},
+     ["\nchampions credited:\ttrue", "grand champions credited:\ttrue"]),
+    ("champions Horde", "champions.lua", {"DN_FACTION": "Horde"},
+     ["\nchampions credited:\ttrue", "grand champions credited:\ttrue"]),
 ]
 
 

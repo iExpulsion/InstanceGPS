@@ -394,6 +394,9 @@ KILL_YELLS = {
     (603, 'Algalon the Observer'): [(32871, 12)],
     (595, "Mal'ganis"): [(26533, 10)],
     (599, 'Tribunal of Ages'): [(28070, 29)],                       # Brann, end of the event
+    # Tirion's "Well fought!" after the Grand Champions yield. Their credit spell (68572) has no
+    # target either, so it can miss the combat log just like Faction Champions' below.
+    (650, 'Grand Champions'): [(33628, 24)],
     (650, 'Argent Champion'): [(34928, 6), (35119, 6)],             # Paletress / Eadric defeated
     # Tirion's "A shallow and tragic victory..." once the last champion dies. The credit spell
     # (68184) is cast by Tirion on himself, up in the stands, and doesn't always reach the
