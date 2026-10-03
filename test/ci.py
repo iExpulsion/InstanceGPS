@@ -29,11 +29,12 @@ CHECKS = [
     ("recorder", "recorder.lua", {},
      ["leg recorded:\ttrue\ttrue\ttrue", "detour cut:\ttrue", "mark kept:\ttrue", "export loads:\ttrue",
       "export registers:\ttrue", "leg replaced:\ttrue", "mark exported as hint:\ttrue"]),
-    # Faction Champions / Grand Champions: Tirion's line counts the kill, every difficulty, both factions
+    # Faction Champions / Grand Champions: Tirion's line counts the kill, every difficulty, both factions;
+    # The Black Knight's fake deaths don't
     ("champions Alliance", "champions.lua", {"DN_FACTION": "Alliance"},
-     ["\nchampions credited:\ttrue", "grand champions credited:\ttrue"]),
+     ["\nchampions credited:\ttrue", "grand champions credited:\ttrue", "black knight credited:\ttrue"]),
     ("champions Horde", "champions.lua", {"DN_FACTION": "Horde"},
-     ["\nchampions credited:\ttrue", "grand champions credited:\ttrue"]),
+     ["\nchampions credited:\ttrue", "grand champions credited:\ttrue", "black knight credited:\ttrue"]),
 ]
 
 

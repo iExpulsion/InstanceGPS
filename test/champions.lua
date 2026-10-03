@@ -39,3 +39,33 @@ for _, c in ipairs(CASES) do
 	end
 	print(c.label .. " credited:", ok == c.diffs)
 end
+
+-- Trial of the Champion's Black Knight: his first two "deaths" are feign deaths that the client
+-- logs as UNIT_DIED; only the real one (his death yell) counts
+do
+	local inst = NS.Instances[650]
+	local bk
+	for _, b in ipairs(inst.bosses) do if b.name == "The Black Knight" then bk = b end end
+	local ok = 0
+	for diff = 1, 2 do
+		MOCK.diff = diff
+		MOCK.inInstance, MOCK.itype, MOCK.instName, MOCK.mapFile = false, nil, nil, nil
+		MOCK.Fire("ZONE_CHANGED_NEW_AREA")
+		MOCK.inInstance, MOCK.itype, MOCK.instName, MOCK.mapFile = true, inst.type, inst.name, inst.file
+		local p = inst.routes[1].path
+		local lv = DN.FirstFloor(p[3]) or 0
+		MOCK.level = lv
+		MOCK.mx, MOCK.my = DN:WorldToMap(inst, lv, p[1], p[2])
+		MOCK.now = MOCK.now + 7200
+		MOCK.Fire("ZONE_CHANGED_NEW_AREA")
+		MOCK.Tick(0.3)
+		local npc = diff == 1 and 35451 or 35490
+		MOCK.Fire("COMBAT_LOG_EVENT_UNFILTERED", 0, "UNIT_DIED", nil, nil, 0, ("0xF130%06X000001"):format(npc), bk.name, 0)
+		local fake = DN:IsKilled(bk)
+		MOCK.Fire("CHAT_MSG_MONSTER_YELL", "No! I must not fail... again...", "The Black Knight")
+		local real = DN:IsKilled(bk)
+		print(("The Black Knight difficulty %d %s: after fake death %s, after death yell %s"):format(diff, MOCK.faction, tostring(fake), tostring(real)))
+		if DN.inst == inst and not fake and real then ok = ok + 1 end
+	end
+	print("black knight credited:", ok == 2)
+end

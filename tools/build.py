@@ -599,6 +599,10 @@ def build(D, fixups):
                     # e.g. Faction Champions: only some of the listed npcs spawn; rely on the credit spell
                     extra = set()
                     npcs = set()
+                elif fx.get('mode') == 'spell':
+                    # deaths don't count (e.g. The Black Knight's fake deaths): the credit spell / yell only
+                    extra = set()
+                    npcs = set()
                 elif fx.get('mode') == 'all':
                     b['mode'] = 'all'
                     b['groups'] = [sorted(diffs_of[parent.get(n, n)]) for n in lst]

@@ -831,10 +831,10 @@
    "npcs": [
     35451
    ],
-   "mode": "any",
+   "mode": "spell",
    "spell": 68663,
    "noDeath": false,
-   "note": "Black Knight: phases 1-2 are fake deaths (damage capped, boss_black_knight.cpp:130); real death in phase 3"
+   "note": "Black Knight: phases 1-2 are fake deaths (damage capped, boss_black_knight.cpp:130) that the client logs as UNIT_DIED; credit from the real death's spell / yell in phase 3"
   },
   "835": {
    "npcs": [

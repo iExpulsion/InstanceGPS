@@ -1218,7 +1218,7 @@ ns.Instances = {
   bosses={
    {name="Grand Champions", id=334, diff=3, npcs={34657,34701,34702,34703,34705,35569,35570,35571,35572,35617,36082,36083,36084,36085,36086,36087,36088,36089,36090,36091}, spell=68572, noDeath=true, friendly=true, yells={"Well fought! Your next challenge comes from the Crusade's own ranks. You will be tested against their considerable prowess."}, stats={[1]={4018,4048,4050,4052,4054},[2]={4019,4049,4051,4053,4055}}, statDiv=3, x=748.3, y=619.4, z=411.3, f=2},
    {name="Argent Champion", id=338, diff=3, npcs={34928,35119,35517,35518}, spell=68574, noDeath=true, friendly=true, yells={"Excellent work!","I yield! I submit. Excellent work. May I run away now?"}, stats={[1]={4022,4024},[2]={4023,4025}}, x=746.9, y=635.3, z=411.7, f=2},
-   {name="The Black Knight", id=340, diff=3, npcs={35451,35490}, spell=68663, stats={[1]={4026},[2]={4027}}, x=748.3, y=619.4, z=411.3, f=2},
+   {name="The Black Knight", id=340, diff=3, npcs={}, spell=68663, yells={"No! I must not fail... again..."}, stats={[1]={4026},[2]={4027}}, x=748.3, y=619.4, z=411.3, f=2},
   },
   routes={
    {order={1,2,3}, stops={5,7,9}, length=179,

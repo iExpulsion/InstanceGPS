@@ -398,6 +398,7 @@ KILL_YELLS = {
     # target either, so it can miss the combat log just like Faction Champions' below.
     (650, 'Grand Champions'): [(33628, 24)],
     (650, 'Argent Champion'): [(34928, 6), (35119, 6)],             # Paletress / Eadric defeated
+    (650, 'The Black Knight'): [(35451, 7)],                        # "No! I must not fail... again..."
     # Tirion's "A shallow and tragic victory..." once the last champion dies. The credit spell
     # (68184) is cast by Tirion on himself, up in the stands, and doesn't always reach the
     # combat log; the yell is the same for both factions and every difficulty.
