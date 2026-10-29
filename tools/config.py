@@ -137,7 +137,12 @@ PRECEDENCE = {
 }
 
 TELEPORTS = {
-    603: {'clique': ['Ulduar Teleporter']},
+    603: {'clique': ['Ulduar Teleporter'],
+          # the tram (194675) runs from the Conservatory's platform to the Call Tram console on Mimiron's
+          # side (194912); Activate Tram (194437) sets instance data 710, Call Tram (194914) clears it
+          'oneway': [((2307.0, 284.6, 424.3), (2338.3, 2565.1, 419.2), [],
+                      'Board the Tram and click Activate Tram to ride to Mimiron. '
+                      'If the tram is gone, click Call Tram on the platform first.')]},
     631: {'clique': ['Scourge Transporter'],
           # the Frozen Throne pad is a Scourge Transporter too, but only leads to the Lich King
           'not_in_network': [(4356.93, 2769.41, 355.955)],
@@ -239,12 +244,17 @@ TELEPORT_UNLOCK = {
         ((4356.93, 2769.41, 355.955), ['Deathbringer Saurfang']),           # Frozen Throne pad (Upper Spire)
     ],
     603: [  # conditions for gossip menu 10389
+        # Formation Grounds is always offered, but Flame Leviathan is fought in vehicles boarded at
+        # the Base Camp, and a vehicle can't use the teleporter: drive there
+        ((131.248, -35.3802, 409.804), ['Flame Leviathan']),
         ((553.233, -12.3247, 409.679), ['Flame Leviathan']),                # Colossal Forge
         ((926.292, -11.4635, 418.595), ['XT-002 Deconstructor']),           # Scrapyard
         ((1498.05, -24.3509, 420.966), ['XT-002 Deconstructor']),           # Antechamber
         ((1859.65, -24.9121, 448.811), ['Kologarn']),                       # Shattered Walkway
         ((2086.26, -23.9948, 421.316), ['Auriaya']),                        # Conservatory of Life
-        ((2518.16, 2569.03, 412.299), ['Auriaya']),                         # Spark of Imagination
+        # Spark of Imagination: offered while instance data 710 is set, i.e. once the tram has been
+        # activated, so a first clear rides the tram there and only teleports back
+        ((2518.16, 2569.03, 412.299), ['Mimiron']),
         ((1854.82, -11.5608, 334.175), ['General Vezax']),                  # Prison of Yogg-Saron
     ],
 }

@@ -508,7 +508,9 @@ def build(D, fixups):
                 if d[3] == d[4] or d[5] == d[6]:
                     continue
                 floors[d[2]] = (d[3], d[4], d[5], d[6])  # minY, maxY, minX, maxX
-            if wma and not floors and wma[4] != wma[5]:
+            # DefaultDungeonFloor -1 (Ulduar, Culling of Stratholme): the zone map is a level 0 of its
+            # own, shown outside the dungeon levels' WMO groups
+            if wma and (not floors or wma[9] == -1) and wma[4] != wma[5]:
                 # WorldMapArea: left(Y max), right(Y min), top(X max), bottom(X min)
                 floors[0] = (wma[5], wma[4], wma[7], wma[6])
             return wma, floors

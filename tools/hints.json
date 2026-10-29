@@ -1585,20 +1585,6 @@
    "map": 603,
    "points": [
     {
-     "x": 2306.87,
-     "y": 274.237,
-     "z": 424.288,
-     "hint": "Board the Tram and click Activate Tram to ride to Mimiron. If the tram is gone, click Call Tram on the platform first."
-    }
-   ],
-   "source": "smart_scripts GO 194437 'Activate Tram' (Set Instance Data 710=1) / 194914 'Call Tram' center (710=0) / 194912 Mimiron side; instance_ulduar.cpp DATA_CALL_TRAM; GO guids 268559 (Activate Tram, on Tram 34057 @2307,284.6), Call Tram 42867 @2277.42,298.69,419.25",
-   "confidence": "high",
-   "boss": "Mimiron"
-  },
-  {
-   "map": 603,
-   "points": [
-    {
      "x": 2173.27,
      "y": -252.867,
      "z": 420.146,
