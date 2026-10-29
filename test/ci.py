@@ -64,4 +64,12 @@ if code or not m or m.group(2) != "0":
 else:
     print("ok    suite.py (%s route walks)" % m.group(1))
 
+code, out = run(["levels.py"])
+m = re.search(r"points (\d+) off their level 0", out)
+if code or not m:
+    failed.append("levels.py")
+    print("FAIL  levels.py\n" + out[-4000:])
+else:
+    print("ok    levels.py (%s route points on their map level)" % m.group(1))
+
 sys.exit(1 if failed else 0)

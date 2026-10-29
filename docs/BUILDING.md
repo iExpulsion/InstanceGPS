@@ -58,6 +58,7 @@ Where to change things:
 ```
 python run_test.py "" ui.lua         UI smoke test (also reset.lua, hard.lua, stats.lua, pathview.lua, idle.lua)
 python suite.py [mapid ...]          walk every route for each faction and difficulty, and check the arrow
+python levels.py [mapid ...]         check every route point lies on a map level it's tagged with
 python hintcheck.py                  check every hint shows during the walks (needs a local build cache)
 ```
 
