@@ -2646,6 +2646,11 @@
    "why": "same (portal + hub teleport)"
   },
   {
+   "map": 603,
+   "boss": "Mimiron",
+   "why": "the tram ride is a route link (config TELEPORTS) carrying this hint as its text"
+  },
+  {
    "map": 631,
    "boss": "Icecrown Gunship Battle",
    "why": "route handles the elevator/teleport and the gunship ride itself"
