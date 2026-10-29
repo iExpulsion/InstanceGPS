@@ -11,7 +11,8 @@ MOCK.inInstance, MOCK.itype, MOCK.instName, MOCK.mapFile = true, inst.type, inst
 
 local function place(x, y, f)
 	f = DN.FirstFloor(f) or 0
-	MOCK.level = f
+	-- the client counts a zone map of the instance's own (Ulduar) as level 1, its dungeon levels from 2
+	MOCK.level = f + (inst.terrain and 1 or 0)
 	MOCK.mx, MOCK.my = DN:WorldToMap(inst, f, x, y)
 end
 local function guid(npc) return ("0xF130%06X%06X"):format(npc, math.random(1, 99999)) end

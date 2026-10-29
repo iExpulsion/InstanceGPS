@@ -65,7 +65,7 @@ InstanceGPS:Override("My Server", {
 })
 ```
 
-**Positions** are world `x`, `y` and the dungeon map level `f`: the level's number in the world map's level dropdown, or 0 in an instance with a single map. The easiest way to get them is `/igps record`, which writes them for you. A GM's `.gps` command shows `x` and `y` too.
+**Positions** are world `x`, `y` and the dungeon map level `f`: the level's number in the world map's level dropdown, or 0 in an instance with a single map. Where the dropdown starts with the instance's outdoor map (Ulduar's Grand Approach; also The Culling of Stratholme, Black Temple and Sunwell Plateau), that one is 0 and the rest count from 1. The easiest way to get them is `/igps record`, which writes them for you. A GM's `.gps` command shows `x` and `y` too.
 
 **Boss fields** you can set: `name`, `npcs` (creature IDs whose death counts as the kill), `spell` (a spell whose cast counts as the kill, for fights where nobody dies), `yells` (a boss yell that counts as the kill), `noDeath`, `friendly`, `diff` (difficulties, as a bitmask: 1 = normal or 10-player, 2 = heroic or 25-player, 4 = 10-player heroic, 8 = 25-player heroic).
 

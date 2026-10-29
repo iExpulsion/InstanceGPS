@@ -86,10 +86,8 @@ function DN:RefreshMap()
 	-- navigation off here: boss pins only (and nothing if the tracker's hidden there too)
 	local navOff = self:IsOff(inst.mapId)
 	if navOff and self.opt.offHidesTracker then return end
-	local level = GetCurrentMapDungeonLevel() or 0
-	if not inst.floors[level] then
-		if inst.floors[0] then level = 0 else return end
-	end
+	local level = self:MapLevel(inst)
+	if not inst.floors[level] then return end
 	local W, H = overlay:GetWidth(), overlay:GetHeight()
 	if W == 0 then return end
 	local current = inst == self.inst

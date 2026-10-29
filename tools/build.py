@@ -988,8 +988,12 @@ def write_lua(out, path, head=None, open_line='ns.Instances = {', close_line='}'
                                             ' needsMapPatch=true,' if I.get('mapSource') == 'mappatch' else '',
                                             (' file=%s,' % lua_str(I['file'])) if I['file'] else '',
                                             (' area=%d,' % I['area']) if I['area'] else ''))
-        L.append('  floors={%s},' % ', '.join('[%d]={%s}' % (f, ','.join(f1(v) for v in r))
-                                               for f, r in sorted(I['floors'].items())))
+        # a zone map of its own next to the dungeon levels (Ulduar): the client counts it as level 1
+        # and every dungeon level one higher than its DungeonMap floor
+        terrain = 0 in I['floors'] and len(I['floors']) > 1
+        L.append('  %sfloors={%s},' % ('terrain=true, ' if terrain else '',
+                                       ', '.join('[%d]={%s}' % (f, ','.join(f1(v) for v in r))
+                                                 for f, r in sorted(I['floors'].items()))))
         L.append('  bosses={')
         for b in I['bosses']:
             parts = ['name=%s' % lua_str(b['name']), 'id=%d' % b['id'], 'diff=%d' % b['diff']]

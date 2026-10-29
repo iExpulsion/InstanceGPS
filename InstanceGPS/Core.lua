@@ -210,6 +210,14 @@ function DN:WorldToMap(inst, level, x, y)
 	return (r[2] - y) / (r[2] - r[1]), (r[4] - x) / (r[4] - r[3])
 end
 
+-- The shown map's level in the data's numbering. Where an instance has a zone map of its own
+-- (Ulduar's Grand Approach), the client counts that as level 1 and the dungeon levels from 2.
+function DN:MapLevel(inst)
+	local level = (GetCurrentMapDungeonLevel() or 0) - (inst.terrain and 1 or 0)
+	if not inst.floors[level] and inst.floors[0] then level = 0 end
+	return level
+end
+
 -- Player world position inside the current instance: x, y, floor (nil when unknown).
 function DN:UpdatePlayerPosition()
 	local inst = self.inst
@@ -223,8 +231,7 @@ function DN:UpdatePlayerPosition()
 	end
 	local mx, my = GetPlayerMapPosition("player")
 	if not mx or (mx == 0 and my == 0) then return self.px ~= nil end
-	local level = GetCurrentMapDungeonLevel() or 0
-	if not inst.floors[level] then level = inst.floors[0] and 0 or level end
+	local level = self:MapLevel(inst)
 	local x, y = self:MapToWorld(inst, level, mx, my)
 	if not x then return false end
 	self.px, self.py, self.pfloor = x, y, level
