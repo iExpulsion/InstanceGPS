@@ -6,10 +6,15 @@ Set them with environment variables, or put the same names in tools/paths_local.
     MPQCLI = r"C:\Tools\mpqcli.exe"                     # https://github.com/TheGrayDot/mpqcli
     AC_WORLD_SQL = r"C:\azerothcore\data\sql\base\db_world"
 """
-import os
+import os, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ADDON = os.path.join(ROOT, "InstanceGPS")
+
+# Files extracted from the client land in the repo's tmp/ before they're moved into the caches:
+# on the system temp drive the move would fail whenever the repo is on another drive.
+tempfile.tempdir = os.path.join(ROOT, "tmp")
+os.makedirs(tempfile.tempdir, exist_ok=True)
 
 try:
     import paths_local as _local

@@ -11,7 +11,7 @@ The addon's Lua code works as-is. `InstanceGPS/Data.lua` (every instance's bosse
 | `test/` | Lua test harness: a mocked 3.3.5 API (`wowmock.lua`) that loads the addon and walks its routes |
 | `docs/` | This page and ROUTES.md |
 
-These folders are created by the build and aren't tracked: `cache/`, `mmaps/`, `dbc/`, `dbc_stock/`, `blpcache/`, `out/`, `png/`, `dist/`.
+These folders are created by the build and aren't tracked: `cache/`, `mmaps/`, `dbc/`, `dbc_stock/`, `blpcache/`, `out/`, `png/`, `dist/`, and `tmp/` for the tools' temporary files.
 
 ## Setup
 
