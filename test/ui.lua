@@ -42,6 +42,17 @@ if noteRow then noteRow.scripts.OnEnter(noteRow) end
 DN:SetTrackerNote("test", nil)
 print("tracker note:", noteRow ~= nil and noteRow.text.text == "Module Row" and noteRow.right.text == "7"
 	and noteTip == GameTooltip and not noteRow.shown)
+-- a module's mark after a boss name, gone again on nil
+local marked = row.boss
+DN:SetBossMarks("test", { [marked] = "(3)" })
+local markRow
+for _, fr in ipairs(MOCK.all) do
+	if fr.boss == marked and fr.shown and fr.text and fr.right then markRow = fr end
+end
+local withMark = markRow and markRow.text.text or ""
+DN:SetBossMarks("test", nil)
+print("boss mark:", markRow ~= nil and withMark:sub(-4) == " (3)" and not (markRow.text.text or ""):find("(3)", 1, true))
+
 -- a patrol crossing the route names itself under the arrow nearby, not further off or with the option off
 local inst = DN.inst
 inst.patrols = { { x = DN.px + 10, y = DN.py, f = 2 ^ (DN.pfloor or 0), text = "Test Guard x2" } }

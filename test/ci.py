@@ -9,7 +9,7 @@ OVERRIDE = {"DN_MODULES": os.path.join("fixtures", "override_brs.lua")}
 
 # (name, test file, environment, lines its output must contain)
 CHECKS = [
-    ("ui", "ui.lua", {}, ["boss tooltip fired:\ttrue", "tracker note:\ttrue", "patrol warning:\ttrue"]),
+    ("ui", "ui.lua", {}, ["boss tooltip fired:\ttrue", "tracker note:\ttrue", "boss mark:\ttrue", "patrol warning:\ttrue"]),
     ("reset", "reset.lua", {}, []),
     ("titles", "titles.lua", {}, ["titles:\ttrue"]),
     ("module options", "modules.lua", {},

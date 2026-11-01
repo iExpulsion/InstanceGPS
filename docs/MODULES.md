@@ -136,6 +136,15 @@ InstanceGPS:SetTrackerNote("myserver", nil)    -- remove it
 
 Rows are shown in the order of their keys. They stay until the module removes them, so clear yours when the instance changes: `InstanceGPS:On("INSTANCE_CHANGED", function(inst) ... end)`.
 
+A module can also put a short mark after boss names in the tracker, by InstanceGPS's boss entries (`InstanceGPS.inst.bosses`):
+
+```lua
+InstanceGPS:SetBossMarks("myserver", { [boss] = "|cff33ff33(2)|r" })   -- after that boss's name
+InstanceGPS:SetBossMarks("myserver", nil)                              -- remove them
+```
+
+Set the whole table again when your marks change; the tracker shows the latest one.
+
 ## Options for a Module
 
 A module with options of its own gets a page for them under InstanceGPS's in the game's options window, and InstanceGPS saves them with its own settings:

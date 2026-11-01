@@ -204,6 +204,21 @@ function DN:SetTrackerNote(key, note)
 	self:RefreshTracker()
 end
 
+-- Short marks a server module puts after boss names, by key: { [boss] = text }. nil removes them.
+DN.bossMarks = {}
+function DN:SetBossMarks(key, marks)
+	self.bossMarks[key] = marks
+	self:RefreshTracker()
+end
+
+local function Marks(b)
+	local s = ""
+	for _, marks in pairs(DN.bossMarks) do
+		if marks[b] then s = s .. " " .. marks[b] end
+	end
+	return s
+end
+
 function DN:RefreshTracker()
 	local inst, run = self.inst, self.run
 	if not inst or not run or not self.opt.tracker or (self.opt.offHidesTracker and not self:NavOn()) then
@@ -263,7 +278,7 @@ function DN:RefreshTracker()
 				text = ("|TInterface\\Buttons\\UI-CheckBox-Up:12:12:0:0|t |cffdddddd%d. %s|r"):format(k, b.name)
 				if not b.x then right = "|cffff8844?|r" end
 			end
-			add(text, right, b)
+			add(text .. Marks(b), right, b)
 		end
 	end
 	-- bosses outside the active route: summarise other wings, list stray bosses
@@ -293,7 +308,7 @@ function DN:RefreshTracker()
 		end
 		if not listed and self:BossAvailable(b) then
 			local killed = run.killed[b.id]
-			add(("%s |cffaaaaaa%s|r"):format(killed and CHECK or "|TInterface\\Buttons\\UI-CheckBox-Up:12:12:0:0|t", b.name),
+			add(("%s |cffaaaaaa%s|r"):format(killed and CHECK or "|TInterface\\Buttons\\UI-CheckBox-Up:12:12:0:0|t", b.name) .. Marks(b),
 				killed and ("|cff888888" .. DN.FormatTime(killed) .. "|r") or (not b.x and "|cffff8844?|r" or ""), b)
 		end
 	end
