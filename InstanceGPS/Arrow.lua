@@ -119,7 +119,7 @@ arrow:SetScript("OnUpdate", function(self, elapsed)
 		hint:SetText(("Level %d"):format(DN.FirstFloor(f)))
 	else
 		local patrol = DN:NearPatrol()
-		hint:SetText(patrol and ("|cffff5050Patrol crosses here:|r " .. patrol) or "")
+		hint:SetText(patrol and ("|cffff5050Patrols:|r " .. patrol) or "")
 	end
 end)
 

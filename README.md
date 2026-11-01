@@ -66,7 +66,7 @@ No module for your server? Anyone can make one, without programming tools: see [
   - groups to kill to open a door: the Stratholme ziggurats, the Dire Maul pylons.
 
   ![Hints on the arrow and the 3D path view: the Gluth slime pipe and the Naxxramas portal](docs/images/hints.png)
-- **Patrol warnings.** Where a patrol's path crosses the route, the arrow names it as you get there ("Patrol crosses here: Death Knight Captain x5"), so you can wait for it to pass. They come from AzerothCore's patrol paths; turn them off under Patrol Warnings in the options.
+- **Patrol warnings.** Where a patrol's path crosses the route, the arrow names it as you get there ("Patrols: Death Knight Captain x5"), so you can wait for it to pass. They come from AzerothCore's patrol paths; turn them off under Patrol Warnings in the options.
 - **Hard-mode routes (off by default).** Where a hard mode changes the way through an instance, the route can follow it instead. So far that's The Obsidian Sanctum: straight to Sartharion with the three drakes left up.
 - **Kill statistics.** `/igps stats` shows your lifetime kills of each boss per difficulty, read from your achievement statistics. The tracker shows the same count when you hover over a boss. Every Wrath boss has a statistic; in Classic and Burning Crusade only the raid bosses and some dungeon bosses do.
 - **Your server's own changes.** A server module can remove bosses or whole instances, add custom bosses, move them, change hints or replace a route, and InstanceGPS follows it. `/igps record` records a route as you walk it, for a module or a bug report.

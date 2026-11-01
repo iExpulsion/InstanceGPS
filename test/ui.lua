@@ -56,6 +56,6 @@ DN.opt.patrols = false
 local off = DN:NearPatrol()
 DN.opt.patrols = true
 inst.patrols = nil
-print("patrol warning:", near == "Test Guard x2" and hintText:find("Patrol crosses here", 1, true) ~= nil
+print("patrol warning:", near == "Test Guard x2" and hintText:find("Patrols:", 1, true) ~= nil
 	and hintText:find("Test Guard x2", 1, true) ~= nil and far == nil and off == nil)
 for _, c in ipairs({"", "", "arrow", "arrow", "map", "map", "stats", "saved", "help", "route library", "next", "lock", "lock"}) do SlashCmdList.INSTANCEGPS(c) end
