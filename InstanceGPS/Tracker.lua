@@ -113,7 +113,7 @@ local function RowOnClick(self, button)
 end
 
 local function RowOnEnter(self)
-	local b = self.boss
+	local b, note = self.boss, self.note
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 	if b then
 		GameTooltip:AddLine(b.name)
@@ -135,6 +135,8 @@ local function RowOnEnter(self)
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("Left-click: navigate here (again to go back to the route)", 0.6, 0.8, 1)
 		GameTooltip:AddLine("Right-click: toggle killed", 0.6, 0.8, 1)
+	elseif note then
+		if note.tooltip then note.tooltip(GameTooltip) else GameTooltip:AddLine(note.text) end
 	else
 		GameTooltip:AddLine("Switch to this wing")
 	end
@@ -162,6 +164,14 @@ local function GetRow(i)
 	return r
 end
 
+-- Rows a server module adds under the boss list, by key: { text =, right =, tooltip = function(tooltip) }.
+-- nil removes the row.
+DN.trackerNotes = {}
+function DN:SetTrackerNote(key, note)
+	self.trackerNotes[key] = note
+	self:RefreshTracker()
+end
+
 function DN:RefreshTracker()
 	local inst, run = self.inst, self.run
 	if not inst or not run or not self.opt.tracker or (self.opt.offHidesTracker and not self:NavOn()) then
@@ -187,7 +197,7 @@ function DN:RefreshTracker()
 
 	local next = self:NextBoss()
 	local shown, done, total = 0, 0, 0
-	local function add(text, right, boss, routeIdx)
+	local function add(text, right, boss, routeIdx, note)
 		shown = shown + 1
 		local r = GetRow(shown)
 		r:ClearAllPoints()
@@ -195,7 +205,7 @@ function DN:RefreshTracker()
 		r:SetPoint("TOPRIGHT", -6, y)
 		r.text:SetText(text)
 		r.right:SetText(right or "")
-		r.boss, r.route = boss, routeIdx
+		r.boss, r.route, r.note = boss, routeIdx, note
 		r:Show()
 		y = y - ROW_H
 	end
@@ -253,6 +263,13 @@ function DN:RefreshTracker()
 			add(("%s |cffaaaaaa%s|r"):format(killed and CHECK or "|TInterface\\Buttons\\UI-CheckBox-Up:12:12:0:0|t", b.name),
 				killed and ("|cff888888" .. DN.FormatTime(killed) .. "|r") or (not b.x and "|cffff8844?|r" or ""), b)
 		end
+	end
+	local keys = {}
+	for key in pairs(self.trackerNotes) do keys[#keys + 1] = key end
+	table.sort(keys)
+	for _, key in ipairs(keys) do
+		local note = self.trackerNotes[key]
+		add(note.text, note.right, nil, nil, note)
 	end
 	for i = shown + 1, #rows do rows[i]:Hide() end
 	self.trackerDone, self.trackerTotal = done, total

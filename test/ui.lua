@@ -30,4 +30,16 @@ end
 row.scripts.OnEnter(row)
 DN.arrow.scripts.OnEnter(DN.arrow)
 print("boss tooltip fired:", #hovered == 2 and hovered[1] == row.boss.name and hovered[2] == (DN.wp.boss or DN:NextBoss()).name)
+
+-- a module's row under the boss list: shown with its text, its own tooltip on hover, gone again on nil
+local noteTip
+DN:SetTrackerNote("test", { text = "Module Row", right = "7", tooltip = function(tip) noteTip = tip end })
+local noteRow
+for _, fr in ipairs(MOCK.all) do
+	if fr.note and fr.shown then noteRow = fr end
+end
+if noteRow then noteRow.scripts.OnEnter(noteRow) end
+DN:SetTrackerNote("test", nil)
+print("tracker note:", noteRow ~= nil and noteRow.text.text == "Module Row" and noteRow.right.text == "7"
+	and noteTip == GameTooltip and not noteRow.shown)
 for _, c in ipairs({"", "", "arrow", "arrow", "map", "map", "stats", "saved", "help", "route library", "next", "lock", "lock"}) do SlashCmdList.INSTANCEGPS(c) end

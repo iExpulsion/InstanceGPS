@@ -123,6 +123,19 @@ end)
 
 `boss` is InstanceGPS's boss entry: `name`, `npcs` (creature IDs), `diff` and the position fields above. The tooltip is already being filled; add lines, and InstanceGPS shows it. Use this for what your server adds to a fight that the game itself can tell you about at runtime (its own loot lists, for example), so nothing has to be shipped as data.
 
+A module can also add its own rows under the tracker's boss list, for something about the whole instance:
+
+```lua
+InstanceGPS:SetTrackerNote("myserver", {
+    text = "Server Event",                     -- left side
+    right = "active",                          -- right side (optional)
+    tooltip = function(tooltip) tooltip:AddLine("Details on hover") end,  -- optional
+})
+InstanceGPS:SetTrackerNote("myserver", nil)    -- remove it
+```
+
+Rows are shown in the order of their keys. They stay until the module removes them, so clear yours when the instance changes: `InstanceGPS:On("INSTANCE_CHANGED", function(inst) ... end)`.
+
 ## Sharing It
 
 - **Your own repo:** copy [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria), rename the folder and the `.toc`, and put your changes in `Overrides.lua`. Raising `## Version` and pushing releases a zip. Its check runs `tools/check.py` against InstanceGPS's latest data, so a typo in a boss name or a key is caught before players see it.
