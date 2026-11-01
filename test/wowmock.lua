@@ -87,7 +87,7 @@ function RequestRaidInfo() end
 function GetNumSavedInstances() return 0 end
 function GetSavedInstanceInfo() end
 function IsInInstance() return mock.inInstance, mock.itype end
-function GetInstanceInfo() return mock.instName, mock.itype, mock.diff or 1, mock.diffName or "Normal", 5 end
+function GetInstanceInfo() return mock.instName, mock.itype, mock.diff or 1, mock.diffName or "Normal", mock.maxPlayers or 5 end
 function SetMapToCurrentZone() end
 function GetMapInfo() return mock.mapFile end
 function GetCurrentMapDungeonLevel() return mock.level or 0 end

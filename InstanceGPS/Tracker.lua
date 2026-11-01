@@ -49,6 +49,17 @@ end)
 header:SetScript("OnClick", function(self, button)
 	if button == "RightButton" then DN:ShowMenu(self) end
 end)
+header:SetScript("OnEnter", function(self)
+	local inst, run = DN.inst, DN.run
+	if inst then
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:AddLine(inst.name)
+		if run and run.diffName and run.diffName ~= "" then GameTooltip:AddLine(run.diffName, 1, 1, 1) end
+		GameTooltip:AddLine("Drag to move, right-click for options.", 0.6, 0.8, 1)
+		GameTooltip:Show()
+	end
+end)
+header:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 local resetBtn = CreateFrame("Button", nil, header)
 resetBtn:SetSize(14, 14)
@@ -164,6 +175,27 @@ local function GetRow(i)
 	return r
 end
 
+-- The difficulty after the instance name, shorter than the client's own ("5 Player (Heroic)"):
+-- Normal or Heroic in a dungeon, the size (and Heroic) in a raid, and nothing where an instance
+-- has only one difficulty. A difficulty the client doesn't have (a server's own) keeps its name.
+local function DiffLabel(inst, run)
+	local several = false
+	for _, b in ipairs(inst.bosses) do
+		if b.diff > 1 then several = true end
+	end
+	local d = run.diff or 1
+	local _, _, _, _, maxPlayers = GetInstanceInfo()
+	local name = run.diffName ~= "" and run.diffName or nil
+	if d > 4 or (inst.type == "party" and d > 2) then
+		return name
+	elseif not several and d == 1 then
+		return nil
+	elseif inst.type == "party" then
+		return d == 2 and "Heroic" or "Normal"
+	end
+	return maxPlayers and maxPlayers > 0 and (maxPlayers .. (d >= 3 and " Heroic" or "")) or name
+end
+
 -- Rows a server module adds under the boss list, by key: { text =, right =, tooltip = function(tooltip) }.
 -- nil removes the row.
 DN.trackerNotes = {}
@@ -183,7 +215,8 @@ function DN:RefreshTracker()
 	if pos and pos[1] ~= "TOPLEFT" then AnchorTopLeft() end   -- old saved position, first showing
 	f:SetScale(self.opt.trackerScale or 1)
 	f:SetAlpha(self.opt.trackerAlpha or 1)
-	titleText:SetText(inst.name .. (run.diffName and run.diffName ~= "" and (" |cffaaaaaa(" .. run.diffName .. ")|r") or ""))
+	local label = DiffLabel(inst, run)
+	titleText:SetText(inst.name .. (label and (" |cffaaaaaa(" .. label .. ")|r") or ""))
 
 	local route = self:ActiveRoute() or { order = {}, stops = {} }
 	local y = -24
