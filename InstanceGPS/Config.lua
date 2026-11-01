@@ -471,10 +471,110 @@ instPanel:SetScript("OnShow", function()
 	instPanel.hide.Refresh()
 end)
 
+-------------------------------------------------------------------------------- Server modules' options
+
+-- InstanceGPS:ModuleOptions(name, list) gives a server module a page of options under
+-- InstanceGPS's, saved with InstanceGPS's settings (docs/MODULES.md). Each option is
+-- { key =, label =, tip =, default = }, plus choices = { { value, label }, ... } for a dropdown;
+-- without choices it's a checkbox. The returned table reads the current values;
+-- InstanceGPS:On("MODULE_OPTION", function(module, key, value) end) tells of changes.
+local modulePages = {}
+
+local function Saved(page)
+	local all = DN.db and DN.db.modules
+	return all and all[page.name]
+end
+
+local function SetModuleOption(page, key, value)
+	DN.db.modules = DN.db.modules or {}
+	DN.db.modules[page.name] = DN.db.modules[page.name] or {}
+	DN.db.modules[page.name][key] = value
+	DN:Fire("MODULE_OPTION", page.name, key, value)
+	ApplyVisibility()
+end
+
+local function ChoiceLabel(o, value)
+	for _, c in ipairs(o.choices) do
+		if c[1] == value then return c[2] end
+	end
+	return tostring(value)
+end
+
+local function BuildModulePage(page)
+	local p = CreateFrame("Frame", nil, UIParent)
+	p.name, p.parent = page.name, panel.name
+	p:Hide()
+	local head = p:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	head:SetPoint("TOPLEFT", 16, -16)
+	head:SetText("InstanceGPS: " .. page.name)
+	local id = page.name:gsub("%W", "")
+	local refresh, y = {}, -50
+	for _, o in ipairs(page.list) do
+		local name = "InstanceGPSModOpt_" .. id .. "_" .. o.key
+		if o.choices then
+			local label = p:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+			label:SetPoint("TOPLEFT", 20, y)
+			label:SetText(o.label)
+			local dd = CreateFrame("Frame", name, p, "UIDropDownMenuTemplate")
+			dd:SetPoint("TOPLEFT", 0, y - 14)
+			UIDropDownMenu_SetWidth(dd, 200)
+			UIDropDownMenu_Initialize(dd, function()
+				for _, c in ipairs(o.choices) do
+					local info = UIDropDownMenu_CreateInfo()
+					info.text, info.value, info.checked = c[2], c[1], page.values[o.key] == c[1]
+					info.func = function()
+						SetModuleOption(page, o.key, c[1])
+						UIDropDownMenu_SetText(dd, c[2])
+					end
+					UIDropDownMenu_AddButton(info)
+				end
+			end)
+			if o.tip then
+				local tip = p:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+				tip:SetPoint("TOPLEFT", 240, y - 22)
+				tip:SetPoint("RIGHT", -16, 0)
+				tip:SetJustifyH("LEFT")
+				tip:SetText(o.tip)
+			end
+			refresh[#refresh + 1] = function() UIDropDownMenu_SetText(dd, ChoiceLabel(o, page.values[o.key])) end
+			y = y - 52
+		else
+			local cb = CreateFrame("CheckButton", name, p, "InterfaceOptionsCheckButtonTemplate")
+			cb:SetPoint("TOPLEFT", 16, y)
+			_G[name .. "Text"]:SetText(o.label)
+			cb.tooltipText, cb.tooltipRequirement = o.label, o.tip
+			cb:SetScript("OnClick", function(self) SetModuleOption(page, o.key, self:GetChecked() and true or false) end)
+			refresh[#refresh + 1] = function() cb:SetChecked(page.values[o.key]) end
+			y = y - 26
+		end
+	end
+	p:SetScript("OnShow", function()
+		for _, f in ipairs(refresh) do f() end
+	end)
+	InterfaceOptions_AddCategory(p)
+	page.frame = p
+end
+
+function DN:ModuleOptions(name, list)
+	local page = { name = name, list = list }
+	local defaults = {}
+	for _, o in ipairs(list) do defaults[o.key] = o.default end
+	page.values = setmetatable({}, { __index = function(_, key)
+		local saved = Saved(page)
+		local v = saved and saved[key]
+		if v == nil then v = defaults[key] end
+		return v
+	end })
+	table.insert(modulePages, page)
+	if DN.db then BuildModulePage(page) end
+	return page.values
+end
+
 DN:On("LOADED", function()
 	BuildPanel()
 	InterfaceOptions_AddCategory(panel)
 	InterfaceOptions_AddCategory(instPanel)
+	for _, page in ipairs(modulePages) do BuildModulePage(page) end
 end)
 
 -- toInstances: open the Instances page instead of the main one

@@ -121,7 +121,15 @@ mock.zoom = 2
 function Minimap:GetZoom() return mock.zoom end
 function Minimap:SetZoom(z) mock.zoom = z end
 function GetCVar(k) return mock.cvars[k] end
-function InterfaceOptions_AddCategory() end
+mock.categories = {}
+function InterfaceOptions_AddCategory(p) table.insert(mock.categories, p) end
+-- dropdowns: Initialize keeps the menu builder, AddButton collects what it adds
+function UIDropDownMenu_Initialize(dd, fn) dd.init = fn end
+function UIDropDownMenu_SetWidth() end
+function UIDropDownMenu_SetText(dd, t) dd.ddText = t end
+function UIDropDownMenu_CreateInfo() return {} end
+function UIDropDownMenu_AddButton(info) table.insert(mock.ddButtons, info) end
+mock.ddButtons = {}
 function InterfaceOptionsFrame_OpenToCategory() end
 function UnitAffectingCombat() return mock.combat end
 -- record texture placement so tests can inspect what the path views draw

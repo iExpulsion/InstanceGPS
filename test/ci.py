@@ -12,6 +12,8 @@ CHECKS = [
     ("ui", "ui.lua", {}, ["boss tooltip fired:\ttrue", "tracker note:\ttrue", "patrol warning:\ttrue"]),
     ("reset", "reset.lua", {}, []),
     ("titles", "titles.lua", {}, ["titles:\ttrue"]),
+    ("module options", "modules.lua", {},
+     ["page:\ttrue", "checkbox:\ttrue", "dropdown:\ttrue", "late module:\ttrue", "modules test done"]),
     ("hard", "hard.lua", {}, ["cleared:\ttrue"]),
     ("stats", "stats.lua", {}, ["stats test done"]),
     ("pathview", "pathview.lua", {}, ["pathview ok"]),

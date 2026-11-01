@@ -136,6 +136,23 @@ InstanceGPS:SetTrackerNote("myserver", nil)    -- remove it
 
 Rows are shown in the order of their keys. They stay until the module removes them, so clear yours when the instance changes: `InstanceGPS:On("INSTANCE_CHANGED", function(inst) ... end)`.
 
+## Options for a Module
+
+A module with options of its own gets a page for them under InstanceGPS's in the game's options window, and InstanceGPS saves them with its own settings:
+
+```lua
+local opt = InstanceGPS:ModuleOptions("My Server", {
+    { key = "rows", label = "Event Rows", default = true, tip = "Shown on hover." },    -- a checkbox
+    { key = "list", label = "Event List", default = "all",                              -- a dropdown
+      choices = { { "all", "Show All" }, { "active", "Show Active" } } },
+})
+
+if opt.rows then ... end    -- the current value: the saved one, else the default
+InstanceGPS:On("MODULE_OPTION", function(module, key, value) ... end)   -- one changed
+```
+
+The table reads saved values once InstanceGPS's settings have loaded and the defaults until then, so read it when you need a value rather than copying it at load.
+
 ## Sharing It
 
 - **Your own repo:** copy [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria), rename the folder and the `.toc`, and put your changes in `Overrides.lua`. Raising `## Version` and pushing releases a zip. Its check runs `tools/check.py` against InstanceGPS's latest data, so a typo in a boss name or a key is caught before players see it.
