@@ -247,15 +247,24 @@ panel.name = "InstanceGPS"
 panel:Hide()
 local controls = {}
 
+-- the options scroll where the game's options window is too short for them
+local optScroll = CreateFrame("ScrollFrame", "InstanceGPSOptionsScroll", panel, "UIPanelScrollFrameTemplate")
+optScroll:SetPoint("TOPLEFT", 0, -4)
+optScroll:SetPoint("BOTTOMRIGHT", -28, 4)
+optScroll.scrollBarHideable = true
+local content = CreateFrame("Frame", nil, optScroll)
+content:SetSize(540, 470)
+optScroll:SetScrollChild(content)
+
 local function Header(text, y)
-	local h = panel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	local h = content:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 	h:SetPoint("TOPLEFT", 16, y)
 	h:SetText(text)
 end
 
 local function Check(key, label, tip, x, y, after)
 	local name = "InstanceGPSOpt_" .. key
-	local cb = CreateFrame("CheckButton", name, panel, "InterfaceOptionsCheckButtonTemplate")
+	local cb = CreateFrame("CheckButton", name, content, "InterfaceOptionsCheckButtonTemplate")
 	cb:SetPoint("TOPLEFT", x, y)
 	_G[name .. "Text"]:SetText(label)
 	cb.tooltipText = label
@@ -272,7 +281,7 @@ end
 
 local function Slider(key, label, lo, hi, step, fmt, x, y)
 	local name = "InstanceGPSOpt_" .. key
-	local s = CreateFrame("Slider", name, panel, "OptionsSliderTemplate")
+	local s = CreateFrame("Slider", name, content, "OptionsSliderTemplate")
 	s:SetPoint("TOPLEFT", x, y)
 	s:SetWidth(180)
 	s:SetMinMaxValues(lo, hi)
@@ -298,7 +307,7 @@ end
 
 local title
 local function BuildPanel()
-	title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	title = content:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("TOPLEFT", 16, -16)
 
 	Header("General", -46)
@@ -328,7 +337,7 @@ local function BuildPanel()
 	Slider("hudOffset", "HUD Height", -250, 250, 5, "%d", 330, -398)
 	Slider("pathViewScale", "3D View Size", 0.6, 2, 0.05, "%.2f", 16, -378)
 
-	local reset = DN.Button(panel, "Reset Frame Positions", function() DN.db.pos = {} ReloadUI() end)
+	local reset = DN.Button(content, "Reset Frame Positions", function() DN.db.pos = {} ReloadUI() end)
 	reset:SetPoint("TOPLEFT", 16, -436)
 end
 
