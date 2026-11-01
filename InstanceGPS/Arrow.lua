@@ -56,6 +56,8 @@ end)
 arrow:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
 	GameTooltip:AddLine("InstanceGPS")
+	local b = DN.inst and (DN.wp.boss or DN:NextBoss())
+	if b then DN:Fire("BOSS_TOOLTIP", b, GameTooltip) end
 	GameTooltip:AddLine("Drag to move, right-click for options.", 1, 1, 1)
 	GameTooltip:Show()
 end)

@@ -110,6 +110,19 @@ It reads the same `Overrides.lua`, routes every instance whose bosses it changes
 
 These need a height `z`, which `.gps` shows.
 
+## Adding to Boss Tooltips
+
+A module can add its own lines to a boss's tooltip: the one on its tracker row, and the arrow's, which is about the boss the arrow points to. Add a Lua file to the module's `.toc` that listens for `BOSS_TOOLTIP`:
+
+```lua
+InstanceGPS:On("BOSS_TOOLTIP", function(boss, tooltip)
+    tooltip:AddLine(" ")
+    tooltip:AddLine("Loot from " .. boss.name)
+end)
+```
+
+`boss` is InstanceGPS's boss entry: `name`, `npcs` (creature IDs), `diff` and the position fields above. The tooltip is already being filled; add lines, and InstanceGPS shows it. Use this for what your server adds to a fight that the game itself can tell you about at runtime (its own loot lists, for example), so nothing has to be shipped as data.
+
 ## Sharing It
 
 - **Your own repo:** copy [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria), rename the folder and the `.toc`, and put your changes in `Overrides.lua`. Raising `## Version` and pushing releases a zip. Its check runs `tools/check.py` against InstanceGPS's latest data, so a typo in a boss name or a key is caught before players see it.

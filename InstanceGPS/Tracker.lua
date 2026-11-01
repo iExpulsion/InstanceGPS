@@ -131,6 +131,7 @@ local function RowOnEnter(self)
 		end
 		if not b.x then GameTooltip:AddLine("No known position for this fight.", 1, 0.5, 0.3) end
 		if b.noDeath then GameTooltip:AddLine("This fight ends without a kill; right-click if it isn't detected.", 0.8, 0.8, 0.8, true) end
+		DN:Fire("BOSS_TOOLTIP", b, GameTooltip)
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("Left-click: navigate here (again to go back to the route)", 0.6, 0.8, 1)
 		GameTooltip:AddLine("Right-click: toggle killed", 0.6, 0.8, 1)
