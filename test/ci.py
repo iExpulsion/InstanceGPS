@@ -9,7 +9,7 @@ OVERRIDE = {"DN_MODULES": os.path.join("fixtures", "override_brs.lua")}
 
 # (name, test file, environment, lines its output must contain)
 CHECKS = [
-    ("ui", "ui.lua", {}, ["boss tooltip fired:\ttrue", "tracker note:\ttrue"]),
+    ("ui", "ui.lua", {}, ["boss tooltip fired:\ttrue", "tracker note:\ttrue", "patrol warning:\ttrue"]),
     ("reset", "reset.lua", {}, []),
     ("hard", "hard.lua", {}, ["cleared:\ttrue"]),
     ("stats", "stats.lua", {}, ["stats test done"]),
@@ -63,6 +63,13 @@ if code or not m or m.group(2) != "0":
     print("FAIL  suite.py\n" + out[-4000:])
 else:
     print("ok    suite.py (%s route walks)" % m.group(1))
+
+code, out = run(["patrols.py"])
+if code or "\tfalse" in out or "patrols test done" not in out:
+    failed.append("patrols.py")
+    print("FAIL  patrols.py\n" + out[-4000:])
+else:
+    print("ok    patrols.py")
 
 code, out = run(["levels.py"])
 m = re.search(r"points (\d+) off their level 0", out)

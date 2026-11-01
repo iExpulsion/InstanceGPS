@@ -18,7 +18,7 @@ import collections, heapq, itertools, json, math, os, random, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import dbc, maptex, navmesh, navroute, wmofloors, sqlparse as sp
+import dbc, maptex, navmesh, navroute, patrols, wmofloors, sqlparse as sp
 import config as cfg
 import overlay
 
@@ -48,8 +48,9 @@ def load_all(dbc_dir, cache):
         }
     for t in ('instance_encounters', 'creature_template', 'creature', 'gameobject', 'gameobject_template',
               'creature_addon', 'waypoint_data', 'script_waypoint', 'waypoints', 'areatrigger_teleport',
-              'lfg_dungeon_template', 'spell_target_position'):
+              'lfg_dungeon_template', 'spell_target_position', 'creature_formations'):
         D[t] = sp.rows(t, cache)
+    D['hostile'] = patrols.hostile_factions(dbc_dir)
     return D
 
 
@@ -489,6 +490,7 @@ def build(D, fixups):
 
     out = {}
     report = []
+    patrols_of = patrols.by_map(D, report)
     enc_by_map = collections.defaultdict(list)
     for r in D['de']:
         enc_by_map[r[1]].append(r)
@@ -944,6 +946,13 @@ def build(D, fixups):
             report.append('ROUTE %d %-28s %-14s len=%6.0f pts=%3d order=%s' % (
                 mapid, m[5][:28], (R['name'] or '')[:14], R['length'], len(R['poly']),
                 ' > '.join(blist[i - 1]['name'] for i in R['order'])))
+        boss_npcs = {n for b in blist for n in b['npcs']}
+        boss_npcs |= {d for n in list(boss_npcs) if n in ct for d in ct[n][1:4] if d}
+        crossed = [c for R in routes
+                   for c in patrols.crossings(R['poly'], set(R['tele']), patrols_of.get(mapid, []), boss_npcs)]
+        inst['patrols'] = [dict(s, floor=floor_of(s['pos'])) for s in patrols.merge(crossed)]
+        if inst['patrols']:
+            report.append('PATROLS %d %s %d' % (mapid, m[5], len(inst['patrols'])))
         out[mapid] = inst
     return out, report
 
@@ -1039,6 +1048,9 @@ def write_lua(out, path, head=None, open_line='ns.Instances = {', close_line='}'
                 L.append('    hints={%s},' % ', '.join('[%d]=%s' % (i, lua_str(t)) for i, t in sorted(R['hints'].items())))
             L.append('    path={%s}},' % pts)
         L.append('  },')
+        if I.get('patrols'):
+            L.append('  patrols={%s},' % ', '.join('{x=%s, y=%s, f=%d, text=%s}' % (
+                f1(s['pos'][0]), f1(s['pos'][1]), s['floor'], lua_str(s['text'])) for s in I['patrols']))
         L.append(' },')
     L.append(close_line)
     with open(path, 'w', encoding='utf8', newline='\n') as f:

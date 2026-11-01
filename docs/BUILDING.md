@@ -31,7 +31,7 @@ These folders are created by the build and aren't tracked: `cache/`, `mmaps/`, `
    ```
 4. **The client's DBCs** (from `tools/`). `dbc/` gets what the client actually loads, `dbc_stock/` Blizzard's own copies without add-on patches:
    ```
-   python extract.py ../dbc AreaTable.dbc AreaTrigger.dbc DungeonEncounter.dbc DungeonMap.dbc DungeonMapChunk.dbc LFGDungeons.dbc Map.dbc TaxiPathNode.dbc WMOAreaTable.dbc WorldMapArea.dbc
+   python extract.py ../dbc AreaTable.dbc AreaTrigger.dbc DungeonEncounter.dbc DungeonMap.dbc DungeonMapChunk.dbc FactionTemplate.dbc LFGDungeons.dbc Map.dbc TaxiPathNode.dbc WMOAreaTable.dbc WorldMapArea.dbc
    python extract_stock.py ../dbc_stock Achievement.dbc Achievement_Category.dbc Achievement_Criteria.dbc AreaTable.dbc DungeonEncounter.dbc DungeonMap.dbc DungeonMapChunk.dbc Map.dbc WMOAreaTable.dbc WorldMapArea.dbc
    ```
 
@@ -59,6 +59,7 @@ Where to change things:
 python run_test.py "" ui.lua         UI smoke test (also reset.lua, hard.lua, stats.lua, pathview.lua, idle.lua)
 python suite.py [mapid ...]          walk every route for each faction and difficulty, and check the arrow
 python levels.py [mapid ...]         check every route point lies on a map level it's tagged with
+python patrols.py                    check the patrol crossings on made-up routes
 python hintcheck.py                  check every hint shows during the walks (needs a local build cache)
 ```
 

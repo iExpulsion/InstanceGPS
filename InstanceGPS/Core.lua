@@ -24,6 +24,7 @@ local defaults = {
 	pathViewScale = 1,
 	hardModes = false,   -- hard-mode route variants (Obsidian Sanctum: Sartharion with the drakes up)
 	offHidesTracker = false,   -- where navigation is off (Instances page), hide the boss tracker too
+	patrols = true,      -- name the patrols the route crosses, under the arrow
 }
 
 -------------------------------------------------------------------------------- utils

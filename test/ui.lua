@@ -42,4 +42,20 @@ if noteRow then noteRow.scripts.OnEnter(noteRow) end
 DN:SetTrackerNote("test", nil)
 print("tracker note:", noteRow ~= nil and noteRow.text.text == "Module Row" and noteRow.right.text == "7"
 	and noteTip == GameTooltip and not noteRow.shown)
+-- a patrol crossing the route names itself under the arrow nearby, not further off or with the option off
+local inst = DN.inst
+inst.patrols = { { x = DN.px + 10, y = DN.py, f = 2 ^ (DN.pfloor or 0), text = "Test Guard x2" } }
+local near = DN:NearPatrol()
+DN.wp.x, DN.wp.y, DN.wp.dist, DN.wp.boss = DN.px + 30, DN.py, 30, inst.bosses[1]
+DN.arrow.scripts.OnUpdate(DN.arrow, 1)
+local hintText = MOCK.fonts[DN.arrow][3].text or ""
+inst.patrols[1].x = DN.px + 40
+local far = DN:NearPatrol()
+inst.patrols[1].x = DN.px + 10
+DN.opt.patrols = false
+local off = DN:NearPatrol()
+DN.opt.patrols = true
+inst.patrols = nil
+print("patrol warning:", near == "Test Guard x2" and hintText:find("Patrol crosses here", 1, true) ~= nil
+	and hintText:find("Test Guard x2", 1, true) ~= nil and far == nil and off == nil)
 for _, c in ipairs({"", "", "arrow", "arrow", "map", "map", "stats", "saved", "help", "route library", "next", "lock", "lock"}) do SlashCmdList.INSTANCEGPS(c) end

@@ -38,6 +38,7 @@ function DN:ShowMenu(anchor)
 		{ text = "3D Path View", checked = o.pathView, func = Toggle("pathView", ApplyVisibility), keepShownOnClick = true },
 		{ text = "Hard-Mode Routes", checked = o.hardModes, func = Toggle("hardModes", function() DN:ApplyHardModes() ApplyVisibility() end), keepShownOnClick = true },
 		{ text = "Announce Kills in Chat", checked = o.announce, func = Toggle("announce"), keepShownOnClick = true },
+		{ text = "Patrol Warnings", checked = o.patrols, func = Toggle("patrols"), keepShownOnClick = true },
 		{ text = "Lock Frames", checked = o.lockFrames, func = Toggle("lockFrames"), keepShownOnClick = true },
 	}
 	local scales = {}
@@ -309,24 +310,26 @@ local function BuildPanel()
 		"Where a hard mode changes the way through an instance, follow it: in The Obsidian Sanctum, go straight to Sartharion and leave the drakes up.",
 		330, -168, function() DN:ApplyHardModes() end)
 	Check("lockFrames", "Lock Frames", "Stops the arrow, tracker and 3D view from being dragged.", 16, -168)
+	Check("patrols", "Patrol Warnings",
+		"Under the arrow, names the patrols whose path crosses the route where you are, so you can wait for them to pass.", 16, -194)
 	Slider("arrowScale", "Arrow Size", 0.5, 2, 0.05, "%.2f", 330, -74)
 	Slider("trackerScale", "Tracker Size", 0.5, 2, 0.05, "%.2f", 330, -120)
 
-	Header("Path to Follow", -206)
-	Check("pathMinimap", "Path on the Minimap", "Dots along the route on the minimap, with the boss or teleporter at the end.", 16, -224)
+	Header("Path to Follow", -232)
+	Check("pathMinimap", "Path on the Minimap", "Dots along the route on the minimap, with the boss or teleporter at the end.", 16, -250)
 	Check("pathHud", "Path HUD Around the Character",
-		"A see-through radar in the middle of the screen with the path under your feet, turned to the way you face.", 16, -250)
-	Check("hudHideCombat", "Hide the HUD in Combat", nil, 40, -276)
+		"A see-through radar in the middle of the screen with the path under your feet, turned to the way you face.", 16, -276)
+	Check("hudHideCombat", "Hide the HUD in Combat", nil, 40, -302)
 	Check("pathView", "3D Path View",
-		"A small panel showing the path ahead in perspective. Drag to move, right-click for options.", 16, -302)
-	Slider("hudSize", "HUD Size", 160, 500, 10, "%d px", 330, -234)
-	Slider("hudRange", "HUD Range", 15, 100, 5, "%d yd", 330, -280)
-	Slider("hudAlpha", "HUD Opacity", 0.1, 1, 0.05, "%.2f", 330, -326)
-	Slider("hudOffset", "HUD Height", -250, 250, 5, "%d", 330, -372)
-	Slider("pathViewScale", "3D View Size", 0.6, 2, 0.05, "%.2f", 16, -352)
+		"A small panel showing the path ahead in perspective. Drag to move, right-click for options.", 16, -328)
+	Slider("hudSize", "HUD Size", 160, 500, 10, "%d px", 330, -260)
+	Slider("hudRange", "HUD Range", 15, 100, 5, "%d yd", 330, -306)
+	Slider("hudAlpha", "HUD Opacity", 0.1, 1, 0.05, "%.2f", 330, -352)
+	Slider("hudOffset", "HUD Height", -250, 250, 5, "%d", 330, -398)
+	Slider("pathViewScale", "3D View Size", 0.6, 2, 0.05, "%.2f", 16, -378)
 
 	local reset = DN.Button(panel, "Reset Frame Positions", function() DN.db.pos = {} ReloadUI() end)
-	reset:SetPoint("TOPLEFT", 16, -410)
+	reset:SetPoint("TOPLEFT", 16, -436)
 end
 
 panel:SetScript("OnShow", function()

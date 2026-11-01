@@ -179,6 +179,21 @@ local function NearHint(route, px, py, first, last)
 	end
 end
 
+local PATROL_NEAR = 25    -- yards: a patrol warning shows this close to where the route crosses it
+
+-- The patrols whose path crosses the route near the player, if any (inst.patrols, from the build)
+function DN:NearPatrol()
+	local list, px, py = self.opt.patrols and self.inst and self.inst.patrols, self.px, self.py
+	if list and px then
+		for _, s in ipairs(list) do
+			local dx, dy = s.x - px, s.y - py
+			if dx * dx + dy * dy < PATROL_NEAR * PATROL_NEAR and (not self.pfloor or OnFloor(s.f, self.pfloor)) then
+				return s.text
+			end
+		end
+	end
+end
+
 -- Returns the waypoint to walk to: x, y, floor, distance, boss, isBossPoint
 function DN:NextWaypoint()
 	local inst, px, py = self.inst, self.px, self.py
