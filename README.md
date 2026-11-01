@@ -24,11 +24,11 @@ InstanceGPS doesn't need any other addons or libraries.
 
 ### Server Modules
 
-InstanceGPS follows AzerothCore's version of each instance. If your server changes some (moved or custom bosses, different events), it may have a module that adjusts InstanceGPS for it. Install it next to InstanceGPS, the same way.
+InstanceGPS follows AzerothCore's version of each instance. If your server changes some (moved or custom bosses, different events), it may have a module that adjusts InstanceGPS for it. A module can also add what your server has on top, with its own options page under InstanceGPS's. Install it next to InstanceGPS, the same way.
 
-| Server | Module |
-|---|---|
-| Synastria | [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria) |
+| Server | Module | What It Adds |
+|---|---|---|
+| Synastria | [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria) | Each boss's loot and drop chances in its tooltip, what's left to attune in the instance, the trash worth killing, and a count on bosses that still drop something for you |
 
 No module for your server? Anyone can make one, without programming tools: see [docs/MODULES.md](docs/MODULES.md).
 
