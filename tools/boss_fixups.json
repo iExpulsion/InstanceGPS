@@ -385,6 +385,16 @@
    "noDeath": false,
    "note": "Baelog, Eric 'The Swift', Olaf"
   },
+  "478": {
+   "npcs": [
+    10812,
+    10813
+   ],
+   "mode": "any",
+   "spell": null,
+   "noDeath": false,
+   "note": "Grand Crusader Dathrohan 10812 becomes Balnazzar 10813 at 40% (SmartAI update entry); burst past 40% and he dies as Dathrohan"
+  },
   "230": {
    "npcs": [
     9027,

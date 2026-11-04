@@ -359,6 +359,12 @@ BOSS_VIA = {
         # side can't be walked (way traced on an in-game map screenshot, 2026-10-01)
         'Skum': [((2.0, -233.7, -73.8), None), ((-63.5, -213.3, -65.6), None), ((-129.1, -187.3, -67.6), None)],
     },
+    329: {
+        # Balnazzar is Grand Crusader Dathrohan (10812, static spawn in the chapel) until 40% health,
+        # when his SmartAI turns him into 10813; the point is the chapel door both routes walk through
+        'Balnazzar': [((3438.9, -3069.3, 136.6),
+                       'Grand Crusader Dathrohan in this chapel is Balnazzar: he turns into him at 40% health (unless he dies first).')],
+    },
     229: {
         # in through the stadium's entry door (GO 164726); walking in starts the event
         'Warchief Rend Blackhand': [((108.0, -420.3, 111.0),
