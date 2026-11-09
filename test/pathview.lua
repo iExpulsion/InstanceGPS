@@ -102,7 +102,6 @@ for _, id in ipairs({ 36, 631, 533, 389 }) do
 end
 -- options panel and toggles
 DN:OpenOptions()
-InstanceGPSOptions.scripts.OnShow()
 for _, c in ipairs({ "hud", "hud", "minimap", "view", "options" }) do SlashCmdList.INSTANCEGPS(c) end
 MOCK.combat = true; MOCK.Tick(0.2); print("hud in combat shown:", InstanceGPSHUD.shown)
 print(fails == 0 and "pathview ok" or ("pathview FAILS " .. fails))

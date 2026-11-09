@@ -24,10 +24,10 @@ def package(addon, name, version, extra, toc_lines=None):
     """Zip one addon folder; `extra` maps names in the zip to files outside it."""
     lines, meta, loaded = toc_info(addon, name)
     files = [name + ".toc"] + loaded
-    for folder in ("Media", "RouteUtils/Media"):
-        media = os.path.join(addon, folder)
-        if os.path.isdir(media):
-            files += sorted(folder + "/" + f for f in os.listdir(media) if f.lower().endswith((".tga", ".blp")))
+    # every texture in the addon: its own Media, RouteUtils' and the style kit's skins
+    for folder, _, names in sorted(os.walk(addon)):
+        rel = os.path.relpath(folder, addon).replace("\\", "/")
+        files += sorted((rel + "/" if rel != "." else "") + f for f in names if f.lower().endswith((".tga", ".blp")))
     problems = [f for f in files if not os.path.isfile(os.path.join(addon, f))]
     problems += [f for f, p in extra.items() if not os.path.isfile(p)]
     # Textures the code asks for must be in the zip (the code names them as DN.MEDIA .. "Arrow", and DN.MEDIA is

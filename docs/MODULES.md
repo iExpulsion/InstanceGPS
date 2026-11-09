@@ -23,7 +23,7 @@ Modules live in repos of their own. [InstanceGPS-Synastria](https://github.com/i
        -- changes, per instance (see below)
    })
    ```
-2. `/reload`. The options panel title now reads "InstanceGPS 1.0.1 + <Your Server>".
+2. `/reload`. The options window's title bar now reads "v1.0.1 + <Your Server>" after the name.
 
 Instances are keyed by their map ID: `[229]` is Blackrock Spire. The map IDs are the `[n] = {` keys in `InstanceGPS/Data.lua`, next to each instance's name.
 
@@ -147,7 +147,7 @@ Set the whole table again when your marks change; the tracker shows the latest o
 
 ## Options for a Module
 
-A module with options of its own gets a page for them under InstanceGPS's in the game's options window, and InstanceGPS saves them with its own settings:
+A module with options of its own gets a page for them in InstanceGPS's options window, under Server Modules, and InstanceGPS saves them with its own settings. A dropdown with more than a dozen choices opens a searchable list instead:
 
 ```lua
 local opt = InstanceGPS:ModuleOptions("My Server", {

@@ -1,10 +1,12 @@
--- InstanceGPS tracker: the boss list for the current instance.
+-- InstanceGPS tracker: the boss list for the current instance, in the style kit's window look.
 local _, ns = ...
-local DN = ns.DN
+local DN, S = ns.DN, ns.Style
 
 local ROW_H, WIDTH = 16, 230
 local CHECK = "|TInterface\\RaidFrame\\ReadyCheck-Ready:12:12:0:0|t"
 local SKULL = "|TInterface\\TargetingFrame\\UI-TargetingFrame-Skull:12:12:0:0|t"
+-- the room between the frame's edge and its rows: the skin's window edge (0 for Material) plus a little
+local inset = 6
 
 local f = CreateFrame("Frame", "InstanceGPSTracker", UIParent)
 f:SetWidth(WIDTH)
@@ -13,19 +15,9 @@ f:SetFrameStrata("LOW")
 f:SetMovable(true)
 f:SetClampedToScreen(true)
 f:Hide()
-f:SetBackdrop({
-	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-	tile = true, tileSize = 16, edgeSize = 12,
-	insets = { left = 3, right = 3, top = 3, bottom = 3 },
-})
-f:SetBackdropColor(0, 0, 0, 0.65)
-f:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.9)
 DN.tracker = f
 
 local header = CreateFrame("Button", nil, f)
-header:SetPoint("TOPLEFT", 6, -5)
-header:SetPoint("TOPRIGHT", -6, -5)
 header:SetHeight(16)
 header:RegisterForDrag("LeftButton")
 header:RegisterForClicks("AnyUp")
@@ -164,12 +156,12 @@ local function GetRow(i)
 	r:SetScript("OnClick", RowOnClick)
 	r:SetScript("OnEnter", RowOnEnter)
 	r:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	r:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
-	r.text = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	S.Highlight(r)
+	r.text = S.Text(r, "small")
 	r.text:SetPoint("LEFT", 2, 0)
 	r.text:SetPoint("RIGHT", -44, 0)
 	r.text:SetJustifyH("LEFT")
-	r.right = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	r.right = S.Text(r, "small")
 	r.right:SetPoint("RIGHT", -2, 0)
 	r.right:SetJustifyH("RIGHT")
 	rows[i] = r
@@ -235,9 +227,9 @@ function DN:RefreshTracker()
 	titleText:SetText(inst.name .. (label and (" |cffaaaaaa(" .. label .. ")|r") or ""))
 
 	local route = self:ActiveRoute() or { order = {}, stops = {} }
-	local y = -24
+	local y = -(inset - 1) - 19
 	if #inst.routes > 1 then
-		routeText:SetText(("Route: |cffffffff%s|r  |cff888888(%d/%d, click to switch)|r"):format(route.name or "?", self.routeIndex or 1, #inst.routes))
+		routeText:SetText(("Route: |cffffffff%s|r  (%d/%d)"):format(route.name or "?", self.routeIndex or 1, #inst.routes))
 		routeBtn:Show()
 		y = y - 14
 	else
@@ -250,8 +242,8 @@ function DN:RefreshTracker()
 		shown = shown + 1
 		local r = GetRow(shown)
 		r:ClearAllPoints()
-		r:SetPoint("TOPLEFT", 6, y)
-		r:SetPoint("TOPRIGHT", -6, y)
+		r:SetPoint("TOPLEFT", inset, y)
+		r:SetPoint("TOPRIGHT", -inset, y)
 		r.text:SetText(text)
 		r.right:SetText(right or "")
 		r.boss, r.route, r.note = boss, routeIdx, note
@@ -322,22 +314,38 @@ function DN:RefreshTracker()
 	end
 	for i = shown + 1, #rows do rows[i]:Hide() end
 	self.trackerDone, self.trackerTotal = done, total
-	f:SetHeight(-y + 6)
+	f:SetHeight(-y + inset)
 end
 
 -- timer + progress text, once a second
 local tick = 0
 f:SetScript("OnUpdate", function(_, elapsed)
 	tick = tick + elapsed
-	if tick < 1 then return end
-	tick = 0
 	local run = DN.run
-	if not run then return end
-	local t = run.cleared or (time() - run.started)
-	timerText:SetText(("%s%d/%d|r %s"):format(run.cleared and "|cff33ff33" or "|cffffffff",
-		DN.trackerDone or 0, DN.trackerTotal or 0, DN.FormatTime(t)))
-	-- refresh the distance on the next-boss row
-	DN:RefreshTracker()
+	if tick >= 1 and run then
+		tick = 0
+		local t = run.cleared or (time() - run.started)
+		timerText:SetText(("%s%d/%d|r %s"):format(run.cleared and "|cff33ff33" or "|cffffffff",
+			DN.trackerDone or 0, DN.trackerTotal or 0, DN.FormatTime(t)))
+		-- refresh the distance on the next-boss row
+		DN:RefreshTracker()
+	end
+end)
+
+-- The look comes from the skin, which goes on as the settings load
+DN:On("LOADED", function()
+	local C = S.colors
+	inset = 6 + S.metrics.edge
+	S.Frame(f, "window")
+	header:ClearAllPoints()
+	header:SetPoint("TOPLEFT", inset, -(inset - 1))
+	header:SetPoint("TOPRIGHT", -inset, -(inset - 1))
+	S.SetFont(titleText, "normal")
+	titleText:SetTextColor(unpack(C.heading))
+	S.SetFont(timerText, "small")
+	timerText:SetTextColor(unpack(C.text))
+	S.SetFont(routeText, "small")
+	routeText:SetTextColor(unpack(C.muted))
 end)
 
 DN:On("LOADED", function()

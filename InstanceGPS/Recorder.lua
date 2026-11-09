@@ -254,39 +254,35 @@ end
 local exportFrame
 local function ShowExport(text)
 	if not exportFrame then
-		local f = CreateFrame("Frame", "InstanceGPSExport", UIParent)
-		f:SetSize(560, 380)
-		f:SetPoint("CENTER")
-		f:SetFrameStrata("DIALOG")
-		f:SetBackdrop({ bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-		                edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border", tile = true, tileSize = 32, edgeSize = 32,
-		                insets = { left = 11, right = 12, top = 12, bottom = 11 } })
-		f:EnableMouse(true)
-		f:SetMovable(true)
-		f:RegisterForDrag("LeftButton")
-		f:SetScript("OnDragStart", f.StartMoving)
-		f:SetScript("OnDragStop", f.StopMovingOrSizing)
-		local title = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-		title:SetPoint("TOP", 0, -16)
-		title:SetText("InstanceGPS Recording: Ctrl+A, Ctrl+C to Copy")
-		local scroll = CreateFrame("ScrollFrame", "InstanceGPSExportScroll", f, "UIPanelScrollFrameTemplate")
-		scroll:SetPoint("TOPLEFT", 20, -40)
-		scroll:SetPoint("BOTTOMRIGHT", -38, 46)
+		local S = ns.Style
+		local f = DN.Window.New({ name = "InstanceGPSExport", subtitle = "Recording", width = 560, height = 360,
+			positionKey = "export" })
+		local note = S.Text(f.main, "small", S.colors.muted)
+		note:SetPoint("TOPLEFT", S.PAD, -S.PAD)
+		note:SetText("Click the text, then Ctrl+A and Ctrl+C to copy it.")
+		local well = CreateFrame("Frame", nil, f.main)
+		well:SetPoint("TOPLEFT", S.PAD, -S.PAD - 20)
+		well:SetPoint("BOTTOMRIGHT", -S.PAD, S.PAD)
+		S.Well(well)
+		local scroll = CreateFrame("ScrollFrame", "InstanceGPSExportScroll", well, "UIPanelScrollFrameTemplate")
+		local inner = 6 + S.metrics.wellInset
+		scroll:SetPoint("TOPLEFT", inner, -inner)
+		scroll:SetPoint("BOTTOMRIGHT", -inner - 10, inner)
+		S.ScrollBar(scroll, "InstanceGPSExportScroll")
 		local edit = CreateFrame("EditBox", nil, scroll)
 		edit:SetMultiLine(true)
-		edit:SetFontObject(ChatFontNormal)
-		edit:SetWidth(490)
-		edit:SetAutoFocus(true)
+		S.SetFont(edit, "small")
+		edit:SetWidth(560 - 2 * S.PAD - 2 * inner - 20)
+		edit:SetAutoFocus(false)
 		edit:SetScript("OnEscapePressed", function() f:Hide() end)
+		edit:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+		S.TrackInput(edit, well)
 		scroll:SetScrollChild(edit)
 		f.edit = edit
-		local close = DN.Button(f, CLOSE or "Close", function() f:Hide() end, 96)
-		close:SetPoint("BOTTOM", 0, 16)
 		exportFrame = f
 	end
 	exportFrame.edit:SetText(text)
-	exportFrame.edit:HighlightText()
-	exportFrame:Show()
+	DN.Window.Show(exportFrame)
 end
 
 -------------------------------------------------------------------------------- map

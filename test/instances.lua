@@ -37,18 +37,23 @@ local noExp = 0
 for _, i in pairs(NS.Instances) do if i.exp == nil then noExp = noExp + 1 end end
 print("expansions known:", noExp == 0)
 DN:SetOff(MAP, true)
-InstanceGPSInstances.scripts.OnShow(InstanceGPSInstances)
+DN:OpenOptions(true)
+local tbl = DN.Options.Page("instances").table
 local n, count = 0, 0
 for _ in pairs(NS.Instances) do count = count + 1 end
-local cb36
-for k, v in pairs(_G) do
-	if type(k) == "string" and k:match("^InstanceGPSInst_%d+$") then
-		n = n + 1
-		if k == "InstanceGPSInst_36" then cb36 = v end
-	end
+local item36
+for _, item in ipairs(tbl.items) do
+	if item.mapId then n = n + 1 end
+	if item.mapId == MAP then item36 = item end
 end
-print("listed:", n == count, "off unticked:", cb36 and not cb36:GetChecked())
-cb36:SetChecked(true)
-cb36.scripts.OnClick(cb36)
+print("listed:", n == count, "off unticked:", item36 and tbl.cell(item36, "on") == "")
+tbl.onClick(item36, "LeftButton")
 print("ticked back on:", DN:NavOn())
+-- a click on an expansion's heading switches all of its instances
+local header = tbl.items[1]
+tbl.onClick(header, "LeftButton")
+local allOff = true
+for _, item in ipairs(header.members) do allOff = allOff and DN:IsOff(item.mapId) end
+tbl.onClick(header, "LeftButton")
+print("heading switches all:", allOff and DN:NavOn())
 print("instances test done")

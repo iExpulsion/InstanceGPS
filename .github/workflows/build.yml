@@ -28,7 +28,7 @@ jobs:
           pip install lupa
 
       - name: Check Lua syntax
-        run: for f in InstanceGPS/*.lua; do luac5.1 -p "$f"; done
+        run: find InstanceGPS -name "*.lua" -exec luac5.1 -p {} +
 
       - name: Run tests
         working-directory: test

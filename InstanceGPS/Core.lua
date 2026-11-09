@@ -37,28 +37,13 @@ local defaults = {
 	offHidesTracker = false,   -- where navigation is off (Instances page), hide the boss tracker too
 	patrols = true,      -- name the patrols the route crosses, under the arrow
 }
+DN.defaults = defaults
 
 -------------------------------------------------------------------------------- utils
 
 function DN:Print(msg, ...)
 	if select("#", ...) > 0 then msg = msg:format(...) end
 	DEFAULT_CHAT_FRAME:AddMessage("|cff33ccffInstanceGPS|r: " .. tostring(msg))
-end
-
--- A button like the game's own panel buttons (Okay, Cancel), sized to its text. UIPanelButtonTemplate
--- stretches one picture over the whole button, which squashes the rounded ends of anything wider
--- than Blizzard's 96; UIPanelButtonTemplate2 draws ends and middle apart (and finds them by the
--- button's name, so it needs one).
-local buttons = 0
-function DN.Button(parent, text, onClick, minWidth)
-	buttons = buttons + 1
-	local b = CreateFrame("Button", "InstanceGPSButton" .. buttons, parent, "UIPanelButtonTemplate2")
-	b:SetText(text)
-	local fs = b:GetFontString()
-	local w = fs and fs:GetStringWidth() or 0
-	b:SetSize(math.max(minWidth or 80, w + 24), 22)
-	if onClick then b:SetScript("OnClick", onClick) end
-	return b
 end
 
 function DN:On(event, fn)

@@ -63,9 +63,12 @@ python patrols.py                    check the patrol crossings on made-up route
 python hintcheck.py                  check every hint shows during the walks (needs a local build cache)
 ```
 
-## RouteUtils
+## Shared Libraries
 
-The arrow, the minimap path, the dots and boss rings on the dungeon map, and their textures come from RouteUtils, vendored in `InstanceGPS/RouteUtils`. Don't edit that copy: change RouteUtils itself, run its tests, then copy it in with `py -I -X utf8 tools/sync_route.py` (it expects the RouteUtils repo next to this one, or set `ROUTEUTILS`).
+Two libraries are vendored into the addon. Don't edit their copies: change the library itself, run its tests, then copy it in. Each script expects the library's repo next to this one.
+
+- **RouteUtils** (`InstanceGPS/RouteUtils`): the arrow, the minimap path, the dots and boss rings on the dungeon map, and their textures. `py -I -X utf8 tools/sync_route.py` (or set `ROUTEUTILS`).
+- **MaterialCraftUI** (`InstanceGPS/UI/Style.lua` and `UI/Skins`): the style kit behind the options window, the right-click menu, the tracker and the 3D view, with its Cognac and Classic skins. `py -I -X utf8 tools/sync_style.py` (or set `MATERIALCRAFTUI`). `UI/StyleSetup.lua` picks the theme and the saved skin.
 
 ## Server Modules
 

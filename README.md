@@ -79,13 +79,13 @@ No module for your server? Anyone can make one, without programming tools: see [
 | Navigate to a specific boss | Left-click it in the tracker (click again to go back to the route), or click its pin on the map |
 | Fix a missed or wrong kill | Right-click the boss in the tracker |
 | Switch wing or route | Click the "Route:" line in the tracker, or `/igps route library` |
-| Options | Interface > AddOns > InstanceGPS (`/igps options`), or right-click the tracker title or the arrow |
+| Options | `/igps options` opens the options window (also from Interface > AddOns > InstanceGPS); right-click the tracker title or the arrow for quick switches |
 | Move frames | Drag the tracker title or the arrow (`/igps lock` to lock them) |
-| Navigation only in some instances | Interface > AddOns > InstanceGPS > Instances (`/igps instances`): tick instances on or off by expansion. Where it's off there's no arrow, path or hints, but the boss tracker still runs (an option there hides it too). In the instance you're in: `/igps off` / `on`, or "Navigation in ..." in the menu |
+| Navigation only in some instances | The Instances page of the options window (`/igps instances`): click an instance to switch it, or an expansion's heading for all of them. Where it's off there's no arrow, path or hints, but the boss tracker still runs (an option on the Boss Tracker page hides it too). In the instance you're in: `/igps off` / `on`, or "Navigation Here" in the menu |
 
 The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance. InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow Me" in the menu turns it back on.
 
-![The options panel: Interface > AddOns > InstanceGPS](docs/images/options.png)
+![The options window](docs/images/options.png)
 
 ## Route Wrong on Your Server?
 
@@ -109,7 +109,7 @@ Detours that come back to where they left (a dead end, running back for loot) ar
 /igps reset         forget this run's kills (the instance itself isn't reset)
 /igps stats [name]  lifetime kills from your achievement statistics
 /igps saved         lockouts with recorded kills
-/igps options       all options (Interface > AddOns > InstanceGPS)
+/igps options       the options window
 /igps menu          quick options menu
 /igps minimap       toggle the path on the minimap
 /igps hud           toggle the path HUD around the character

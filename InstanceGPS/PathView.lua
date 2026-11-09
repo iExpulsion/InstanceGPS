@@ -133,13 +133,6 @@ view:EnableMouse(true)
 view:SetClampedToScreen(true)
 view:RegisterForDrag("LeftButton")
 view:RegisterForClicks("RightButtonUp")
-view:SetBackdrop({
-	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 12,
-	insets = { left = 3, right = 3, top = 3, bottom = 3 },
-})
-view:SetBackdropColor(0.05, 0.07, 0.12, 0.85)
-view:SetBackdropBorderColor(0.5, 0.5, 0.55, 0.9)
 view:Hide()
 
 local ground = view:CreateTexture(nil, "BACKGROUND", nil)
@@ -351,6 +344,20 @@ function DN:UpdatePathViews()
 	if inst and o.pathView then view:Show() else view:Hide() end
 	if inst and (o.pathMinimap or o.pathHud or o.pathView) then driver:Show() else driver:Hide() ClearAll() end
 end
+
+-- The 3D view's surface and text in the style kit's colors and fonts, once the skin is on
+DN:On("LOADED", function()
+	local S = ns.Style
+	local C = S.colors
+	S.Panel(view, { C.window[1], C.window[2], C.window[3], 0.9 }, C.border)
+	S.SetFont(viewTitle, "small")
+	viewTitle:SetTextColor(unpack(C.heading))
+	S.SetFont(viewHint, "small")
+	S.SetFont(viewBehind, "small")
+	viewBehind:SetTextColor(unpack(C.text))
+	S.SetFont(viewIdle, "normal")
+	viewIdle:SetTextColor(unpack(C.heading))
+end)
 
 DN:On("LOADED", function()
 	local pos = DN.db.pos.pathView

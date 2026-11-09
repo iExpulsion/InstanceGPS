@@ -15,9 +15,11 @@ local function show(tag)
 	print(tag, "routes:", #inst.routes, "active:", r.name or "normal", "order:", table.concat(names, " > "), "next:", DN:NextBoss().name)
 end
 show("normal")
--- toggle via the options-panel checkbox
-InstanceGPSOpt_hardModes.GetChecked = function() return true end
-InstanceGPSOpt_hardModes.scripts.OnClick(InstanceGPSOpt_hardModes)
+-- toggle with the check on the options window's Route page
+DN:OpenOptions()
+DN.Options.Open("route")
+local hardCheck = DN.Options.Row("route", "Hard-Mode Routes").control
+hardCheck.scripts.OnClick(hardCheck)
 MOCK.Tick(0.2)
 show("hard  ")
 -- drakes die during Sartharion: credited, route cleared after Sartharion

@@ -14,12 +14,23 @@ local function Stub(name)
 		elseif k == "Show" then f = function(self) self.shown = true end
 		elseif k == "Hide" then f = function(self) self.shown = false end
 		elseif k == "IsShown" or k == "IsVisible" then f = function(self) return self.shown end
-		elseif k == "RegisterEvent" then f = function(self, e) self.events[e] = true; mock.frames[#mock.frames + 1] = self end
+		-- each frame hears an event once, however many events it registers
+		elseif k == "RegisterEvent" then f = function(self, e)
+			if not next(self.events) then mock.frames[#mock.frames + 1] = self end
+			self.events[e] = true
+		end
 		elseif k == "GetWidth" then f = function(self) return self.w end
 		elseif k == "GetHeight" then f = function(self) return self.h end
 		elseif k == "SetWidth" then f = function(self, v) self.w = v end
 		elseif k == "SetHeight" then f = function(self, v) self.h = v end
 		elseif k == "GetFrameLevel" then f = function() return 1 end
+		elseif k == "GetEffectiveScale" or k == "GetScale" then f = function() return 1 end
+		elseif k == "GetStringHeight" then f = function() return 12 end
+		elseif k == "SetFrameStrata" then f = function(self, v) self.strata = v end
+		elseif k == "SetToplevel" then f = function(self, v) self.toplevel = v end
+		-- given a file path, the thumb is a texture of its own, as in the client
+		elseif k == "SetThumbTexture" then f = function(self, tex) self.thumb = type(tex) == "table" and tex or Stub("Thumb") end
+		elseif k == "GetThumbTexture" then f = function(self) return self.thumb end
 		elseif k == "GetPoint" then f = function() return "CENTER", nil, "CENTER", 0, 0 end
 		-- with mock.lean these keep nothing, so the garbage test measures the addon alone
 		elseif k == "SetPoint" then f = function(self, ...) if not mock.lean then self.point = { ... } end end
@@ -65,6 +76,12 @@ function CreateFrame(kind, name, parent, template)
 	if name then
 		_G[name] = f
 		for _, part in ipairs({ "Text", "Low", "High" }) do _G[name .. part] = Stub(part) end
+		-- a scroll frame template's bar and its arrow buttons, by the names the client gives them
+		if template == "UIPanelScrollFrameTemplate" then
+			for _, part in ipairs({ "ScrollBar", "ScrollBarScrollUpButton", "ScrollBarScrollDownButton" }) do
+				_G[name .. part] = Stub(part)
+			end
+		end
 	end
 	return f
 end
@@ -101,6 +118,21 @@ function ReloadUI() end
 function StaticPopup_Show(which, a1) mock.popup = { which = which, text = a1 } return mock.popup end
 function UnitIsDeadOrGhost() return mock.dead end
 function tinsert(t, v) table.insert(t, v) end
+-- what the vendored style kit (UI/Style.lua) and the windows touch
+STANDARD_TEXT_FONT = "Fonts\\FRIZQT__.TTF"
+function CreateFont(name)
+	local f = Stub("Font")
+	if name then _G[name] = f end
+	return f
+end
+function IsMouseButtonDown() return false end
+function MouseIsOver() return false end
+function hooksecurefunc() end
+function HideUIPanel() end
+function PlaySound() end
+function GetCursorPosition() return 400, 300 end
+function IsShiftKeyDown() return false end
+UISpecialFrames = {}
 
 -- fire an event on every registered frame
 function mock.Fire(event, ...)

@@ -7,8 +7,15 @@
 ## SavedVariablesPerCharacter: InstanceGPSCharDB
 
 RouteUtils\RouteUtils.lua
+UI\Style.lua
+UI\Skins\Cognac\Atlas.lua
+UI\Skins\Cognac\Skin.lua
+UI\Skins\Classic\Skin.lua
 Data.lua
 Core.lua
+UI\StyleSetup.lua
+UI\Window.lua
+UI\Menu.lua
 Override.lua
 Nav.lua
 Arrow.lua
@@ -17,3 +24,4 @@ MapOverlay.lua
 PathView.lua
 Recorder.lua
 Config.lua
+UI\Options.lua
