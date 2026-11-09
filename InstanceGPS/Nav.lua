@@ -196,19 +196,48 @@ end
 
 -- the current leg, DN.leg: one table filled again on every tick
 local legBuf = {}
+local NO_STOPS = {}
+
+-- Where to head next: the next boss, or a quest stop on the way to it (QuestGPS's objectives in this instance,
+-- QuestGPS.lua). A quest stop sits off the route at its `anchor` vertex; one between the previous boss's stop and
+-- the next boss's comes first. A boss picked by hand goes straight there.
+function DN:NextTarget()
+	local boss, k = self:NextBoss()
+	local route = boss and k and not self.navTarget and self:ActiveRoute()
+	if route then
+		local lo, hi = k > 1 and route.stops[k - 1] or 1, route.stops[k]
+		for _, q in ipairs(self.questStops or NO_STOPS) do
+			if q.onRoute == route and not self:QuestSkipped(q) and q.anchor >= lo and q.anchor <= hi then
+				q.legStart = lo
+				return q
+			end
+		end
+	end
+	return boss
+end
+
+function DN:QuestSkipped(q)
+	return self.questSkips and self.questSkips[q.key] or false
+end
 
 -- Returns the waypoint to walk to: x, y, floor, distance, boss, isBossPoint
 function DN:NextWaypoint()
 	local inst, px, py = self.inst, self.px, self.py
 	if not inst or not px then return nil end
-	local boss = self:NextBoss()
+	local boss = self:NextTarget()
 	self.remaining, self.leg, self.navWp = nil, nil, nil
 	if not boss or not boss.x then return nil end
-	-- prefer the active route; a boss outside it (another wing) uses its own route
+	-- prefer the active route; a boss outside it (another wing) uses its own route. A quest stop is reached by
+	-- following the route to its anchor and then straight out to it (nothing to follow when the anchor is the
+	-- leg's start).
 	local route, target, legStart = self:ActiveRoute(), nil, nil
+	if boss.quest then
+		route = boss.onRoute
+		if boss.anchor > boss.legStart then target, legStart = boss.anchor, boss.legStart end
+	end
 	for pass = 1, 2 do
 		local r = pass == 1 and route or inst.routes[boss.route or 1]
-		if r and not target then
+		if r and not target and not boss.quest then
 			for k, bi in ipairs(r.order) do
 				if inst.bosses[bi] == boss then target, legStart = r.stops[k], k > 1 and r.stops[k - 1] or 1 end
 			end

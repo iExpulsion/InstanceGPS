@@ -22,6 +22,14 @@ Without a map patch, everything works in Wrath instances. In Classic and Burning
 
 InstanceGPS doesn't need any other addons or libraries.
 
+### Other Addons
+
+With QuestGPS loaded too, the two work as one inside dungeons and raids:
+
+- **One tracker.** The boss tracker gives way to a card at the top of QuestGPS's tracker: where the arrow leads, how far, which boss of how many you're on, and what comes after. Right-click it for InstanceGPS's menu. Untick Use QuestGPS's Tracker (Boss Tracker page) to keep InstanceGPS's own, which also comes back wherever QuestGPS folds or hides its tracker in dungeons.
+- **Your quests on the route.** The objectives and turn-ins of the quests in your log that are inside the instance become stops on the way to the next boss, with the arrow leading to each and a "!" or "?" ring on the dungeon map. Click a ring, or pick Skip This Quest Stop in the menu, to skip one. Untick Quest Objectives on the Route (Route page) to leave them out.
+- **One arrow.** QuestGPS's arrow leads you to the instance; inside, InstanceGPS's takes over.
+
 ### Server Modules
 
 InstanceGPS follows AzerothCore's version of each instance. If your server changes some (moved or custom bosses, different events), it may have a module that adjusts InstanceGPS for it. A module can also add what your server has on top, with its own options page under InstanceGPS's. Install it next to InstanceGPS, the same way.

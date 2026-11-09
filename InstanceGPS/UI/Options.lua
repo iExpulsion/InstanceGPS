@@ -90,6 +90,10 @@ local function On(field)
 	return function() return DN.opt[field] end
 end
 
+local function QuestGPSLoaded()
+	return DN:QuestGPS() ~= nil
+end
+
 local function HardModesChanged()
 	DN:ApplyHardModes()
 	Apply()
@@ -122,6 +126,9 @@ O.PAGES = {
 			Check("Hard-Mode Routes",
 				"Where a hard mode changes the way through an instance, follow it: in The Obsidian Sanctum, go straight to Sartharion and leave the drakes up.",
 				"hardModes", HardModesChanged),
+			Check("Quest Objectives on the Route",
+				"With QuestGPS loaded, the arrow also leads to your quests' objectives and turn-ins here, on the way to the next boss.",
+				"questStops", function() DN:UpdateQuestStops() Apply() end, QuestGPSLoaded),
 		},
 	},
 	{
@@ -156,6 +163,12 @@ O.PAGES = {
 			Indent(Check("Also Hide It Where Navigation Is Off",
 				"In the instances unticked on the Instances page, the tracker goes too.", "offHidesTracker",
 				function() DN:NavChanged() end, On("tracker"))),
+			Check("Use QuestGPS's Tracker",
+				"With QuestGPS loaded and its tracker on, the boss tracker gives way to a card at the top of QuestGPS's: where the arrow leads, how far, and the run's progress.",
+				"questTracker", function()
+					Apply()
+					DN:RefreshQuestCard(true)
+				end, QuestGPSLoaded),
 			Section("Size"),
 			Slider("Tracker Size", "How big the tracker is.", "trackerScale", 50, 200, 5, Percent, On("tracker"), 100),
 			Section("Chat"),

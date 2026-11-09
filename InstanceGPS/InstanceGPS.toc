@@ -3,6 +3,7 @@
 ## Notes: Guides you through every Classic, TBC and WotLK dungeon and raid: the shortest route to every boss, with a navigation arrow, the path on your map, minimap and HUD, and hints for event triggers. Also tracks boss kills, run times and kill statistics. /igps
 ## Author: Expulsion
 ## Version: 1.1.0
+## OptionalDeps: QuestGPS
 ## SavedVariables: InstanceGPSDB
 ## SavedVariablesPerCharacter: InstanceGPSCharDB
 
@@ -18,6 +19,7 @@ UI\Window.lua
 UI\Menu.lua
 Override.lua
 Nav.lua
+QuestGPS.lua
 Arrow.lua
 Tracker.lua
 MapOverlay.lua

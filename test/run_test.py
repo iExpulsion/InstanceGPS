@@ -10,6 +10,9 @@ def load(path):
     src = open(path, encoding='utf8').read()
     fn = L.eval('function(src, name) local f, err = loadstring(src, name) if not f then error(err) end return f end')(src, os.path.basename(path))
     L.eval('function(f) f("InstanceGPS", NS) end')(fn)
+# addons InstanceGPS depends on load first, as OptionalDeps makes them in game (DN_BEFORE=path;path)
+for f in filter(None, os.environ.get('DN_BEFORE', '').split(os.pathsep)):
+    L.execute(open(f, encoding='utf8').read())
 # the files in the .toc's order, with the Data.lua asked for
 toc = open(os.path.join(ADDON, 'InstanceGPS.toc'), encoding='utf8').read().splitlines()
 for f in [l.strip().replace('\\', os.sep) for l in toc if l.strip() and not l.startswith('#')]:

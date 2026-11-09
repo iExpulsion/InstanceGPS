@@ -36,6 +36,9 @@ local defaults = {
 	hardModes = false,   -- hard-mode route variants (Obsidian Sanctum: Sartharion with the drakes up)
 	offHidesTracker = false,   -- where navigation is off (Instances page), hide the boss tracker too
 	patrols = true,      -- name the patrols the route crosses, under the arrow
+	-- with QuestGPS loaded (QuestGPS.lua): its quest objectives here as stops on the route, and a card on its
+	-- tracker in place of the boss tracker
+	questStops = true, questTracker = true,
 }
 DN.defaults = defaults
 
@@ -266,6 +269,7 @@ function DN:NewRun(inst, why)
 		killed = {}, dead = {}, lockId = nil,
 	}
 	self.char.runs[inst.mapId] = run
+	self.questSkips = nil
 	if why then self:Print("New %s run started (%s).", inst.name, why) end
 	return run
 end

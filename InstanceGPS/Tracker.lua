@@ -214,7 +214,8 @@ end
 
 function DN:RefreshTracker()
 	local inst, run = self.inst, self.run
-	if not inst or not run or not self.opt.tracker or (self.opt.offHidesTracker and not self:NavOn()) then
+	if not inst or not run or not self.opt.tracker or (self.opt.offHidesTracker and not self:NavOn())
+		or self:InQuestTracker() then
 		f:Hide()
 		return
 	end
@@ -266,7 +267,8 @@ function DN:RefreshTracker()
 			elseif b == next then
 				local col = self.navTarget == b and "|cff66ccff" or "|cffffd100"
 				text = ("%s %s%d. %s|r"):format(SKULL, col, k, b.name)
-				right = self.remaining and self.px and ("%d yd"):format(self.remaining) or ""
+				-- the distance is the arrow's, so only while it leads to this boss rather than a quest stop
+				right = self.remaining and self.px and self.wp.boss == b and ("%d yd"):format(self.remaining) or ""
 			else
 				text = ("|TInterface\\Buttons\\UI-CheckBox-Up:12:12:0:0|t |cffdddddd%d. %s|r"):format(k, b.name)
 				if not b.x then right = "|cffff8844?|r" end

@@ -72,6 +72,11 @@ local function Entries()
 		list[#list + 1] = { text = "Follow Me (Automatic)", checked = not DN.routeManual,
 			action = function() DN.routeManual = false end }
 	end
+	local target = inst and DN.wp.boss
+	if target and target.quest then
+		list[#list + 1] = { heading = "Quest" }
+		list[#list + 1] = { text = "Skip This Quest Stop", action = function() DN:SkipQuest(target) end }
+	end
 	if inst then
 		list[#list + 1] = { heading = inst.name }
 		list[#list + 1] = { text = "Navigation Here", checked = not DN:IsOff(inst.mapId), keepOpen = true,

@@ -12,7 +12,12 @@ local arrow = R.NewArrow({
 	onTooltip = function(tip)
 		tip:AddLine("InstanceGPS")
 		local b = DN.inst and (DN.wp.boss or DN:NextBoss())
-		if b then DN:Fire("BOSS_TOOLTIP", b, tip) end
+		if b and b.quest then
+			tip:AddLine(b.title, 1, 1, 1)
+			tip:AddLine(b.name, 0.8, 0.8, 0.8)
+		elseif b then
+			DN:Fire("BOSS_TOOLTIP", b, tip)
+		end
 		DN.HintLines(tip, not DN.opt.lockFrames and "Drag: Move", "Right-Click: Options")
 	end,
 })

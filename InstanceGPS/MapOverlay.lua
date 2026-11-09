@@ -4,7 +4,18 @@ local DN, R = ns.DN, ns.Route
 
 local overlay = CreateFrame("Frame", "InstanceGPSMapOverlay", WorldMapButton)
 
-local function RingOnEnter(self)
+-- a quest stop's ring (QuestGPS.lua): the quest, the objective, and a click to skip it or bring it back
+local function QuestOnEnter(self)
+	local q = self.quest
+	WorldMapTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	WorldMapTooltip:AddLine(q.title)
+	WorldMapTooltip:AddLine(q.name, 1, 1, 1)
+	if DN:QuestSkipped(q) then WorldMapTooltip:AddLine("Skipped", 0.6, 0.6, 0.6) end
+	DN.HintLines(WorldMapTooltip, DN:QuestSkipped(q) and "Click: Put Back on the Route" or "Click: Skip This Stop")
+	WorldMapTooltip:Show()
+end
+
+local function BossOnEnter(self)
 	local b = self.boss
 	WorldMapTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	WorldMapTooltip:AddLine((self.order > 0 and (self.order .. ". ") or "") .. b.name)
@@ -17,8 +28,14 @@ local function RingOnEnter(self)
 	WorldMapTooltip:Show()
 end
 
+local function RingOnEnter(self)
+	if self.quest then QuestOnEnter(self) else BossOnEnter(self) end
+end
+
 local function RingOnClick(self, button)
-	if button == "LeftButton" and DN.inst and DN.inst.bosses[self.boss.index] == self.boss then
+	if button == "LeftButton" and self.quest then
+		DN:SkipQuest(self.quest)
+	elseif button == "LeftButton" and DN.inst and DN.inst.bosses[self.boss.index] == self.boss then
 		DN:SetNavTarget(self.boss)
 	end
 end
@@ -38,7 +55,8 @@ local piece, nPiece, nActive = {}, 0, 0
 
 local function DrawMap(self, inst, level, navOff, current, route, killed)
 	local W, H = WorldMapButton:GetWidth(), WorldMapButton:GetHeight()
-	local nextBoss = current and self:NextBoss()
+	-- the ring in the "next" look is where the arrow leads: the next boss, or a quest stop before it
+	local nextBoss = current and self:NextTarget()
 
 	local function toMap(x, y)
 		local mx, my = self:WorldToMap(inst, level, x, y)
@@ -94,7 +112,24 @@ local function DrawMap(self, inst, level, navOff, current, route, killed)
 			local killedAt, isNext = killed[b.id], b == nextBoss
 			local state = killedAt and "done" or isNext and "next" or numOf[bi] and "stop" or "other"
 			local ring = mapStops:Add(x, y, state, numOf[bi])
-			ring.boss, ring.order, ring.killedAt, ring.isNext = b, numOf[bi] or 0, killedAt, isNext
+			ring.boss, ring.order, ring.killedAt, ring.isNext, ring.quest = b, numOf[bi] or 0, killedAt, isNext, nil
+		end
+	end
+
+	-- quest stops: small gray rings ("!" an objective, "?" a turn-in), the next one gold with a bright line out to it
+	-- from the route
+	for _, q in ipairs(current and not navOff and self.questStops or {}) do
+		if OnFloor(q.f, level) then
+			local isNext = q == nextBoss
+			if isNext then
+				local o = q.anchor * 3
+				piece[1], piece[2] = self:WorldToMap(inst, level, p[o - 2], p[o - 1])
+				piece[3], piece[4] = self:WorldToMap(inst, level, q.x, q.y)
+				mapPath:Add(piece, 4, 4)
+			end
+			local x, y = toMap(q.x, q.y)
+			local ring = mapStops:Add(x, y, isNext and "next" or "other", q.kind == "turnin" and "?" or "!")
+			ring.quest, ring.boss, ring.isNext = q, nil, isNext
 		end
 	end
 end
