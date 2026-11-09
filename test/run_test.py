@@ -10,6 +10,7 @@ def load(path):
     src = open(path, encoding='utf8').read()
     fn = L.eval('function(src, name) local f, err = loadstring(src, name) if not f then error(err) end return f end')(src, os.path.basename(path))
     L.eval('function(f) f("InstanceGPS", NS) end')(fn)
+load(os.path.join(ADDON, 'RouteUtils', 'RouteUtils.lua'))
 load(DATA)
 for f in ['Core.lua', 'Override.lua', 'Nav.lua', 'Arrow.lua', 'Tracker.lua', 'MapOverlay.lua', 'PathView.lua', 'Recorder.lua', 'Config.lua']:
     load(os.path.join(ADDON, f))

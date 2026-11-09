@@ -81,7 +81,7 @@ for _, id in ipairs({ 36, 631, 533, 389 }) do
 					end
 					-- minimap (north up): nearest dot direction matches the world direction
 					local mmb, mmd
-					for _, t in ipairs(shownTex(InstanceGPSMinimapPath)) do
+					for _, t in ipairs(shownTex(DN.minimapPath.frame)) do
 						if t.file and t.file:find("Dot") then
 							local d = sqrt(t.point[4] ^ 2 + t.point[5] ^ 2)
 							if not mmd or d < mmd then mmb, mmd = t, d end

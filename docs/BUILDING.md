@@ -56,12 +56,16 @@ Where to change things:
 ## Tests (from `test/`)
 
 ```
-python run_test.py "" ui.lua         UI smoke test (also reset.lua, hard.lua, stats.lua, pathview.lua, idle.lua)
+python run_test.py "" ui.lua         UI smoke test (also reset.lua, hard.lua, stats.lua, pathview.lua, mapoverlay.lua, idle.lua)
 python suite.py [mapid ...]          walk every route for each faction and difficulty, and check the arrow
 python levels.py [mapid ...]         check every route point lies on a map level it's tagged with
 python patrols.py                    check the patrol crossings on made-up routes
 python hintcheck.py                  check every hint shows during the walks (needs a local build cache)
 ```
+
+## RouteUtils
+
+The arrow, the minimap path, the dots and boss rings on the dungeon map, and their textures come from RouteUtils, vendored in `InstanceGPS/RouteUtils`. Don't edit that copy: change RouteUtils itself, run its tests, then copy it in with `py -I -X utf8 tools/sync_route.py` (it expects the RouteUtils repo next to this one, or set `ROUTEUTILS`).
 
 ## Server Modules
 

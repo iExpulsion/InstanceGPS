@@ -24,18 +24,20 @@ def package(addon, name, version, extra, toc_lines=None):
     """Zip one addon folder; `extra` maps names in the zip to files outside it."""
     lines, meta, loaded = toc_info(addon, name)
     files = [name + ".toc"] + loaded
-    media = os.path.join(addon, "Media")
-    if os.path.isdir(media):
-        files += sorted("Media/" + f for f in os.listdir(media) if f.lower().endswith((".tga", ".blp")))
+    for folder in ("Media", "RouteUtils/Media"):
+        media = os.path.join(addon, folder)
+        if os.path.isdir(media):
+            files += sorted(folder + "/" + f for f in os.listdir(media) if f.lower().endswith((".tga", ".blp")))
     problems = [f for f in files if not os.path.isfile(os.path.join(addon, f))]
     problems += [f for f, p in extra.items() if not os.path.isfile(p)]
-    # Textures the code asks for must be in the zip (the code names them as DN.MEDIA .. "Arrow").
+    # Textures the code asks for must be in the zip (the code names them as DN.MEDIA .. "Arrow", and DN.MEDIA is
+    # RouteUtils' Media folder).
     for f in loaded:
-        if not os.path.isfile(os.path.join(addon, f)):
-            continue
-        for tex in re.findall(r'MEDIA\s*\.\.\s*"(\w+)"', open(os.path.join(addon, f), encoding="utf-8").read()):
-            if not any(m.lower().startswith(("media/" + tex + ".").lower()) for m in files):
-                problems.append("%s uses missing texture Media/%s" % (f, tex))
+        if os.path.isfile(os.path.join(addon, f)):
+            for tex in re.findall(r'MEDIA\s*\.\.\s*"(\w+)"', open(os.path.join(addon, f), encoding="utf-8").read()):
+                if not any(m.lower().endswith(("media/" + tex + ".").lower() + m.rsplit(".", 1)[-1].lower())
+                           for m in files):
+                    problems.append("%s uses missing texture Media/%s" % (f, tex))
     stray = [f for f in os.listdir(addon) if f.endswith(".lua") and f not in loaded]
     if stray:
         print("%s: not in the .toc, left out: %s" % (name, ", ".join(stray)))

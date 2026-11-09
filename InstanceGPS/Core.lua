@@ -8,7 +8,7 @@ local floor, sqrt, huge = math.floor, math.sqrt, math.huge
 local pairs, ipairs, tonumber, time, GetTime = pairs, ipairs, tonumber, time, GetTime
 
 DN.version = GetAddOnMetadata(ADDON, "Version") or "?"
-DN.MEDIA = "Interface\\AddOns\\InstanceGPS\\Media\\"
+DN.MEDIA = ns.Route.MEDIA
 DN.callbacks = {}
 DN.wp = {}   -- current waypoint: x, y, f, dist, boss, atBoss, portal
 

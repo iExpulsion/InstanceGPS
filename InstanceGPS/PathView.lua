@@ -1,64 +1,15 @@
 -- InstanceGPS path views: the route ahead drawn on the minimap, as a HUD around the
 -- character, and in a small perspective ("3D") panel. Each one is optional.
 local _, ns = ...
-local DN = ns.DN
+local DN, R = ns.DN, ns.Route
 
-local sqrt, floor, abs, min, max = math.sqrt, math.floor, math.abs, math.min, math.max
-local sin, cos, atan2, fmod = math.sin, math.cos, math.atan2, math.fmod
+local sqrt, abs, min, max = math.sqrt, math.abs, math.min, math.max
+local sin, cos, atan2 = math.sin, math.cos, math.atan2
+local Pool, Sample = R.Pool, R.Sample
 
 local GOLD = { 1, 0.82, 0.1 }
 local TELE = { 0.75, 0.45, 1 }
 local BOSS = { 1, 0.25, 0.2 }
-
--------------------------------------------------------------------------------- helpers
-
--- texture pool: Begin(), Get() for each texture drawn, Finish() hides the unused ones
-local function Pool(parent, file, layer)
-	local pool = { n = 0, list = {} }
-	function pool:Begin() self.n = 0 end
-	function pool:Get()
-		self.n = self.n + 1
-		local t = self.list[self.n]
-		if not t then
-			t = parent:CreateTexture(nil, layer or "ARTWORK")
-			t:SetTexture(file)
-			self.list[self.n] = t
-		end
-		t:ClearAllPoints()
-		t:Show()
-		return t
-	end
-	function pool:Finish()
-		for i = self.n + 1, #self.list do self.list[i]:Hide() end
-	end
-	return pool
-end
-
--- Calls fn(x, y, dx, dy, along) every `spacing` yards along the path (dx, dy = direction,
--- along = distance from the player). Marks are anchored to the route's vertices, not to the
--- player, so they stay put in the world while you walk.
-local function Sample(pts, n, spacing, maxLen, fn)
-	if not pts or n < 4 then return end
-	local along, carry = 0, 0
-	for i = 1, n - 3, 2 do
-		local x1, y1, x2, y2 = pts[i], pts[i + 1], pts[i + 2], pts[i + 3]
-		local dx, dy = x2 - x1, y2 - y1
-		local L = sqrt(dx * dx + dy * dy)
-		if L > 0 then
-			dx, dy = dx / L, dy / L
-			-- first piece (player -> first vertex): count back from the vertex
-			local t = i == 1 and fmod(L, spacing) or carry
-			if i == 1 and t < 1.5 then t = t + spacing end
-			while t < L - 0.01 do
-				if along + t > maxLen then return end
-				fn(x1 + dx * t, y1 + dy * t, dx, dy, along + t)
-				t = t + spacing
-			end
-			carry = max(0, t - L)
-			along = along + L
-		end
-	end
-end
 
 local pts, nPts, endKind = {}, 0, nil
 
@@ -80,75 +31,21 @@ end
 
 -------------------------------------------------------------------------------- 1. minimap
 
--- minimap diameter in yards per zoom level (indoors / outdoors)
-local MM_INDOOR = { [0] = 300, 240, 180, 120, 80, 50 }
-local MM_OUTDOOR = { [0] = 466 + 2 / 3, 400, 333 + 1 / 3, 266 + 2 / 6, 200, 133 + 1 / 3 }
-
-local mm = CreateFrame("Frame", "InstanceGPSMinimapPath", Minimap)
-mm:SetAllPoints(Minimap)
-mm:SetFrameLevel(Minimap:GetFrameLevel() + 4)
-local mmDots = Pool(mm, DN.MEDIA .. "Dot", "ARTWORK")
+local mmPath = R.NewMinimapPath(GOLD)
+DN.minimapPath = mmPath
+local mm = mmPath.frame
 local mmEnd = mm:CreateTexture(nil, "OVERLAY")
 mmEnd:SetTexture(DN.MEDIA .. "Ring")
 mmEnd:SetSize(14, 14)
 
--- The client doesn't say whether the minimap uses its indoor or outdoor zoom: change the
--- other zoom setting for a moment and see which one the minimap follows.
-local indoors, checking = true, false
-local function CheckIndoors()
-	if checking then return end
-	checking = true
-	local zoom = Minimap:GetZoom()
-	if GetCVar("minimapZoom") == GetCVar("minimapInsideZoom") then
-		Minimap:SetZoom(zoom < 2 and zoom + 1 or zoom - 1)
-	end
-	indoors = tonumber(GetCVar("minimapZoom")) ~= Minimap:GetZoom()
-	Minimap:SetZoom(zoom)
-	checking = false
-end
-mm:RegisterEvent("MINIMAP_UPDATE_ZOOM")
-mm:RegisterEvent("ZONE_CHANGED_INDOORS")
-mm:RegisterEvent("PLAYER_ENTERING_WORLD")
-mm:SetScript("OnEvent", CheckIndoors)
-
 local function DrawMinimap(px, py, facing)
-	local W = mm:GetWidth()
-	local diam = (indoors and MM_INDOOR or MM_OUTDOOR)[Minimap:GetZoom()] or 300
-	local scale = W / diam                     -- pixels per yard
-	local R = W / 2
-	local square = GetMinimapShape and GetMinimapShape() == "SQUARE"
-	local c, s = 1, 0
-	if GetCVar("rotateMinimap") == "1" then c, s = cos(facing), sin(facing) end
-	local function screen(x, y)
-		local ex, ny = py - y, x - px          -- east, north
-		return (ex * c + ny * s) * scale, (ny * c - ex * s) * scale
-	end
-	local function inside(sx, sy, m)
-		if square then return abs(sx) <= R - m and abs(sy) <= R - m end
-		return sx * sx + sy * sy <= (R - m) * (R - m)
-	end
-	mmDots:Begin()
-	Sample(pts, nPts, 7 / scale, diam, function(x, y)
-		local sx, sy = screen(x, y)
-		if inside(sx, sy, 3) then
-			local t = mmDots:Get()
-			t:SetSize(5, 5)
-			t:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], 1)
-			t:SetPoint("CENTER", mm, "CENTER", sx, sy)
-		end
-	end)
-	mmDots:Finish()
+	mmPath:Draw(px, py, facing, pts, nPts)
 	-- the boss or teleporter at the end, pinned to the edge when it's off the minimap
 	if endKind then
-		local sx, sy = screen(pts[nPts - 1], pts[nPts])
-		if not inside(sx, sy, 7) then
-			if square then
-				local k = (R - 7) / max(abs(sx), abs(sy))
-				sx, sy = sx * k, sy * k
-			else
-				local k = (R - 7) / sqrt(sx * sx + sy * sy)
-				sx, sy = sx * k, sy * k
-			end
+		local scale, radius, square, c, s = R.MinimapView(mm, facing)
+		local sx, sy = R.MinimapScreen(px, py, pts[nPts - 1], pts[nPts], scale, c, s)
+		if not R.MinimapInside(sx, sy, radius, 7, square) then
+			sx, sy = R.MinimapEdge(sx, sy, radius, 7, square)
 		end
 		local col = endKind == "tele" and TELE or BOSS
 		mmEnd:SetVertexColor(col[1], col[2], col[3])
@@ -176,9 +73,9 @@ hudEnd:SetSize(22, 22)
 
 local function DrawHUD(px, py, facing)
 	local o = DN.opt
-	local R = (o.hudSize or 280) / 2
+	local radius = (o.hudSize or 280) / 2
 	local range = o.hudRange or 40
-	local scale = R / range
+	local scale = radius / range
 	local c, s = cos(facing), sin(facing)      -- heading up: always turned with the character
 	local function screen(x, y)
 		local ex, ny = py - y, x - px
@@ -188,11 +85,11 @@ local function DrawHUD(px, py, facing)
 	Sample(pts, nPts, 18 / scale, range * 1.5, function(x, y, dx, dy)
 		local sx, sy = screen(x, y)
 		local r = sqrt(sx * sx + sy * sy)
-		if r <= R - 6 then
+		if r <= radius - 6 then
 			local t = hudMarks:Get()
 			t:SetSize(14, 14)
 			-- fade out toward the rim
-			t:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], min(1, 1.6 * (1 - r / R)))
+			t:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], min(1, 1.6 * (1 - r / radius)))
 			t:SetPoint("CENTER", hud, "CENTER", sx, sy)
 			local ux, uy = screen(x + dx, y + dy)
 			DN.SetRotation(t, atan2(ux - sx, uy - sy))
@@ -202,7 +99,7 @@ local function DrawHUD(px, py, facing)
 	if endKind then
 		local sx, sy = screen(pts[nPts - 1], pts[nPts])
 		local r = sqrt(sx * sx + sy * sy)
-		if r > R - 11 then sx, sy = sx * (R - 11) / r, sy * (R - 11) / r end
+		if r > radius - 11 then sx, sy = sx * (radius - 11) / r, sy * (radius - 11) / r end
 		local col = endKind == "tele" and TELE or BOSS
 		hudEnd:SetVertexColor(col[1], col[2], col[3])
 		hudEnd:ClearAllPoints()
@@ -343,7 +240,7 @@ end)
 -------------------------------------------------------------------------------- driver
 
 local function ClearAll()
-	mmDots:Begin() mmDots:Finish() mmEnd:Hide()
+	mmPath:Clear() mmEnd:Hide()
 	hudMarks:Begin() hudMarks:Finish() hudEnd:Hide() hudRing:Hide()
 	viewMarks:Begin() viewMarks:Finish() viewEnd:Hide() viewBehind:Hide()
 	viewTitle:SetText("") viewHint:SetText("")
@@ -403,7 +300,7 @@ end)
 function DN:UpdatePathViews()
 	local o, inst = self.opt, self:NavOn() and self.inst
 	if not o then return end
-	if not (inst and o.pathMinimap) then mmDots:Begin() mmDots:Finish() mmEnd:Hide() end
+	if not (inst and o.pathMinimap) then mmPath:Clear() mmEnd:Hide() end
 	local size = o.hudSize or 280
 	hud:SetSize(size, size)
 	hud:ClearAllPoints()

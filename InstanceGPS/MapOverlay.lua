@@ -1,31 +1,10 @@
--- InstanceGPS map overlay: route and boss pins on the dungeon map.
+-- InstanceGPS map overlay: route and boss rings on the dungeon map (RouteUtils' map path and stops).
 local _, ns = ...
-local DN = ns.DN
-
-local sqrt, floor = math.sqrt, math.floor
-local DOT_SPACING = 9     -- pixels between route dots (at 1002px map width)
+local DN, R = ns.DN, ns.Route
 
 local overlay = CreateFrame("Frame", "InstanceGPSMapOverlay", WorldMapButton)
-overlay:SetAllPoints(WorldMapButton)
-overlay:SetFrameLevel(WorldMapButton:GetFrameLevel() + 5)
 
-local dots, pins = {}, {}
-local nDots = 0
-
-local function Dot()
-	nDots = nDots + 1
-	local t = dots[nDots]
-	if not t then
-		t = overlay:CreateTexture(nil, "ARTWORK")
-		t:SetTexture(DN.MEDIA .. "Dot")
-		t:SetSize(7, 7)
-		dots[nDots] = t
-	end
-	t:Show()
-	return t
-end
-
-local function PinOnEnter(self)
+local function RingOnEnter(self)
 	local b = self.boss
 	WorldMapTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	WorldMapTooltip:AddLine((self.order > 0 and (self.order .. ". ") or "") .. b.name)
@@ -38,67 +17,30 @@ local function PinOnEnter(self)
 	WorldMapTooltip:Show()
 end
 
-local function PinOnClick(self)
-	if DN.inst and DN.inst.bosses[self.boss.index] == self.boss then DN:SetNavTarget(self.boss) end
-end
-
-local function Pin(i)
-	local p = pins[i]
-	if p then return p end
-	p = CreateFrame("Button", nil, overlay)
-	p:SetSize(20, 20)
-	p:SetFrameLevel(overlay:GetFrameLevel() + 2)
-	p.ring = p:CreateTexture(nil, "ARTWORK")
-	p.ring:SetAllPoints()
-	p.ring:SetTexture(DN.MEDIA .. "Ring")
-	p.num = p:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-	p.num:SetPoint("CENTER", 0, 0)
-	p.check = p:CreateTexture(nil, "OVERLAY")
-	p.check:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-	p.check:SetSize(14, 14)
-	p.check:SetPoint("CENTER")
-	p:SetScript("OnEnter", PinOnEnter)
-	p:SetScript("OnLeave", function() WorldMapTooltip:Hide() end)
-	p:SetScript("OnClick", PinOnClick)
-	pins[i] = p
-	return p
-end
-
-local function Clear()
-	for i = 1, nDots do dots[i]:Hide() end
-	nDots = 0
-	for _, p in ipairs(pins) do p:Hide() end
-end
-
-function DN:RefreshMap()
-	Clear()
-	if not self.opt or not self.opt.mapOverlay or not WorldMapFrame:IsShown() then return end
-	local file = GetMapInfo()
-	if not file then return end
-	local inst = self.inst
-	if not (inst and inst.file and inst.file:lower() == file:lower()) then
-		inst = nil
-		for _, i in pairs(ns.Instances) do
-			if i.file and i.file:lower() == file:lower() then inst = i break end
-		end
+local function RingOnClick(self, button)
+	if button == "LeftButton" and DN.inst and DN.inst.bosses[self.boss.index] == self.boss then
+		DN:SetNavTarget(self.boss)
 	end
-	if not inst then return end
-	-- navigation off here: boss pins only (and nothing if the tracker's hidden there too)
-	local navOff = self:IsOff(inst.mapId)
-	if navOff and self.opt.offHidesTracker then return end
-	local level = self:MapLevel(inst)
-	if not inst.floors[level] then return end
-	local W, H = overlay:GetWidth(), overlay:GetHeight()
-	if W == 0 then return end
-	local current = inst == self.inst
-	local run = current and self.run or self.char.runs[inst.mapId]
-	local routeIndex = current and self.routeIndex or (run and run.route) or 1
-	local route = inst.routes[routeIndex] or inst.routes[1]
-	if not route then return end
-	local killed = run and run.killed or {}
+end
+
+local mapPath = R.NewMapPath(WorldMapButton)
+local mapStops = R.NewMapStops(WorldMapButton, {
+	onEnter = RingOnEnter,
+	onLeave = function() WorldMapTooltip:Hide() end,
+	onClick = RingOnClick,
+})
+DN.mapPath, DN.mapStops = mapPath, mapStops
+local function LayerDot(x, y) return mapPath:Dot(x, y) end
+
+-- One unbroken stretch of the route on this level, as 0..1 map points, and how many of its coordinates are the
+-- leg being walked
+local piece, nPiece, nActive = {}, 0, 0
+
+local function DrawMap(self, inst, level, navOff, current, route, killed)
+	local W, H = WorldMapButton:GetWidth(), WorldMapButton:GetHeight()
 	local nextBoss = current and self:NextBoss()
 
-	local function px(x, y)
+	local function toMap(x, y)
 		local mx, my = self:WorldToMap(inst, level, x, y)
 		return mx * W, my * H
 	end
@@ -118,85 +60,74 @@ function DN:RefreshMap()
 		end
 	end
 
+	-- a segment changing levels (stairs, doorways, drops) shows on both of them; teleports and other levels break
+	-- the path into pieces
 	local p = route.path
-	local spacing = DOT_SPACING * W / 1002
-	local carry = 0
 	local OnFloor = DN.OnFloor
+	nPiece, nActive = 0, 0
 	for i = 1, #p / 3 - 1 do
 		local a, b = (i - 1) * 3, i * 3
-		local done = i < legFrom
-		-- a segment changing levels (stairs, doorways, drops) shows on both of them
-		if not navOff and not done and not route.teleAt[i] and (OnFloor(p[a + 3], level) or OnFloor(p[b + 3], level)) then
-			local x1, y1 = px(p[a + 1], p[a + 2])
-			local x2, y2 = px(p[b + 1], p[b + 2])
-			local dx, dy = x2 - x1, y2 - y1
-			local len = sqrt(dx * dx + dy * dy)
-			local d = carry
-			local active = i < legTo
-			local sp = active and spacing or spacing * 1.6
-			while d < len do
-				local t = Dot()
-				t:ClearAllPoints()
-				t:SetPoint("CENTER", overlay, "TOPLEFT", x1 + dx * d / len, -(y1 + dy * d / len))
-				if active then
-					t:SetSize(8, 8)
-					t:SetVertexColor(1, 0.82, 0.1, 1)
-				else
-					t:SetSize(5, 5)
-					t:SetVertexColor(0.85, 0.85, 0.85, 0.45)
-				end
-				d = d + sp
+		if not navOff and i >= legFrom and not route.teleAt[i] and (OnFloor(p[a + 3], level) or OnFloor(p[b + 3], level)) then
+			if nPiece == 0 then
+				piece[1], piece[2] = self:WorldToMap(inst, level, p[a + 1], p[a + 2])
+				nPiece = 2
 			end
-			carry = d - len
-		else
-			carry = 0
+			piece[nPiece + 1], piece[nPiece + 2] = self:WorldToMap(inst, level, p[b + 1], p[b + 2])
+			nPiece = nPiece + 2
+			if i < legTo then nActive = nPiece end
+		elseif nPiece > 0 then
+			mapPath:Add(piece, nPiece, nActive)
+			nPiece, nActive = 0, 0
 		end
 	end
+	if nPiece > 0 then mapPath:Add(piece, nPiece, nActive) end
 
 	-- other layers (the route recorder's legs): fn(inst, level, toMap(x, y) -> px, py, Dot(px, py))
-	local function DotAt(x, y)
-		local t = Dot()
-		t:ClearAllPoints()
-		t:SetPoint("CENTER", overlay, "TOPLEFT", x, -y)
-		return t
-	end
-	for _, fn in ipairs(self.mapLayers or {}) do fn(inst, level, px, DotAt) end
+	for _, fn in ipairs(self.mapLayers or {}) do fn(inst, level, toMap, LayerDot) end
 
-	-- boss pins, numbered in route order (other bosses get no number)
+	-- boss rings, numbered in route order (other bosses get no number)
 	local numOf = {}
 	for k, bi in ipairs(route.order) do numOf[bi] = k end
-	local n = 0
 	for bi, b in ipairs(inst.bosses) do
-		if b.x and DN.OnFloor(b.f, level) and (not current or self:BossAvailable(b)) then
-			n = n + 1
-			local pin = Pin(n)
-			local x, y = px(b.x, b.y)
-			pin:ClearAllPoints()
-			pin:SetPoint("CENTER", overlay, "TOPLEFT", x, -y)
-			pin.boss, pin.order, pin.killedAt, pin.isNext = b, numOf[bi] or 0, killed[b.id], b == nextBoss
-			pin.num:SetText(numOf[bi] or "")
-			if pin.killedAt then
-				pin.ring:SetVertexColor(0.3, 0.9, 0.3)
-				pin.check:Show()
-				pin.num:Hide()
-				pin:SetSize(18, 18)
-			else
-				pin.check:Hide()
-				pin.num:Show()
-				if pin.isNext then
-					pin.ring:SetVertexColor(1, 0.82, 0)
-					pin:SetSize(26, 26)
-				elseif numOf[bi] then
-					pin.ring:SetVertexColor(1, 0.25, 0.2)
-					pin:SetSize(20, 20)
-				else
-					pin.ring:SetVertexColor(0.6, 0.6, 0.6)
-					pin:SetSize(16, 16)
-				end
-			end
-			pin:Show()
+		if b.x and OnFloor(b.f, level) and (not current or self:BossAvailable(b)) then
+			local x, y = toMap(b.x, b.y)
+			local killedAt, isNext = killed[b.id], b == nextBoss
+			local state = killedAt and "done" or isNext and "next" or numOf[bi] and "stop" or "other"
+			local ring = mapStops:Add(x, y, state, numOf[bi])
+			ring.boss, ring.order, ring.killedAt, ring.isNext = b, numOf[bi] or 0, killedAt, isNext
 		end
 	end
+end
+
+-- The instance whose map is shown, if InstanceGPS draws on it: navigation off there shows boss rings only (and
+-- nothing if the tracker's hidden there too)
+local function ShownInstance(self)
+	local file = self.opt and self.opt.mapOverlay and WorldMapFrame:IsShown() and GetMapInfo()
+	local inst = file and self.inst
+	if file and not (inst and inst.file and inst.file:lower() == file:lower()) then
+		inst = nil
+		for _, i in pairs(ns.Instances) do
+			if i.file and i.file:lower() == file:lower() then inst = i break end
+		end
+	end
+	local navOff = inst and self:IsOff(inst.mapId)
+	if inst and not (navOff and self.opt.offHidesTracker) then return inst, navOff end
+end
+
+function DN:RefreshMap()
+	mapPath:Begin()
+	mapStops:Begin()
+	local inst, navOff = ShownInstance(self)
+	local level = inst and self:MapLevel(inst)
+	local current = inst == self.inst
+	local run = inst and (current and self.run or self.char.runs[inst.mapId])
+	local routeIndex = inst and (current and self.routeIndex or (run and run.route) or 1)
+	local route = inst and (inst.routes[routeIndex] or inst.routes[1])
+	if route and inst.floors[level] and WorldMapButton:GetWidth() > 0 then
+		DrawMap(self, inst, level, navOff, current, route, run and run.killed or {})
+	end
+	mapPath:Finish()
+	mapStops:Finish()
 end
 
 overlay:RegisterEvent("WORLD_MAP_UPDATE")
@@ -204,16 +135,18 @@ overlay:SetScript("OnEvent", function() DN:RefreshMap() end)
 
 -- Redraw whenever the shown map or level changes (the level dropdown doesn't always fire
 -- WORLD_MAP_UPDATE), and refresh the leg highlight as you move.
-local shownKey, sinceRedraw = nil, 0
+local shownMap, shownLevel, shownLeg, shownRoute, shownRecord
+local sinceRedraw = 0
 overlay:SetScript("OnUpdate", function(_, elapsed)
 	sinceRedraw = sinceRedraw + elapsed
-	if sinceRedraw < 0.25 then return end
-	sinceRedraw = 0
-	local key = (GetMapInfo() or "") .. ":" .. (GetCurrentMapDungeonLevel() or 0) .. ":" ..
-		tostring(DN.leg and DN.leg.to) .. ":" .. tostring(DN.routeIndex) .. ":" .. (DN.recordVersion or 0)
-	if key ~= shownKey then
-		shownKey = key
-		DN:RefreshMap()
+	if sinceRedraw >= 0.25 then
+		sinceRedraw = 0
+		local map, level, legTo = GetMapInfo(), GetCurrentMapDungeonLevel(), DN.leg and DN.leg.to
+		if map ~= shownMap or level ~= shownLevel or legTo ~= shownLeg or DN.routeIndex ~= shownRoute
+			or DN.recordVersion ~= shownRecord then
+			shownMap, shownLevel, shownLeg, shownRoute, shownRecord = map, level, legTo, DN.routeIndex, DN.recordVersion
+			DN:RefreshMap()
+		end
 	end
 end)
 WorldMapFrame:HookScript("OnShow", function() DN:RefreshMap() end)

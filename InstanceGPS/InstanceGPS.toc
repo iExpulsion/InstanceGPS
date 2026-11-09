@@ -6,6 +6,7 @@
 ## SavedVariables: InstanceGPSDB
 ## SavedVariablesPerCharacter: InstanceGPSCharDB
 
+RouteUtils\RouteUtils.lua
 Data.lua
 Core.lua
 Override.lua
