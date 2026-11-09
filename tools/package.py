@@ -3,8 +3,8 @@
     python package.py [output folder]
 
 Writes <output>/InstanceGPS-<version>.zip with a top-level InstanceGPS/ folder (extract it into
-Interface/AddOns): the .toc, the Lua files the .toc loads, the textures under Media/, the README and
-the LICENSE. Server modules live in repos of their own and are released from there.
+Interface/AddOns): the .toc, the Lua files the .toc loads and the textures under Media/. The license note
+is in the repo README. Server modules live in repos of their own and are released from there.
 """
 import os, re, sys, zipfile
 
@@ -57,8 +57,6 @@ def package(addon, name, version, extra, toc_lines=None):
     return out
 
 
-license_file = os.path.join(ROOT, "LICENSE")
 _, base_meta, _ = toc_info(os.path.join(ROOT, "InstanceGPS"), "InstanceGPS")
 version = base_meta.get("Version", "0")
-package(os.path.join(ROOT, "InstanceGPS"), "InstanceGPS", version,
-        {"README.md": os.path.join(ROOT, "README.md"), "LICENSE": license_file})
+package(os.path.join(ROOT, "InstanceGPS"), "InstanceGPS", version, {})
