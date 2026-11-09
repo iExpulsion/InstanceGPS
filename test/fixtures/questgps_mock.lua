@@ -1,15 +1,18 @@
--- A stand-in for QuestGPS's hooks for other addons (QuestGPS docs/MODULES.md, "Other Addons"): tracker cards,
--- instance objectives and its state event. Tests set QuestGPS.objectives[mapId] and fire QuestGPS.Fire.
+-- A stand-in for QuestGPS's hooks for other addons (QuestGPS docs/MODULES.md, "Other Addons"): tracker cards and
+-- their redraw, instance objectives ({ id, qid, index, title, text, kind, points, heights }) and its state event.
+-- Tests set QuestGPS.objectives[mapId] and fire QuestGPS.Fire.
 QuestGPS = {
 	db = { tracker = { enabled = true, inDungeon = "show" } },
 	objectives = {},
 	cards = {},
 	refreshes = 0,
+	cardRefreshes = 0,
 	handlers = {},
 }
 QuestGPS.TrackerFrame = {
 	AddCard = function(fn) table.insert(QuestGPS.cards, fn) end,
 	Refresh = function() QuestGPS.refreshes = QuestGPS.refreshes + 1 end,
+	RefreshCards = function() QuestGPS.cardRefreshes = QuestGPS.cardRefreshes + 1 end,
 }
 function QuestGPS.InstanceObjectives(mapId)
 	return QuestGPS.objectives[mapId] or {}

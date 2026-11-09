@@ -25,7 +25,7 @@ CHECKS = [
       "stub panel:\ttrue"]),
     ("questgps", "questgps.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
      ["card:\ttrue", "quest stops:\ttrue", "turn-in first:\ttrue", "skipped:\ttrue", "objective next:\ttrue",
-      "arrived:\ttrue", "finished:\ttrue", "card refreshes:\ttrue", "own tracker back:\ttrue", "stops off:\ttrue",
+      "arrived:\ttrue", "skip kept:\ttrue", "finished:\ttrue", "levels:\ttrue", "card refreshes:\ttrue", "own tracker back:\ttrue", "stops off:\ttrue",
       "outside:\ttrue", "questgps test done"]),
     ("garbage", "garbage.lua", {}, ["route frames garbage-free:\ttrue", "idle frames garbage-free:\ttrue"]),
     ("idle", "idle.lua", {}, ["has waypoint after:\tfalse", "HUD shown:\tfalse"]),

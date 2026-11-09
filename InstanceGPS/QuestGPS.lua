@@ -8,7 +8,12 @@ local DN = ns.DN
 
 -- yards: an objective's spawn this far from the route isn't put on it (a straight spur that long would cross walls)
 local QUEST_REACH = 80
+-- yards added to a route point's distance when it's on another map level than the spawn
+local OFF_FLOOR = 25
+-- a height difference counts this many times its yards when matching a spawn to a boss's level
+local HEIGHT_WEIGHT = 3
 local NONE = {}
+local OnFloor = DN.OnFloor
 
 local function Q()
 	return _G.QuestGPS
@@ -22,23 +27,52 @@ end
 
 -------------------------------------------------------------------------------- quest stops
 
--- The same objective keeps its key as its count goes up ("Vault Keeper slain: 0/2" -> "1/2")
+-- An objective's key: QuestGPS's id ("qid:index"), the same while its count goes up. Before QuestGPS gave ids, the
+-- quest, its kind and the text without its count ("Vault Keeper slain: 0/2" -> "Vault Keeper slain").
 local function StopKey(e)
-	return e.qid .. ":" .. e.kind .. ":" .. ((e.text or ""):gsub(":%s*%d+%s*/%s*%d+%s*$", ""))
+	return e.id or (e.qid .. ":" .. e.kind .. ":" .. ((e.text or ""):gsub(":%s*%d+%s*/%s*%d+%s*$", "")))
 end
 
--- The spawn nearest the route, and the route vertex it's nearest: x, y, vertex, distance
-local function Nearest(route, pts)
-	local p, bx, by, bi, bd = route.path, nil, nil, nil, math.huge
-	for j = 1, #pts - 1, 2 do
-		local x, y = pts[j], pts[j + 1]
-		for i = 1, #p / 3 do
-			local dx, dy = p[i * 3 - 2] - x, p[i * 3 - 1] - y
-			local d = dx * dx + dy * dy
-			if d < bd then bx, by, bi, bd = x, y, i, d end
+-- The levels two masks share, as a mask (0 for none)
+local function Common(a, b)
+	local m = 0
+	for level = 0, 20 do
+		if OnFloor(a, level) and OnFloor(b, level) then m = m + 2 ^ level end
+	end
+	return m
+end
+
+-- The map levels of a spawn at height z: those of the boss nearest it, heights counting extra. The route carries
+-- levels but no heights; the bosses have both. nil when the height is unknown (0).
+local function LevelsAt(inst, x, y, z)
+	local best, bd
+	for _, b in ipairs(z and z ~= 0 and inst.bosses or NONE) do
+		if b.x and b.z and b.f then
+			local dx, dy, dz = b.x - x, b.y - y, (b.z - z) * HEIGHT_WEIGHT
+			local d = dx * dx + dy * dy + dz * dz
+			if not bd or d < bd then best, bd = b.f, d end
 		end
 	end
-	return bx, by, bi, math.sqrt(bd)
+	return best
+end
+
+-- The spawn nearest the route and the route vertex it's nearest, a vertex on another level than the spawn counting
+-- OFF_FLOOR further: x, y, vertex, distance, the spawn's levels as a mask
+local function Nearest(inst, route, pts, heights)
+	local p, bx, by, bi, bd, bf = route.path, nil, nil, nil, math.huge, nil
+	for j = 1, #pts - 1, 2 do
+		local x, y = pts[j], pts[j + 1]
+		local levels = LevelsAt(inst, x, y, heights and heights[(j + 1) / 2])
+		for i = 1, #p / 3 do
+			local dx, dy = p[i * 3 - 2] - x, p[i * 3 - 1] - y
+			local d = math.sqrt(dx * dx + dy * dy)
+			local mask = p[i * 3]
+			local shared = levels and Common(mask, levels) or mask
+			if shared == 0 then d = d + OFF_FLOOR end
+			if d < bd then bx, by, bi, bd, bf = x, y, i, d, shared ~= 0 and shared or levels end
+		end
+	end
+	return bx, by, bi, bd, bf
 end
 
 -- Puts this instance's open quest objectives on the active route, in route order
@@ -48,11 +82,11 @@ function DN:UpdateQuestStops()
 	local entries = q and route and q.InstanceObjectives(inst.mapId) or NONE
 	local list = {}
 	for _, e in ipairs(entries) do
-		local x, y, anchor, d = Nearest(route, e.points or NONE)
+		local x, y, anchor, d, levels = Nearest(inst, route, e.points or NONE, e.heights)
 		if anchor and d <= QUEST_REACH then
 			list[#list + 1] = {
 				quest = true, key = StopKey(e), qid = e.qid, kind = e.kind, name = e.text, title = e.title,
-				x = x, y = y, f = route.path[anchor * 3], anchor = anchor, onRoute = route,
+				x = x, y = y, f = levels, anchor = anchor, onRoute = route,
 			}
 		end
 	end
@@ -163,22 +197,26 @@ function DN:QuestCard()
 	return card
 end
 
--- QuestGPS draws the card when its tracker refreshes: ask for one when the card would say something else. The
--- distance counts in steps of 5 yards, so walking doesn't redraw the tracker every frame.
+-- QuestGPS draws the card when asked: once a second when the card would say something else, at once on events.
+-- RefreshCards redraws just the cards (the whole tracker only when a card comes or goes); a QuestGPS without it
+-- redraws the whole tracker, so the distance counts in steps of 5 yards there.
 local shownKey
 function DN:RefreshQuestCard(force)
 	local q = self:QuestGPS()
-	if q and q.TrackerFrame.Refresh then
+	local tf = q and q.TrackerFrame
+	local redraw = tf and (tf.RefreshCards or tf.Refresh)
+	if redraw then
 		local key = "none"
 		if self:InQuestTracker() and self.inst and self.run then
 			local w = self.wp
 			local _, done = Progress(self)
+			local step = tf.RefreshCards and 1 or 5
 			key = ("%s|%s|%d"):format(tostring(w.boss and w.boss.name),
-				tostring(self.remaining and math.floor(self.remaining / 5)), done)
+				tostring(self.remaining and math.floor(self.remaining / step)), done)
 		end
 		if force or key ~= shownKey then
 			shownKey = key
-			q.TrackerFrame.Refresh()
+			redraw()
 		end
 	end
 end

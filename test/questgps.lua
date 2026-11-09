@@ -21,12 +21,14 @@ end
 local mid = math.floor((route.stops[1] + route.stops[2]) / 2)
 local mx, my = vertex(mid)
 local sx, sy = vertex(1)
+-- (heights 0: unknown, as for data a QuestGPS module added)
 QuestGPS.objectives[MAP] = {
-	{ qid = 214, title = "Red Silk Bandanas", text = "Red Silk Bandana: 0/10", kind = "objective",
-		points = { mx + 500, my + 500, mx + 8, my + 6 } },
-	{ qid = 166, title = "The Defias Brotherhood", text = "Turn In The Defias Brotherhood", kind = "turnin",
-		points = { sx + 5, sy } },
-	{ qid = 373, title = "The Unsent Letter", text = "Letter: 0/1", kind = "objective", points = { sx + 900, sy + 900 } },
+	{ id = "214:1", qid = 214, index = 1, title = "Red Silk Bandanas", text = "Red Silk Bandana: 0/10", kind = "objective",
+		points = { mx + 500, my + 500, mx + 8, my + 6 }, heights = { 0, 0 } },
+	{ id = "166:0", qid = 166, index = 0, title = "The Defias Brotherhood", text = "Turn In The Defias Brotherhood",
+		kind = "turnin", points = { sx + 5, sy }, heights = { 0 } },
+	{ id = "373:1", qid = 373, index = 1, title = "The Unsent Letter", text = "Letter: 0/1", kind = "objective",
+		points = { sx + 900, sy + 900 }, heights = { 0 } },
 }
 
 MOCK.inInstance, MOCK.itype, MOCK.instName, MOCK.mapFile = true, inst.type, inst.name, inst.file
@@ -72,17 +74,41 @@ WorldMapFrame.shown = false
 place(objective.x, objective.y, objective.f)
 print("arrived:", DN.wp.boss == objective and DN.wp.atBoss == true)
 
+-- a skip stays with the objective as its count goes up: stops are keyed on QuestGPS's id, not the text
+local bandanas = QuestGPS.objectives[MAP][1]
+DN:SkipQuest(objective)
+bandanas.text = "Red Silk Bandana: 3/10"
+QuestGPS.Fire("QGPS_STATE_CHANGED")
+MOCK.Tick(0.2)
+local counted = DN.questStops[2]
+print("skip kept:", counted.name == "Red Silk Bandana: 3/10" and DN:QuestSkipped(counted) and DN.wp.boss ~= counted)
+DN:SkipQuest(counted)
+
 -- finished in QuestGPS, it drops off and the arrow goes on to the second boss
 QuestGPS.objectives[MAP] = { QuestGPS.objectives[MAP][2] }
 QuestGPS.Fire("QGPS_STATE_CHANGED")
 MOCK.Tick(0.2)
 print("finished:", #DN.questStops == 1 and DN.wp.boss == DN:NextBoss() and not DN.wp.boss.quest)
 
--- the card refreshes QuestGPS's tracker when it changes, not on every tick
-local before = QuestGPS.refreshes
+-- a spawn's height picks its map level: one by Gilnid, down on the second level, is on that level whatever
+-- the route nearby says; without a height it takes the route's level
+local gilnid = inst.bosses[3]
+table.insert(QuestGPS.objectives[MAP], { id = "168:1", qid = 168, index = 1, title = "Collecting Memories",
+	text = "Miners' Union Card: 0/4", kind = "objective", points = { gilnid.x + 3, gilnid.y }, heights = { 19 } })
+QuestGPS.Fire("QGPS_STATE_CHANGED")
+local cards
+for _, q in ipairs(DN.questStops) do if q.qid == 168 then cards = q end end
+local turnin = DN.questStops[1]
+print("levels:", cards ~= nil and DN.OnFloor(cards.f, 2) and not DN.OnFloor(cards.f, 1)
+	and turnin.f == p[turnin.anchor * 3])
+table.remove(QuestGPS.objectives[MAP])
+QuestGPS.Fire("QGPS_STATE_CHANGED")
+
+-- the card redraws only QuestGPS's cards when it changes, not on every tick, and never the whole tracker
+local before, beforeFull = QuestGPS.cardRefreshes, QuestGPS.refreshes
 MOCK.Tick(1.1)
 MOCK.Tick(1.1)
-print("card refreshes:", QuestGPS.refreshes - before <= 1)
+print("card refreshes:", QuestGPS.cardRefreshes - before <= 1 and QuestGPS.refreshes == beforeFull)
 
 -- QuestGPS hiding its tracker in dungeons, or the option off, brings InstanceGPS's own back
 QuestGPS.db.tracker.inDungeon = "hide"
