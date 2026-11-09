@@ -9,6 +9,17 @@ local pairs, ipairs, tonumber, time, GetTime = pairs, ipairs, tonumber, time, Ge
 
 DN.version = GetAddOnMetadata(ADDON, "Version") or "?"
 DN.MEDIA = ns.Route.MEDIA
+
+-- Tooltip lines saying what a click or drag does ("Click: Navigate Here"), in the heading color of the addons that
+-- share this look; a false entry is left out
+DN.HINT_COLOR = { 1, 0.77, 0 }
+function DN.HintLines(tip, ...)
+	local c = DN.HINT_COLOR
+	for i = 1, select("#", ...) do
+		local line = select(i, ...)
+		if line then tip:AddLine(line, c[1], c[2], c[3]) end
+	end
+end
 DN.callbacks = {}
 DN.wp = {}   -- current waypoint: x, y, f, dist, boss, atBoss, portal
 

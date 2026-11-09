@@ -13,7 +13,7 @@ local arrow = R.NewArrow({
 		tip:AddLine("InstanceGPS")
 		local b = DN.inst and (DN.wp.boss or DN:NextBoss())
 		if b then DN:Fire("BOSS_TOOLTIP", b, tip) end
-		tip:AddLine("Drag to move, right-click for options.", 1, 1, 1)
+		DN.HintLines(tip, not DN.opt.lockFrames and "Drag: Move", "Right-Click: Options")
 	end,
 })
 DN.arrow = arrow
@@ -34,10 +34,10 @@ local function IdleLines()
 	if not b then
 		SetLines(DN.inst and "All Bosses Down" or "", "")
 	elseif not b.x then
-		SetLines(b.name, "no known position for this fight")
+		SetLines(b.name, "No Known Position for This Fight")
 	elseif not DN.px then
 		-- the client reports no map position here: this instance has no in-game map
-		SetLines(b.name, DN.inst and DN.inst.needsMapPatch and "needs the WoW Dungeon Maps patch" or "waiting for a map position")
+		SetLines(b.name, DN.inst and DN.inst.needsMapPatch and "Needs the WoW Dungeon Maps Patch" or "Waiting for a Map Position")
 	else
 		SetLines(b.name, "")
 	end
@@ -48,7 +48,7 @@ local function HintLine(w)
 	if type(portal) == "string" then
 		return portal
 	elseif portal and dist < 12 then
-		return "Use the teleporter here"
+		return "Use the Teleporter Here"
 	elseif portal then
 		return "Teleporter in %d yd", floor(dist)
 	elseif f and DN.pfloor and not DN.OnFloor(f, DN.pfloor) and (DN.FirstFloor(f) or 0) ~= 0 then

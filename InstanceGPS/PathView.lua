@@ -217,7 +217,7 @@ local function ViewText(w)
 		viewTitle:SetText(("%s  |cffffffff%d yd|r"):format(shownName, yards))
 	end
 	local hint = type(w.portal) == "string" and w.portal
-		or (w.portal and (w.dist < 12 and "Use the teleporter here" or "Teleporter ahead")) or ""
+		or (w.portal and (w.dist < 12 and "Use the Teleporter Here" or "Teleporter Ahead")) or ""
 	if hint ~= shownHint then
 		shownHint = hint
 		viewHint:SetText(hint)
@@ -289,9 +289,9 @@ local function ViewIdle()
 		elseif not b then
 			text = "All Bosses Down"
 		elseif why == 1 then
-			text = b.name .. "|n|cffffffffno known position for this fight|r"
+			text = b.name .. "|n|cffffffffNo Known Position for This Fight|r"
 		else
-			text = b.name .. "|n|cffffffff" .. (why == 2 and "needs the WoW Dungeon Maps patch" or "waiting for a map position") .. "|r"
+			text = b.name .. "|n|cffffffff" .. (why == 2 and "Needs the WoW Dungeon Maps Patch" or "Waiting for a Map Position") .. "|r"
 		end
 		viewIdle:SetText(text)
 		viewIdle:Show()

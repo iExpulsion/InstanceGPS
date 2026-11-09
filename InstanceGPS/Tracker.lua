@@ -55,7 +55,7 @@ header:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:AddLine(inst.name)
 		if run and run.diffName and run.diffName ~= "" then GameTooltip:AddLine(run.diffName, 1, 1, 1) end
-		GameTooltip:AddLine("Drag to move, right-click for options.", 0.6, 0.8, 1)
+		DN.HintLines(GameTooltip, not DN.opt.lockFrames and "Drag: Move", "Right-Click: Options")
 		GameTooltip:Show()
 	end
 end)
@@ -69,7 +69,7 @@ resetBtn:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
 resetBtn:SetScript("OnClick", function() StaticPopup_Show("INSTANCEGPS_RESET") end)
 resetBtn:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	GameTooltip:AddLine("Start a new run")
+	GameTooltip:AddLine("Start a New Run")
 	GameTooltip:AddLine("Clears this run's kills and timer (the instance itself isn't reset).", 1, 1, 1, true)
 	GameTooltip:Show()
 end)
@@ -102,8 +102,9 @@ routeBtn:SetScript("OnEnter", function(self)
 	local inst = DN.inst
 	if not inst or #inst.routes < 2 then return end
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	GameTooltip:AddLine("Route / wing")
-	GameTooltip:AddLine("Click to cycle. The route follows you automatically until you pick one.", 1, 1, 1, true)
+	GameTooltip:AddLine("Route / Wing")
+	GameTooltip:AddLine("The route follows you automatically until you pick one.", 1, 1, 1, true)
+	DN.HintLines(GameTooltip, "Click: Next Route", "Right-Click: Previous Route")
 	GameTooltip:Show()
 end)
 routeBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -144,12 +145,12 @@ local function RowOnEnter(self)
 		if b.noDeath then GameTooltip:AddLine("This fight ends without a kill; right-click if it isn't detected.", 0.8, 0.8, 0.8, true) end
 		DN:Fire("BOSS_TOOLTIP", b, GameTooltip)
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine("Left-click: navigate here (again to go back to the route)", 0.6, 0.8, 1)
-		GameTooltip:AddLine("Right-click: toggle killed", 0.6, 0.8, 1)
+		DN.HintLines(GameTooltip, DN.navTarget == b and "Click: Back to the Route" or "Click: Navigate Here",
+			DN:IsKilled(b) and "Right-Click: Mark Alive" or "Right-Click: Mark Killed")
 	elseif note then
 		if note.tooltip then note.tooltip(GameTooltip) else GameTooltip:AddLine(note.text) end
 	else
-		GameTooltip:AddLine("Switch to this wing")
+		DN.HintLines(GameTooltip, "Click: Switch to This Wing")
 	end
 	GameTooltip:Show()
 end

@@ -11,9 +11,9 @@ local function RingOnEnter(self)
 	if self.killedAt then
 		WorldMapTooltip:AddLine(("Killed (%s into the run)"):format(DN.FormatTime(self.killedAt)), 0.3, 1, 0.3)
 	elseif self.isNext then
-		WorldMapTooltip:AddLine("Next on the route", 1, 0.82, 0)
+		WorldMapTooltip:AddLine("Next on the Route", 1, 0.82, 0)
 	end
-	WorldMapTooltip:AddLine("Click: navigate here", 0.6, 0.8, 1)
+	DN.HintLines(WorldMapTooltip, "Click: Navigate Here")
 	WorldMapTooltip:Show()
 end
 
