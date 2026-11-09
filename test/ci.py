@@ -20,6 +20,7 @@ CHECKS = [
     ("map overlay", "mapoverlay.lua", {},
      ["next ring:\ttrue\tnumbered rings:\ttrue", "leg bright, rest faint:\ttrue", "killed ring:\ttrue",
       "option off:\ttrue"]),
+    ("garbage", "garbage.lua", {}, ["route frames garbage-free:\ttrue", "idle frames garbage-free:\ttrue"]),
     ("idle", "idle.lua", {}, ["has waypoint after:\tfalse", "HUD shown:\tfalse"]),
     ("overrides", "overrides.lua", OVERRIDE,
      ["instance removed:\ttrue", "boss removed:\ttrue", "boss renamed:\ttrue", "routes consistent:\ttrue",

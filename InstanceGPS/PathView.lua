@@ -71,33 +71,40 @@ local hudEnd = hud:CreateTexture(nil, "OVERLAY")
 hudEnd:SetTexture(DN.MEDIA .. "Ring")
 hudEnd:SetSize(22, 22)
 
+-- The view being drawn, for the mark callbacks below: made once, they read it from here rather than being made
+-- each frame
+local vx, vy, vc, vs, vscale, vradius
+
+-- world -> HUD pixels from its center, heading up
+local function HudScreen(x, y)
+	local ex, ny = vy - y, x - vx
+	return (ex * vc + ny * vs) * vscale, (ny * vc - ex * vs) * vscale
+end
+
+local function HudMark(x, y, dx, dy)
+	local sx, sy = HudScreen(x, y)
+	local r = sqrt(sx * sx + sy * sy)
+	if r <= vradius - 6 then
+		local t = hudMarks:Get()
+		t:SetSize(14, 14)
+		-- fade out toward the rim
+		t:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], min(1, 1.6 * (1 - r / vradius)))
+		t:SetPoint("CENTER", hud, "CENTER", sx, sy)
+		local ux, uy = HudScreen(x + dx, y + dy)
+		R.SetRotation(t, atan2(ux - sx, uy - sy))
+	end
+end
+
 local function DrawHUD(px, py, facing)
 	local o = DN.opt
 	local radius = (o.hudSize or 280) / 2
 	local range = o.hudRange or 40
-	local scale = radius / range
-	local c, s = cos(facing), sin(facing)      -- heading up: always turned with the character
-	local function screen(x, y)
-		local ex, ny = py - y, x - px
-		return (ex * c + ny * s) * scale, (ny * c - ex * s) * scale
-	end
+	vx, vy, vc, vs, vscale, vradius = px, py, cos(facing), sin(facing), radius / range, radius
 	hudMarks:Begin()
-	Sample(pts, nPts, 18 / scale, range * 1.5, function(x, y, dx, dy)
-		local sx, sy = screen(x, y)
-		local r = sqrt(sx * sx + sy * sy)
-		if r <= radius - 6 then
-			local t = hudMarks:Get()
-			t:SetSize(14, 14)
-			-- fade out toward the rim
-			t:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], min(1, 1.6 * (1 - r / radius)))
-			t:SetPoint("CENTER", hud, "CENTER", sx, sy)
-			local ux, uy = screen(x + dx, y + dy)
-			DN.SetRotation(t, atan2(ux - sx, uy - sy))
-		end
-	end)
+	Sample(pts, nPts, 18 / vscale, range * 1.5, HudMark)
 	hudMarks:Finish()
 	if endKind then
-		local sx, sy = screen(pts[nPts - 1], pts[nPts])
+		local sx, sy = HudScreen(pts[nPts - 1], pts[nPts])
 		local r = sqrt(sx * sx + sy * sy)
 		if r > radius - 11 then sx, sy = sx * (radius - 11) / r, sy * (radius - 11) / r end
 		local col = endKind == "tele" and TELE or BOSS
@@ -171,43 +178,65 @@ viewIdle:SetWidth(VIEW_W - 20)
 
 local F = (FOOT - HORIZON) * VIEW_H * CAM_BACK / CAM_H   -- focal length in pixels
 
-local function DrawView(px, py, facing)
-	local c, s = cos(facing), sin(facing)
-	local halfW = VIEW_W / 2 - 6
-	-- world -> panel offsets from TOP (y up), and the depth
-	local function project(x, y)
-		local dN, dW = x - px, y - py
-		local z = dN * c + dW * s + CAM_BACK
-		if z < 1.5 then return nil end
-		local right = dN * s - dW * c
+local HALF_W = VIEW_W / 2 - 6
+
+-- world -> panel offsets from TOP (y up), and the depth; nil behind the camera
+local function Project(x, y)
+	local dN, dW = x - vx, y - vy
+	local z = dN * vc + dW * vs + CAM_BACK
+	if z >= 1.5 then
+		local right = dN * vs - dW * vc
 		return right * F / z, -(VIEW_H * HORIZON + CAM_H * F / z), z
 	end
-	viewIdle:Hide()
-	viewMe:Show()
-	viewMarks:Begin()
-	local drawn, lastX, lastY = 0, nil, nil
-	Sample(pts, nPts, 2, VIEW_RANGE, function(x, y, dx, dy, along)
-		local sx, sy, z = project(x, y)
-		if not sx or abs(sx) > halfW or sy < -(VIEW_H - 8) then return end
-		local ux, uy = project(x + dx, y + dy)
-		if not ux then return end
-		local size = max(4, min(22, 1.6 * F / z))
-		-- keep marks apart on screen: far away, many yards fit in a few pixels
-		if lastX and (sx - lastX) ^ 2 + (sy - lastY) ^ 2 < (size * 1.1) ^ 2 then return end
+end
+
+local drawn, lastX, lastY = 0, nil, nil
+local function ViewMark(x, y, dx, dy, along)
+	local sx, sy, z = Project(x, y)
+	local ux, uy
+	if sx and abs(sx) <= HALF_W and sy >= -(VIEW_H - 8) then ux, uy = Project(x + dx, y + dy) end
+	local size = ux and max(4, min(22, 1.6 * F / z))
+	-- keep marks apart on screen: far away, many yards fit in a few pixels
+	if ux and not (lastX and (sx - lastX) ^ 2 + (sy - lastY) ^ 2 < (size * 1.1) ^ 2) then
 		lastX, lastY = sx, sy
 		local t = viewMarks:Get()
 		t:SetSize(size, size)
 		t:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], 1 - 0.55 * along / VIEW_RANGE)
 		t:SetPoint("CENTER", view, "TOP", sx, sy)
-		DN.SetRotation(t, atan2(ux - sx, uy - sy))
+		R.SetRotation(t, atan2(ux - sx, uy - sy))
 		drawn = drawn + 1
-	end)
+	end
+end
+
+-- The view's title and hint change only when what they say does
+local shownName, shownYards, shownHint
+local function ViewText(w)
+	local yards = math.floor(w.atBoss and w.dist or DN.remaining or w.dist or 0)
+	if w.boss.name ~= shownName or yards ~= shownYards then
+		shownName, shownYards = w.boss.name, yards
+		viewTitle:SetText(("%s  |cffffffff%d yd|r"):format(shownName, yards))
+	end
+	local hint = type(w.portal) == "string" and w.portal
+		or (w.portal and (w.dist < 12 and "Use the teleporter here" or "Teleporter ahead")) or ""
+	if hint ~= shownHint then
+		shownHint = hint
+		viewHint:SetText(hint)
+	end
+end
+
+local function DrawView(px, py, facing)
+	vx, vy, vc, vs = px, py, cos(facing), sin(facing)
+	viewIdle:Hide()
+	viewMe:Show()
+	viewMarks:Begin()
+	drawn, lastX, lastY = 0, nil, nil
+	Sample(pts, nPts, 2, VIEW_RANGE, ViewMark)
 	viewMarks:Finish()
 	viewMe:SetPoint("CENTER", view, "TOP", 0, -(VIEW_H * HORIZON + CAM_H * F / CAM_BACK))
 	viewEnd:Hide()
 	if endKind then
-		local sx, sy, z = project(pts[nPts - 1], pts[nPts])
-		if sx and abs(sx) <= halfW then
+		local sx, sy, z = Project(pts[nPts - 1], pts[nPts])
+		if sx and abs(sx) <= HALF_W then
 			local size = max(8, min(30, 3 * F / z))
 			local col = endKind == "tele" and TELE or BOSS
 			viewEnd:SetSize(size, size)
@@ -219,10 +248,7 @@ local function DrawView(px, py, facing)
 	end
 	-- nothing ahead of us: the path starts behind
 	if drawn == 0 and nPts >= 4 then viewBehind:Show() else viewBehind:Hide() end
-	local w = DN.wp
-	viewTitle:SetText(("%s  |cffffffff%d yd|r"):format(w.boss.name, w.atBoss and w.dist or DN.remaining or w.dist or 0))
-	viewHint:SetText(type(w.portal) == "string" and w.portal
-		or (w.portal and (w.dist < 12 and "Use the teleporter here" or "Teleporter ahead")) or "")
+	ViewText(DN.wp)
 end
 
 view:SetScript("OnDragStart", function(self)
@@ -243,58 +269,72 @@ local function ClearAll()
 	mmPath:Clear() mmEnd:Hide()
 	hudMarks:Begin() hudMarks:Finish() hudEnd:Hide() hudRing:Hide()
 	viewMarks:Begin() viewMarks:Finish() viewEnd:Hide() viewBehind:Hide()
-	viewTitle:SetText("") viewHint:SetText("")
-end
-
--- the 3D view with nothing to draw says why, like the arrow does
-local function ViewIdle()
-	local b, text = DN:NextBoss(), nil
-	if not b then
-		local run = DN.run
-		text = run and run.cleared and ("All Bosses Down|n|cffffffffCleared in %s|r"):format(DN.FormatTime(run.cleared))
-			or "All Bosses Down"
-	elseif not b.x then
-		text = b.name .. "|n|cffffffffno known position for this fight|r"
-	else
-		text = b.name .. "|n|cffffffff" .. (DN.inst and DN.inst.needsMapPatch and not DN.px
-			and "needs the WoW Dungeon Maps patch" or "waiting for a map position") .. "|r"
+	if shownName or shownHint ~= "" then
+		shownName, shownYards, shownHint = nil, nil, ""
+		viewTitle:SetText("") viewHint:SetText("")
 	end
-	viewIdle:SetText(text)
-	viewIdle:Show()
-	viewMe:Hide()
 end
 
-local driver = CreateFrame("Frame")
-local since = 0
-driver:SetScript("OnUpdate", function(_, elapsed)
-	since = since + elapsed
-	if since < 0.025 then return end
-	since = 0
-	local o = DN.opt
-	if not o or not DN:NavOn() then return end
+-- the 3D view with nothing to draw says why, like the arrow does; its text is made again only when that changes
+local idleBoss, idleCleared, idleWhy
+local function ViewIdle()
+	local b, run = DN:NextBoss(), DN.run
+	local cleared = not b and run and run.cleared
+	local why = b and (not b.x and 1 or DN.inst and DN.inst.needsMapPatch and not DN.px and 2 or 3)
+	if b ~= idleBoss or cleared ~= idleCleared or why ~= idleWhy or not viewIdle:IsShown() then
+		idleBoss, idleCleared, idleWhy = b, cleared, why
+		local text
+		if cleared then
+			text = ("All Bosses Down|n|cffffffffCleared in %s|r"):format(DN.FormatTime(cleared))
+		elseif not b then
+			text = "All Bosses Down"
+		elseif why == 1 then
+			text = b.name .. "|n|cffffffffno known position for this fight|r"
+		else
+			text = b.name .. "|n|cffffffff" .. (why == 2 and "needs the WoW Dungeon Maps patch" or "waiting for a map position") .. "|r"
+		end
+		viewIdle:SetText(text)
+		viewIdle:Show()
+		viewMe:Hide()
+	end
+end
+
+local function Draw(o)
 	local px, py = PlayerPos()
 	local hudOn = o.pathHud and not (o.hudHideCombat and UnitAffectingCombat("player"))
-	if not px or not DN.wp.x then
-		ClearAll()
-		hud:Hide()
-		if o.pathView then ViewIdle() end
-		return
-	end
 	local range = 0
 	if o.pathMinimap then range = 300 end
 	if hudOn then range = max(range, (o.hudRange or 40) * 1.5) end
 	if o.pathView then range = max(range, VIEW_RANGE) end
-	if range == 0 or not Refresh(px, py, range + 20) then ClearAll() hud:Hide() return end
-	local facing = GetPlayerFacing() or 0
-	if o.pathMinimap then DrawMinimap(px, py, facing) end
-	if hudOn then
-		hudRing:Show()
-		DrawHUD(px, py, facing)
-		hud:Show()
+	local ready = px and DN.wp.x
+	if ready and range > 0 and Refresh(px, py, range + 20) then
+		local facing = GetPlayerFacing() or 0
+		if o.pathMinimap then DrawMinimap(px, py, facing) end
+		if hudOn then
+			hudRing:Show()
+			DrawHUD(px, py, facing)
+			hud:Show()
+		else
+			hud:Hide()
+		end
+		if o.pathView then DrawView(px, py, facing) end
 	else
+		ClearAll()
 		hud:Hide()
+		if not ready and o.pathView then ViewIdle() end
 	end
-	if o.pathView then DrawView(px, py, facing) end
+end
+
+local driver = CreateFrame("Frame")
+DN.pathDriver = driver
+local since = 0
+driver:SetScript("OnUpdate", function(_, elapsed)
+	since = since + elapsed
+	if since >= 0.025 then
+		since = 0
+		local o = DN.opt
+		if o and DN:NavOn() then Draw(o) end
+	end
 end)
 
 function DN:UpdatePathViews()

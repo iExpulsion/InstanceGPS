@@ -194,6 +194,9 @@ function DN:NearPatrol()
 	end
 end
 
+-- the current leg, DN.leg: one table filled again on every tick
+local legBuf = {}
+
 -- Returns the waypoint to walk to: x, y, floor, distance, boss, isBossPoint
 function DN:NextWaypoint()
 	local inst, px, py = self.inst, self.px, self.py
@@ -203,13 +206,19 @@ function DN:NextWaypoint()
 	if not boss or not boss.x then return nil end
 	-- prefer the active route; a boss outside it (another wing) uses its own route
 	local route, target, legStart = self:ActiveRoute(), nil, nil
-	for _, r in ipairs({ route, inst.routes[boss.route or 1] }) do
-		for k, bi in ipairs(r.order) do
-			if inst.bosses[bi] == boss then target, legStart = r.stops[k], k > 1 and r.stops[k - 1] or 1 end
+	for pass = 1, 2 do
+		local r = pass == 1 and route or inst.routes[boss.route or 1]
+		if r and not target then
+			for k, bi in ipairs(r.order) do
+				if inst.bosses[bi] == boss then target, legStart = r.stops[k], k > 1 and r.stops[k - 1] or 1 end
+			end
+			if target then route = r end
 		end
-		if target then route = r break end
 	end
-	self.leg = target and { route = route, from = legStart, to = target } or nil
+	if target then
+		legBuf.route, legBuf.from, legBuf.to = route, legStart, target
+		self.leg = legBuf
+	end
 	local p = route.path
 	local dbx, dby = boss.x - px, boss.y - py
 	local dBoss = sqrt(dbx * dbx + dby * dby)

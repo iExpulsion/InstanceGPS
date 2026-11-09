@@ -21,10 +21,11 @@ local function Stub(name)
 		elseif k == "SetHeight" then f = function(self, v) self.h = v end
 		elseif k == "GetFrameLevel" then f = function() return 1 end
 		elseif k == "GetPoint" then f = function() return "CENTER", nil, "CENTER", 0, 0 end
-		elseif k == "SetPoint" then f = function(self, ...) self.point = { ... } end
+		-- with mock.lean these keep nothing, so the garbage test measures the addon alone
+		elseif k == "SetPoint" then f = function(self, ...) if not mock.lean then self.point = { ... } end end
 		elseif k == "ClearAllPoints" then f = function(self) self.point = nil end
-		elseif k == "SetTexCoord" then f = function(self, ...) self.tc = { ... } end
-		elseif k == "SetVertexColor" then f = function(self, r, g, b, a) self.color = { r, g, b, a or 1 } end
+		elseif k == "SetTexCoord" then f = function(self, ...) if not mock.lean then self.tc = { ... } end end
+		elseif k == "SetVertexColor" then f = function(self, r, g, b, a) if not mock.lean then self.color = { r, g, b, a or 1 } end end
 		elseif k == "SetChecked" then f = function(self, v) self.checked = v and 1 or nil end
 		elseif k == "GetChecked" then f = function(self) return self.checked end
 		elseif k == "GetStringWidth" then f = function(self) return #(self.text or "") * 6 end
