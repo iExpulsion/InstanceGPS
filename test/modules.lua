@@ -14,13 +14,15 @@ local heard = {}
 DN:On("MODULE_OPTION", function(module, key, value) heard[#heard + 1] = module .. ":" .. key .. "=" .. tostring(value) end)
 MOCK.Fire("ADDON_LOADED", "InstanceGPS")
 
--- the page sits in the sidebar under Server Modules, before General
+-- the page sits under Modules at the bottom of the sidebar; General is first
 local O = DN.Options
 local KEY = "module:Test Server"
 O.Open(KEY)
-local listed
-for _, b in ipairs(O.frame.nav) do listed = listed or b.key == KEY end
-print("page:", defaults and listed and O.PAGES[#O.PAGES].key == "general" and O.Page(KEY):IsShown())
+local nav = O.frame.nav
+local def
+for _, d in ipairs(O.PAGES) do if d.key == KEY then def = d end end
+print("page:", defaults and nav[1].key == "general" and nav[#nav].key == KEY and O.GroupOf(def) == "Modules"
+	and O.Page(KEY):IsShown())
 
 -- the checkbox: shows the value when the page opens, saves a click
 local cb = O.Row(KEY, "Extra Rows").control
@@ -44,8 +46,7 @@ local late = DN:ModuleOptions("Late Server", {
 	{ key = "on", label = "On", default = false },
 	{ key = "pick", label = "Pick", default = 3, choices = choices },
 })
-local lateListed
-for _, b in ipairs(O.frame.nav) do lateListed = lateListed or b.key == "module:Late Server" end
+local lateListed = O.frame.nav[#O.frame.nav].key == "module:Late Server"
 O.Open("module:Late Server")
 local picker = O.Row("module:Late Server", "Pick").control
 print("late module:", lateListed and late.on == false and late.pick == 3 and opt.rows == false

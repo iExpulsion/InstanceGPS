@@ -21,7 +21,7 @@ CHECKS = [
      ["next ring:\ttrue\tnumbered rings:\ttrue", "leg bright, rest faint:\ttrue", "killed ring:\ttrue",
       "option off:\ttrue"]),
     ("window", "window.lua", {},
-     ["window:\ttrue", "pages:\ttrue", "check and reset:\ttrue", "slider:\ttrue", "theme:\ttrue", "menu:\ttrue",
+     ["window:\ttrue", "pages:\ttrue", "sidebar:\ttrue", "table fits:\ttrue", "check and reset:\ttrue", "slider:\ttrue", "theme:\ttrue", "menu:\ttrue",
       "stub panel:\ttrue"]),
     ("garbage", "garbage.lua", {}, ["route frames garbage-free:\ttrue", "idle frames garbage-free:\ttrue"]),
     ("idle", "idle.lua", {}, ["has waypoint after:\tfalse", "HUD shown:\tfalse"]),

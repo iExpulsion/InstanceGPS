@@ -147,7 +147,7 @@ Set the whole table again when your marks change; the tracker shows the latest o
 
 ## Options for a Module
 
-A module with options of its own gets a page for them in InstanceGPS's options window, under Server Modules, and InstanceGPS saves them with its own settings. A dropdown with more than a dozen choices opens a searchable list instead:
+A module with options of its own gets a page for them in InstanceGPS's options window, under Modules at the bottom of the sidebar, and InstanceGPS saves them with its own settings. A dropdown with more than a dozen choices opens a searchable list instead:
 
 ```lua
 local opt = InstanceGPS:ModuleOptions("My Server", {

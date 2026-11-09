@@ -15,7 +15,11 @@ local ROW_H, PLAIN_H, SECTION_H, CONTROL_W, INDENT = 40, 30, 30, 200, 16
 local CLIP_MARGIN = 4
 local NAV_W = DN.Window.SIDEBAR_W
 local CONTENT_W = W - NAV_W - 2 * S.PAD - 10 - CLIP_MARGIN
-local GROUP_ORDER = { "Guide", "Bosses", "Server Modules", "Other" }
+-- The sidebar's groups, top to bottom; pages server modules add go under Modules at the bottom
+local GROUP_ORDER = { "General", "Guide", "Bosses", "Modules" }
+-- a page's height: the window's main area, under its title bar
+local PAGE_H = H - DN.Window.TITLE_H
+O.PAGE_H = PAGE_H
 -- a dropdown's menu doesn't scroll: longer lists of choices open a searchable picker instead
 local PICKER_AFTER = 12
 
@@ -161,7 +165,7 @@ O.PAGES = {
 	},
 	{ key = "instances", title = "Instances", group = "Bosses", custom = "instances" },
 	{
-		key = "general", title = "General", group = "Other",
+		key = "general", title = "General", group = "General",
 		settings = {
 			Section("Look"),
 			{
@@ -189,6 +193,8 @@ O.PAGES = {
 				function() end),
 			Button("Frame Positions", "Reset", "Puts the arrow, tracker, 3D view and windows back where they start. Reloads the UI.",
 				ResetFramePositions),
+			Button("Window Positions", "Reset", "Puts the Options and Recording windows back at their default place.",
+				function() DN.Window.ResetPositions() end),
 			Section("Reset"),
 			Button("Every Setting", "Reset All", "Puts every InstanceGPS setting, on every page, back to its default.",
 				function() StaticPopup_Show("INSTANCEGPS_RESET_ALL") end, "danger"),
@@ -237,7 +243,7 @@ local function ModulePage(page)
 			settings[#settings + 1] = { kind = "check", label = o.label, tip = o.tip, get = get, set = set, reset = reset }
 		end
 	end
-	return { key = "module:" .. page.name, title = page.name, group = "Server Modules", settings = settings }
+	return { key = "module:" .. page.name, title = page.name, group = "Modules", settings = settings }
 end
 
 local BuildNav
@@ -253,8 +259,7 @@ function DN:ModuleOptions(name, list)
 		return v
 	end })
 	page.def = ModulePage(page)
-	-- before the General page, which stays last
-	table.insert(O.PAGES, #O.PAGES, page.def)
+	table.insert(O.PAGES, page.def)
 	if frame then BuildNav(frame.side) end
 	return page.values
 end
@@ -425,7 +430,7 @@ local function SettingsPage(def)
 		y = y - (setting.kind == "section" and SECTION_H or row:GetHeight())
 	end
 	page.content:SetHeight(-y)
-	local fits = -y <= H - 2 * S.PAD
+	local fits = -y <= PAGE_H - 2 * S.PAD
 	if fits then page.bar:Hide() end
 	page.scroll:HookScript("OnScrollRangeChanged", function()
 		if fits then page.bar:Hide() end
@@ -489,7 +494,8 @@ local function InstancesPage(def)
 	for _, item in ipairs(items) do
 		if not item.header then all[#all + 1] = item end
 	end
-	local y = page.top - 34
+	-- the buttons go under the note however many lines it wraps to
+	local y = page.top - math.ceil(note:GetStringHeight() or 24) - S.GAP
 	local allOn = S.Button(page.content, "All On", "secondary", 70, function()
 		SetMany(all, true)
 		page.Refresh()
@@ -501,8 +507,11 @@ local function InstancesPage(def)
 	end)
 	allOff:SetPoint("LEFT", allOn, "RIGHT", S.GAP, 0)
 
+	-- the table fills what's left of the page, down to its bottom padding
 	local width = W - NAV_W - 2 * S.PAD
-	local height = H - 2 * S.PAD + y - S.CONTROL_H - S.GAP
+	local top = y - S.CONTROL_H - S.GAP
+	local height = PAGE_H - 2 * S.PAD + top
+	page.tableTop = top
 	local tbl
 	tbl = S.Table.New(page.content, "InstanceGPSInstancesTable", width, height, {
 		columns = {
@@ -535,7 +544,7 @@ local function InstancesPage(def)
 			tbl:Redraw()
 		end,
 	})
-	tbl.frame:SetPoint("TOPLEFT", allOn, "BOTTOMLEFT", 0, -S.GAP)
+	tbl.frame:SetPoint("TOPLEFT", 0, top)
 	tbl:SetItems(items)
 	page.table = tbl
 	page.Refresh = function() tbl:Redraw() end
@@ -547,8 +556,17 @@ end
 
 local navRoot
 
--- The sidebar: pages under their group's heading, in GROUP_ORDER, leaving out groups with no pages. Built again
--- when a server module adds a page later.
+-- A page's sidebar group: its own when it's one of GROUP_ORDER's, Modules otherwise (pages server modules add)
+function O.GroupOf(def)
+	local group = "Modules"
+	for _, g in ipairs(GROUP_ORDER) do
+		if def.group == g then group = g end
+	end
+	return group
+end
+
+-- The sidebar: pages under their group's heading, in GROUP_ORDER; a group with no pages (Modules, with no server
+-- module loaded) is left out. Built again when a server module adds a page later.
 function BuildNav(side)
 	if navRoot then navRoot:Hide() end
 	navRoot = CreateFrame("Frame", nil, side)
@@ -559,14 +577,14 @@ function BuildNav(side)
 	local first = true
 	for _, group in ipairs(GROUP_ORDER) do
 		local any = false
-		for _, def in ipairs(O.PAGES) do any = any or def.group == group end
+		for _, def in ipairs(O.PAGES) do any = any or O.GroupOf(def) == group end
 		if any then
 			y = y - (first and 0 or S.GAP)
 			first = false
 			S.SectionHeading(navRoot, group, inset + S.PAD - 1, y - 4)
 			y = y - DN.Window.SECTION_H
 			for _, def in ipairs(O.PAGES) do
-				if def.group == group then
+				if O.GroupOf(def) == group then
 					local b = CreateFrame("Button", nil, navRoot)
 					b:SetHeight(NAV_H)
 					b:SetPoint("TOPLEFT", inset, y)

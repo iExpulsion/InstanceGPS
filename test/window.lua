@@ -25,6 +25,17 @@ for _, def in ipairs(O.PAGES) do
 end
 print("pages:", built)
 
+-- the sidebar: General first, then Guide and Bosses; no Modules heading without a server module
+local order = {}
+for _, b in ipairs(O.frame.nav) do order[#order + 1] = b.key end
+print("sidebar:", table.concat(order, ",") == "general,arrow,route,path,tracker,instances")
+
+-- the Instances table ends inside the page's bottom padding, above the window's edge
+local page = O.Page("instances")
+local S = NS.Style
+local bottom = -page.tableTop + page.table.frame.h
+print("table fits:", bottom <= O.PAGE_H - 2 * S.PAD and bottom > O.PAGE_H - 2 * S.PAD - 1, bottom, O.PAGE_H)
+
 -- a check applies at once: the arrow goes when its check is cleared; Reset This Page brings it back
 O.Open("arrow")
 local arrowCheck = O.Row("arrow", "Navigation Arrow").control
