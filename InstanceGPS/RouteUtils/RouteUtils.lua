@@ -1,4 +1,4 @@
--- Vendored from RouteUtils v0.1.0-4-g05fd5e0. Change it there, then run tools/sync_route.py.
+-- Vendored from RouteUtils v0.2.0. Change it there, then run tools/sync_route.py.
 -- RouteUtils: route ordering and the pieces that guide a player along a route in WoW 3.3.5: a turning arrow,
 -- dots along the path on the minimap and the world map, and the geometry behind them. Each addon ships its own
 -- copy (RouteUtils/RouteUtils.lua and RouteUtils/Media) and reads it as NS.Route from its addon table.
