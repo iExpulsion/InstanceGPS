@@ -561,9 +561,15 @@
      "y": 734.2,
      "z": -24.6,
      "hint": "Crystal pylon: kill the Arcane Aberrations and Mana Remnants around it to shut it down. With all five off, Immol'thar's force field drops."
+    },
+    {
+     "x": 50.6,
+     "y": 501.9,
+     "z": -23.1,
+     "hint": "This door needs the Crescent Key (Pusillin drops it in Dire Maul East), Lockpicking or a Seaforium Charge."
     }
    ],
-   "source": "smart_scripts 177259/177257/177258/179504/179505 (Doodad_DireMaulCrystalGenerator01-05, guids 29743/29744/29742/29745/29746) on update set TYPE_PYLONS_STATE bits 1/2/4/8/16, gated by conditions 22/1: no 11480 or 11483 within 70yd; instance_dire_maul.cpp ALL_PYLONS_OFF (0x1F) removes UNIT_FLAG_NON_ATTACKABLE from Immol'thar and Highborne Summoners; force field 179503. Pylons 1-3 lie before Tendris/Illyanna, so the route may want them earlier.",
+   "source": "smart_scripts 177259/177257/177258/179504/179505 (Doodad_DireMaulCrystalGenerator01-05, guids 29743/29744/29742/29745/29746) on update set TYPE_PYLONS_STATE bits 1/2/4/8/16, gated by conditions 22/1: no 11480 or 11483 within 70yd; instance_dire_maul.cpp ALL_PYLONS_OFF (0x1F) removes UNIT_FLAG_NON_ATTACKABLE from Immol'thar and Highborne Summoners; force field 179503. Pylons 1-3 lie before Tendris/Illyanna, so the route may want them earlier.; prison door 177221 (guid 29751) lock 1562, creature_loot 14354 Pusillin -> 18249 Crescent Key",
    "confidence": "high",
    "boss": "Immol'thar",
    "any_order": true
@@ -1766,6 +1772,20 @@
    "source": "instance_eye_of_eternity.cpp ProcessEvent EVENT_IRIS_ACTIVATED (20711, cast by GO 193958/193960) -> Malygos AttackStart; boss_malygos.cpp starts NON_ATTACKABLE|PACIFIED with empty MoveInLineOfSight; GO guids 268038/268039",
    "confidence": "high",
    "boss": "Malygos"
+  },
+  {
+   "map": 429,
+   "boss": "Prince Tortheldrin",
+   "points": [
+    {
+     "x": 83.3,
+     "y": 630.5,
+     "z": -24.6,
+     "hint": "This door needs the Crescent Key (Pusillin drops it in Dire Maul East), Lockpicking or a Seaforium Charge."
+    }
+   ],
+   "source": "gameobject 179550 Door (guid 509) lock 1562",
+   "confidence": "medium"
   }
  ],
  "order": [
@@ -2623,7 +2643,7 @@
   {
    "map": 429,
    "boss": "Prince Tortheldrin",
-   "why": "low confidence: Crescent Key door may not be on the normal way"
+   "why": "replaced by the Crescent Key door hints in EXTRA_HINTS"
   },
   {
    "map": 533,
