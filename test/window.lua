@@ -1,5 +1,5 @@
 -- The style kit's windows and menu: the options window on MEDIUM, top-level, closing with Escape and building
--- every page; settings applying as they change and Reset This Page putting them back; the theme picker; the
+-- every page; settings applying as they change and Reset This Page putting them back; the theme picker and window size; the
 -- right-click menu's switches; and the Interface Options stub that opens the window.
 local DN = NS.DN
 MOCK.now = 1000000
@@ -57,6 +57,16 @@ local theme = O.Row("general", "Theme").setting
 local skins = theme.choices()
 theme.set("classic")
 print("theme:", #skins >= 3 and DN.db.skin == "classic" and MOCK.popup and MOCK.popup.which == "INSTANCEGPS_RELOAD")
+
+-- the window size starts at 100%, lists the sizes, sizes every window when picked and resets to 100%
+local sizeRow = O.Row("general", "Window Size")
+local sizes = sizeRow.setting.choices()
+local startsAt100 = DN.db.windowScale == 1 and sizeRow.control.label.text == "100%"
+sizeRow.setting.set(1.5)
+local picked = DN.db.windowScale == 1.5 and NS.Style.windowScale == 1.5
+sizeRow.setting.reset()
+print("window size:", startsAt100 and #sizes == #DN.WINDOW_SCALES and sizes[1].text == "80%" and picked
+	and DN.db.windowScale == 1 and NS.Style.windowScale == 1)
 
 -- the right-click menu: a switch flips its option and the menu stays open on it
 DN:ShowMenu(DN.arrow)

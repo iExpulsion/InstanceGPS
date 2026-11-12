@@ -24,7 +24,9 @@ DN:On("LOADED", function()
 	local db = DN.db
 	if not Known(db.skin) then db.skin = "material" end
 	if db.pixelScale == nil then db.pixelScale = true end
+	if db.windowScale == nil then db.windowScale = 1 end
 	S.UseSkin(db.skin, YELLOW)
+	S.SetWindowScale(db.windowScale)
 	DN.HINT_COLOR = S.colors.heading
 end)
 
@@ -51,6 +53,19 @@ end
 function DN.SetPixelScale(on)
 	DN.db.pixelScale = on
 	for _, entry in ipairs(pixelFrames) do S.PixelScale(entry.frame, on) end
+	Replace()
+end
+
+-- the sizes offered for the windows and menus
+DN.WINDOW_SCALES = { 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2 }
+
+function DN.ScaleLabel(scale)
+	return ("%d%%"):format(math.floor(scale * 100 + 0.5))
+end
+
+function DN.SetWindowScale(scale)
+	DN.db.windowScale = scale
+	S.SetWindowScale(scale)
 	Replace()
 end
 

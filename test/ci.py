@@ -21,7 +21,7 @@ CHECKS = [
      ["next ring:\ttrue\tnumbered rings:\ttrue", "leg bright, rest faint:\ttrue", "killed ring:\ttrue",
       "option off:\ttrue"]),
     ("window", "window.lua", {},
-     ["window:\ttrue", "pages:\ttrue", "sidebar:\ttrue", "table fits:\ttrue", "check and reset:\ttrue", "slider:\ttrue", "theme:\ttrue", "menu:\ttrue",
+     ["window:\ttrue", "pages:\ttrue", "sidebar:\ttrue", "table fits:\ttrue", "check and reset:\ttrue", "slider:\ttrue", "theme:\ttrue", "window size:\ttrue", "menu:\ttrue",
       "stub panel:\ttrue"]),
     ("questgps", "questgps.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
      ["card:\ttrue", "quest stops:\ttrue", "turn-in first:\ttrue", "skipped:\ttrue", "objective next:\ttrue",

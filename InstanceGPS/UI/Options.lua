@@ -195,6 +195,20 @@ O.PAGES = {
 				set = function(v) DN.SetSkin(v) end,
 			},
 			{
+				kind = "dropdown", label = "Window Size",
+				tip = "How big InstanceGPS's windows and menus are, for large screens or bigger text. The tracker has its own size.",
+				choices = function()
+					local list = {}
+					for _, scale in ipairs(DN.WINDOW_SCALES) do
+						list[#list + 1] = { value = scale, text = DN.ScaleLabel(scale) }
+					end
+					return list
+				end,
+				get = function() return DN.db.windowScale end,
+				set = function(v) DN.SetWindowScale(v) end,
+				reset = function() DN.SetWindowScale(1) end,
+			},
+			{
 				kind = "check", label = "Snap to Screen Pixels",
 				tip = "Scales InstanceGPS's windows so their edges and thin lines land on whole screen pixels, sharp at any UI scale.",
 				get = function() return DN.db.pixelScale end,

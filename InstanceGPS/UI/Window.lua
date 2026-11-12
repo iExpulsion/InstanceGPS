@@ -28,6 +28,18 @@ local function Place(f)
 	DN.SnapPosition(f)
 end
 
+-- After a window's scale changes: a dragged one keeps its spot, saved again in its new units; others go back to
+-- the default spot.
+local function Rescaled(f)
+	if DN.db.pos[f.positionKey] then
+		DN.SnapPosition(f)
+		local point, _, relPoint, x, y = f:GetPoint(1)
+		DN.db.pos[f.positionKey] = { point, relPoint, x, y }
+	else
+		Place(f)
+	end
+end
+
 -- opts: name (global frame name), subtitle, width, height (inside the frame's border), positionKey (where in
 -- DN.db.pos the dragged position is kept), sidebar (true for a sidebar). Returns the frame, with .bar, .side, .main.
 function Window.New(opts)
@@ -41,7 +53,7 @@ function Window.New(opts)
 	f:EnableMouse(true)
 	f:SetMovable(true)
 	f:SetClampedToScreen(true)
-	DN.PixelScale(f)
+	DN.PixelScale(f, function() Rescaled(f) end)
 	Place(f)
 	S.Frame(f, "window")
 	tinsert(UISpecialFrames, opts.name)
