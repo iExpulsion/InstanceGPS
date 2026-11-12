@@ -102,6 +102,12 @@ PRECEDENCE = {
         + [('Lady Anacondra', 'Lord Cobrahn'), ('Lord Cobrahn', 'Kresh')]
         + [('Kresh', b) for b in ('Lord Pythas', 'Skum', 'Lord Serpentis', 'Verdan the Everliving')],
     48: [('Twilight Lord Kelris', "Aku'mai")],
+    # Maraudon: Princess Theradras ends the run (Zaetar's spirit, the Dungeon Finder's completion);
+    # nothing locks her, but she comes last
+    349: [(b, 'Princess Theradras') for b in ('Noxxion', 'Razorlash', 'Lord Vyletongue', 'Celebras the Cursed',
+                                              'Landslide', 'Tinkerer Gizlock', 'Rotgrip')]
+         # the usual way down from the falls: Rotgrip's lake opens onto Theradras' grove
+         + [('Landslide', 'Tinkerer Gizlock'), ('Tinkerer Gizlock', 'Rotgrip')],
     389: [('Bazzalan', 'Jergosh the Invoker')],   # Ragefire Chasm: drop off Bazzalan's ledge to Jergosh
     533: [  # Naxxramas
         ("Anub'Rekhan", 'Grand Widow Faerlina'), ('Grand Widow Faerlina', 'Maexxna'),
@@ -188,6 +194,9 @@ POSITIONS = {
     # Rend starts on the balcony above Blackrock Stadium and rides down on Gyth once the waves are
     # done; the fight is on the arena floor (areatrigger 2026 at_blackrock_stadium, which starts it)
     (229, 'Warchief Rend Blackhand'): (153.8, -419.8, 110.5),
+    # Rotgrip spawns on the bottom of the deep lake (-200), whose floor the navmesh joins to the rest
+    # only through the tunnels east; the shore above him is on Theradras' level
+    (349, 'Rotgrip'): (40.7, -51.1, -127.8),
 }
 
 # Doors that stay shut until bosses die: {map: [((x, y, z), radius, [bosses])]}. Routes don't walk
@@ -299,6 +308,11 @@ WALK_LINKS = {
         ((-47.5, 39.2, -33.0), (-47.7, 39.1, -105.8), True, 'Jump down into the water'),
         # past Lord Cobrahn, the Pit of Fangs ledge drops ~13 yd (no fall damage) to the way back to the river
         ((-96.5, 440.3, -76.8), (-94.7, 444.5, -89.6), True, 'Drop down the ledge'),
+    ],
+    349: [
+        # Maraudon: the pool at the foot of the waterfall (-96) spills into Earth Song Falls' lake
+        # 34 yd below; the navmesh only gets down by the long way round the west shore
+        ((472.5, 20.7, -96.1), (466.0, 21.7, -130.5), True, 'Jump down into the lake'),
     ],
     389: [
         # Ragefire Chasm: the ledge past Bazzalan drops straight down toward Jergosh
