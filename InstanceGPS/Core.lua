@@ -499,10 +499,22 @@ function DN:SetRoute(index, manual)
 	if not self.inst or not self.inst.routes[index] then return end
 	self.routeIndex = index
 	self.routeManual = manual
+	self.startPending = false
 	if self.run then self.run.route = index end
 	self.progress = nil
 	self:Fire("ROUTE_CHANGED")
 	self:Fire("RUN_CHANGED")
+end
+
+-- The route whose start is nearest the player: the entrance we zoned in at.
+function DN:NearestStart()
+	local inst, best, bestD = self.inst, 1, huge
+	for r, route in ipairs(inst.routes) do
+		local dx, dy = route.path[1] - self.px, route.path[2] - self.py
+		local d = dx * dx + dy * dy
+		if d < bestD then best, bestD = r, d end
+	end
+	return best
 end
 
 -- Nearest route to the player (used for wings / multiple entrances).
@@ -614,16 +626,12 @@ function DN:DetectInstance()
 			self.routeManual = false
 			if self.run.route and not inst.routes[self.run.route] then self.run.route = nil end
 			self.routeIndex = self.run.route or 1
-			if not self.run.route and #inst.routes > 1 and self:UpdatePlayerPosition() then
-				-- pick the route whose start is nearest to where we zoned in
-				local best, bestD = 1, huge
-				for r, route in ipairs(inst.routes) do
-					local dx, dy = route.path[1] - self.px, route.path[2] - self.py
-					local d = dx * dx + dy * dy
-					if d < bestD then best, bestD = r, d end
-				end
-				self.routeIndex = best
-				self.run.route = best
+			-- right after a Dungeon Finder teleport the position can be unknown: pick on the first one
+			self.startPending = not self.run.route and #inst.routes > 1
+			if self.startPending and self:UpdatePlayerPosition() then
+				self.routeIndex = self:NearestStart()
+				self.run.route = self.routeIndex
+				self.startPending = false
 			end
 		end
 		self:Fire("INSTANCE_CHANGED", inst)
@@ -775,7 +783,7 @@ DN:SetScript("OnUpdate", function(self, elapsed)
 	if not self.inst then return end
 	if self.run and time() - (self.run.lastSeen or 0) >= 30 then self.run.lastSeen = time() end
 	if self:UpdatePlayerPosition() then
-		self:AutoRoute()
+		if self.startPending then self:SetRoute(self:NearestStart()) else self:AutoRoute() end
 		local w = self.wp
 		w.x, w.y, w.f, w.dist, w.boss, w.atBoss, w.portal = self:NextWaypoint()
 		self:Fire("POSITION", self.px, self.py, self.pfloor)

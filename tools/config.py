@@ -40,9 +40,10 @@ ENTRANCE_NAMES = {2216: 'Main Gate', 2214: 'Service Entrance',
 ENTRANCE_OVERRIDE = {}
 # Entrances with no areatrigger (a teleport lands there), each with the bosses reachable from it.
 EXTRA_ENTRANCES = {
-    # Maraudon: the Scepter of Celebras portal (spell 21128) to Earth Song Falls, below the
-    # one-way waterfall drop, so only the inner bosses
-    349: [{'name': 'Pristine Waters (Inner)', 'pos': (386.27, 33.41, -130.93),
+    # Maraudon: the Dungeon Finder's Pristine Waters entrance, at the foot of the one-way waterfall
+    # drop into Earth Song Falls (seen in game; the Scepter of Celebras portal, spell 21128, lands
+    # 110 yd further south), so only the inner bosses
+    349: [{'name': 'Pristine Waters (Inner)', 'pos': (495.7, 17.3, -96.1),
            'bosses': ['Landslide', 'Tinkerer Gizlock', 'Rotgrip', 'Princess Theradras']}],
 }
 EXIT_IS_ENTRANCE = set()
