@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.4.0. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.4.1. Change it there, then run tools/sync_style.py.
 -- MaterialCraftUI: a flat dark style kit for WoW 3.3.5 addons on Material 3 color roles: one accent color, 1px
 -- borders, state layers and a few button kinds. Each addon ships its own copy, listed in its .toc, and reads it
 -- as NS.Style from its addon table; font objects are named after the addon, so copies never clash.
@@ -242,19 +242,31 @@ function S.PixelScale(frame, on)
 	return frame
 end
 
--- Sets the size of every window given S.PixelScale, from 1 (their designed size). Each keeps its top left corner
--- where it is on the screen.
+-- Where a frame's anchor point (TOPRIGHT, CENTER, ...) is, in its own units from the screen's bottom left.
+local function anchorSpot(frame, point)
+	local left, right, top, bottom = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom()
+	if left and right and top and bottom then
+		local x = point:find("LEFT") and left or point:find("RIGHT") and right or (left + right) / 2
+		local y = point:find("TOP") and top or point:find("BOTTOM") and bottom or (top + bottom) / 2
+		return x, y
+	end
+end
+
+-- Sets the size of every window given S.PixelScale, from 1 (their designed size). Each keeps the point it's
+-- anchored by where it is on the screen, so a window pinned by its top right corner grows to the left.
 function S.SetWindowScale(scale)
 	S.windowScale = scale
 	for frame, snap in pairs(pixelFrames) do
-		local left, top = frame:GetLeft(), frame:GetTop()
+		local point = frame:GetPoint(1) or "TOPLEFT"
+		local x, y = anchorSpot(frame, point)
 		local before = frame:GetEffectiveScale()
 		applyScale(frame)
-		if left and top then
+		if x then
 			local ratio = before / frame:GetEffectiveScale()
+			x, y = x * ratio, y * ratio
+			if snap then x, y = S.Snap(frame, x), S.Snap(frame, y) end
 			frame:ClearAllPoints()
-			frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left * ratio, top * ratio)
-			if snap then S.SnapPosition(frame) end
+			frame:SetPoint(point, UIParent, "BOTTOMLEFT", x, y)
 		end
 	end
 end
