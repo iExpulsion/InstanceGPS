@@ -46,4 +46,10 @@ print("first pass:", onLeg(ancient, "Tendris Warpwood"), ancient and ancient.anc
 -- the Treasure sits on its own level, on the way to Prince Tortheldrin, not under the Court on the way to Illyanna
 print("own level:", onLeg(treasure, "Prince Tortheldrin") and DN.OnFloor(p[treasure.anchor * 3], 4),
 	treasure and treasure.anchor)
+-- for QuestGPS's minimap: from the Court of the Highborne (level 2) the Treasure is below, on level 4; from level 4
+-- it's here; a spawn of unknown height can't be told
+local belowWhere, belowLevel = DN:LevelOf(MAP, 129, 545, -48, 2)
+local hereWhere = DN:LevelOf(MAP, 129, 545, -48, 4)
+print("level of:", belowWhere == "below" and belowLevel == 4 and hereWhere == "here"
+	and DN:LevelOf(MAP, 129, 545, 0, 2) == nil, belowWhere, belowLevel, hereWhere)
 print("questpass test done")

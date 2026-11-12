@@ -91,6 +91,21 @@ local function Nearest(inst, route, pts, heights)
 	return bx, by, bi, bd, bf
 end
 
+-- Where a spawn at (x, y, z) on instance map `mapId` is from map level `level` (QuestGPS says so in the tooltip of
+-- the game's minimap icon for it): "here", "above" or "below" by the heights of the bosses on each level, "other"
+-- when the player's level has none, and the spawn's level; nil when the spawn's level can't be told
+function DN:LevelOf(mapId, x, y, z, level)
+	local inst = ns.Instances and ns.Instances[mapId]
+	local mask = inst and LevelsAt(inst, x, y, z)
+	local sum, n = 0, 0
+	for _, b in ipairs(mask and inst.bosses or NONE) do
+		if b.z and b.f and OnFloor(b.f, level) then sum, n = sum + b.z, n + 1 end
+	end
+	local where = mask and ((OnFloor(mask, level) and "here") or (n == 0 and "other")
+		or (z > sum / n and "above") or "below")
+	return where, where and DN.FirstFloor(mask) or nil
+end
+
 -- Puts this instance's open quest objectives on the active route, in route order
 function DN:UpdateQuestStops()
 	local q, inst = self:QuestGPS(), self.inst
@@ -126,6 +141,9 @@ DN:On("ROUTE_CHANGED", Changed)
 DN:On("LOADED", function()
 	local q = DN:QuestGPS()
 	if q and q.On then q.On("QGPS_STATE_CHANGED", Changed) end
+	if q and q.AddLevelHook then
+		q.AddLevelHook(function(mapId, x, y, z, level) return DN:LevelOf(mapId, x, y, z, level) end)
+	end
 end)
 DN:On("QUESTS_CHANGED", function()
 	if WorldMapFrame:IsShown() then DN:RefreshMap() end

@@ -28,7 +28,7 @@ CHECKS = [
       "arrived:\ttrue", "skip kept:\ttrue", "finished:\ttrue", "levels:\ttrue", "card refreshes:\ttrue", "own tracker back:\ttrue", "stops off:\ttrue",
       "outside:\ttrue", "questgps test done"]),
     ("quest stop first pass", "questpass.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
-     ["first pass:\ttrue", "own level:\ttrue", "questpass test done"]),
+     ["first pass:\ttrue", "own level:\ttrue", "level of:\ttrue", "questpass test done"]),
     ("garbage", "garbage.lua", {}, ["route frames garbage-free:\ttrue", "idle frames garbage-free:\ttrue"]),
     ("idle", "idle.lua", {}, ["has waypoint after:\tfalse", "HUD shown:\tfalse"]),
     ("overrides", "overrides.lua", OVERRIDE,
