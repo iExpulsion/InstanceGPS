@@ -608,7 +608,12 @@ local events = {}
 function events:ADDON_LOADED(name)
 	if name ~= ADDON then return end
 	InstanceGPSDB = InstanceGPSDB or {}
-	InstanceGPSCharDB = InstanceGPSCharDB or {}
+	-- the per-character file follows the name, so a new character reusing a deleted one's name would inherit it
+	local guid = UnitGUID("player")
+	if not InstanceGPSCharDB or (guid and InstanceGPSCharDB.guid and InstanceGPSCharDB.guid ~= guid) then
+		InstanceGPSCharDB = {}
+	end
+	InstanceGPSCharDB.guid = guid or InstanceGPSCharDB.guid
 	local db, char = InstanceGPSDB, InstanceGPSCharDB
 	db.opt = db.opt or {}
 	for k, v in pairs(defaults) do
