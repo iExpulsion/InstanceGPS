@@ -27,7 +27,7 @@ InstanceGPS doesn't need any other addons or libraries.
 With QuestGPS loaded too, the two work as one inside dungeons and raids:
 
 - **One tracker.** The boss tracker gives way to a card at the top of QuestGPS's tracker: where the arrow leads, how far, which boss of how many you're on, and what comes after. Right-click it for InstanceGPS's menu. Untick Use QuestGPS's Tracker (Boss Tracker page) to keep InstanceGPS's own, which also comes back wherever QuestGPS folds or hides its tracker in dungeons.
-- **Your quests on the route.** The objectives and turn-ins of the quests in your log that are inside the instance become stops on the way to the next boss, with the arrow leading to each and a "!" or "?" ring on the dungeon map. Click a ring, or pick Skip This Quest Stop in the menu, to skip one. Untick Quest Objectives on the Route (Route page) to leave them out.
+- **Your quests on the route.** The objectives and turn-ins of the quests in your log that are inside the instance become stops on the way to the next boss (the first time the route passes them, where it passes them more than once), with the arrow leading to each and a "!" or "?" ring on the dungeon map. Click a ring, or pick Skip This Quest Stop in the menu, to skip one. Untick Quest Objectives on the Route (Route page) to leave them out.
 - **One arrow.** QuestGPS's arrow leads you to the instance; inside, InstanceGPS's takes over.
 
 ### Server Modules

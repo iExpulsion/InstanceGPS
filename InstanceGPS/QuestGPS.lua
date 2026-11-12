@@ -10,6 +10,10 @@ local DN = ns.DN
 local QUEST_REACH = 80
 -- yards added to a route point's distance when it's on another map level than the spawn
 local OFF_FLOOR = 25
+-- yards a route's earlier pass may be further from a spawn than its nearest point and still take the stop, so a
+-- route that passes a spot twice offers it the first time (Dire Maul West's Shen'dralar Ancient, on the way to
+-- Tendris Warpwood and again to Immol'thar)
+local FIRST_PASS = 20
 -- a height difference counts this many times its yards when matching a spawn to a boss's level
 local HEIGHT_WEIGHT = 3
 local NONE = {}
@@ -56,22 +60,31 @@ local function LevelsAt(inst, x, y, z)
 	return best
 end
 
--- The spawn nearest the route and the route vertex it's nearest, a vertex on another level than the spawn counting
--- OFF_FLOOR further: x, y, vertex, distance, the spawn's levels as a mask
+-- The spawn nearest the route and the route vertex it's met at, a vertex on another level than the spawn counting
+-- OFF_FLOOR further: the first vertex within FIRST_PASS of the nearest distance. Returns x, y, vertex, distance,
+-- the spawn's levels as a mask.
 local function Nearest(inst, route, pts, heights)
-	local p, bx, by, bi, bd, bf = route.path, nil, nil, nil, math.huge, nil
-	for j = 1, #pts - 1, 2 do
-		local x, y = pts[j], pts[j + 1]
-		local levels = LevelsAt(inst, x, y, heights and heights[(j + 1) / 2])
-		for i = 1, #p / 3 do
-			local dx, dy = p[i * 3 - 2] - x, p[i * 3 - 1] - y
-			local d = math.sqrt(dx * dx + dy * dy)
-			local mask = p[i * 3]
-			local shared = levels and Common(mask, levels) or mask
-			if shared == 0 then d = d + OFF_FLOOR end
-			if d < bd then bx, by, bi, bd, bf = x, y, i, d, shared ~= 0 and shared or levels end
+	local p, nearest = route.path, math.huge
+	local function Each(fn)
+		for j = 1, #pts - 1, 2 do
+			local x, y = pts[j], pts[j + 1]
+			local levels = LevelsAt(inst, x, y, heights and heights[(j + 1) / 2])
+			for i = 1, #p / 3 do
+				local dx, dy = p[i * 3 - 2] - x, p[i * 3 - 1] - y
+				local d = math.sqrt(dx * dx + dy * dy)
+				local mask = p[i * 3]
+				local shared = levels and Common(mask, levels) or mask
+				fn(x, y, i, shared == 0 and d + OFF_FLOOR or d, shared ~= 0 and shared or levels)
+			end
 		end
 	end
+	Each(function(_, _, _, d) nearest = math.min(nearest, d) end)
+	local bx, by, bi, bd, bf
+	Each(function(x, y, i, d, f)
+		if d <= nearest + FIRST_PASS and (not bi or i < bi or (i == bi and d < bd)) then
+			bx, by, bi, bd, bf = x, y, i, d, f
+		end
+	end)
 	return bx, by, bi, bd, bf
 end
 
