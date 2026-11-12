@@ -56,8 +56,9 @@ local function HintLine(w)
 		return "Use the Teleporter Here"
 	elseif portal then
 		return "Teleporter in %d yd", floor(dist)
-	elseif f and DN.pfloor and not DN.OnFloor(f, DN.pfloor) and (DN.FirstFloor(f) or 0) ~= 0 then
-		return "Level %d", DN.FirstFloor(f)
+	elseif f and DN.inst and DN.pfloor and not DN.OnFloor(f, DN.pfloor)
+		and (DN.FirstFloor(DN.OwnLevels(DN.inst, f)) or 0) ~= 0 then
+		return "Level %d", DN.FirstFloor(DN.OwnLevels(DN.inst, f))
 	end
 	local patrol = DN:NearPatrol()
 	return patrol and "|cffff5050Patrols:|r %s" or "", patrol

@@ -92,6 +92,41 @@ function DN.FirstFloor(mask)
 	end
 end
 
+local function Area(r)
+	return math.max(0, r[2] - r[1]) * math.max(0, r[4] - r[3])
+end
+
+local function Overlap(a, b)
+	return Area({ math.max(a[1], b[1]), math.min(a[2], b[2]), math.max(a[3], b[3]), math.min(a[4], b[4]) })
+end
+
+-- An instance's overview levels as a mask, the way the build finds them: a level whose map holds most of two or
+-- more others' (Sunken Temple's level 1 shows the whole temple). Waypoints there carry the overview's bit as well
+-- as their own level's.
+function DN.OverviewLevels(inst)
+	if not inst.overview then
+		local mask = 0
+		for f, r in pairs(inst.floors or {}) do
+			local n = 0
+			for g, q in pairs(inst.floors) do
+				if g ~= f and Area(q) > 0 and Overlap(r, q) > 0.8 * Area(q) then n = n + 1 end
+			end
+			if n >= 2 then mask = mask + 2 ^ f end
+		end
+		inst.overview = mask
+	end
+	return inst.overview
+end
+
+-- A level mask without its overview levels, which say nothing about the floor; the mask itself when that leaves none
+function DN.OwnLevels(inst, mask)
+	local over, own = DN.OverviewLevels(inst), mask
+	for level = 0, 20 do
+		if DN.OnFloor(over, level) and DN.OnFloor(own, level) then own = own - 2 ^ level end
+	end
+	return own ~= 0 and own or mask
+end
+
 -- The routes on offer in an instance:
 --  * our faction's (ICC gunship);
 --  * the ones for this difficulty, where the bosses differ (heroic-only Amanitar, Yor, ...);

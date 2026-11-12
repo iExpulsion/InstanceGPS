@@ -62,7 +62,8 @@ local function LevelsAt(inst, x, y, z)
 end
 
 -- The spawn nearest the route and the route vertex it's met at, a vertex on another level than the spawn counting
--- OFF_FLOOR further: the first vertex on the nearest one's terms (the spawn's level, or not) within FIRST_PASS of
+-- OFF_FLOOR further (overview levels left out: Sunken Temple's entrance and its lower ring share only the
+-- overview, and a Murk Worm 40 yards under the entrance took the stop there): the first vertex on the nearest one's terms (the spawn's level, or not) within FIRST_PASS of
 -- the nearest distance. Returns x, y, vertex, distance, the spawn's levels as a mask.
 local function Nearest(inst, route, pts, heights)
 	local p, nearest, nearestSame = route.path, math.huge, false
@@ -74,8 +75,9 @@ local function Nearest(inst, route, pts, heights)
 				local dx, dy = p[i * 3 - 2] - x, p[i * 3 - 1] - y
 				local d = math.sqrt(dx * dx + dy * dy)
 				local mask = p[i * 3]
+				local same = not levels or Common(DN.OwnLevels(inst, mask), DN.OwnLevels(inst, levels)) ~= 0
 				local shared = levels and Common(mask, levels) or mask
-				fn(x, y, i, shared == 0 and d + OFF_FLOOR or d, shared ~= 0 and shared or levels, shared ~= 0)
+				fn(x, y, i, same and d or d + OFF_FLOOR, same and shared or levels, same)
 			end
 		end
 	end
