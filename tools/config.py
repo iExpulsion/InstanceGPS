@@ -102,12 +102,12 @@ PRECEDENCE = {
         + [('Lady Anacondra', 'Lord Cobrahn'), ('Lord Cobrahn', 'Kresh')]
         + [('Kresh', b) for b in ('Lord Pythas', 'Skum', 'Lord Serpentis', 'Verdan the Everliving')],
     48: [('Twilight Lord Kelris', "Aku'mai")],
-    # Maraudon: Princess Theradras ends the run (Zaetar's spirit, the Dungeon Finder's completion);
-    # nothing locks her, but she comes last
+    # Maraudon: Princess Theradras ends the run (Zaetar's spirit, the Dungeon Finder's completion),
+    # so the others come first, except Rotgrip: his pool is a drop below her grove whose only way
+    # back up is the long loop through the lower tunnels (seen in game), so he's a jump down after her
     349: [(b, 'Princess Theradras') for b in ('Noxxion', 'Razorlash', 'Lord Vyletongue', 'Celebras the Cursed',
-                                              'Landslide', 'Tinkerer Gizlock', 'Rotgrip')]
-         # the usual way down from the falls: Rotgrip's lake opens onto Theradras' grove
-         + [('Landslide', 'Tinkerer Gizlock'), ('Tinkerer Gizlock', 'Rotgrip')],
+                                              'Landslide', 'Tinkerer Gizlock')]
+         + [('Landslide', 'Tinkerer Gizlock'), ('Princess Theradras', 'Rotgrip')],
     389: [('Bazzalan', 'Jergosh the Invoker')],   # Ragefire Chasm: drop off Bazzalan's ledge to Jergosh
     533: [  # Naxxramas
         ("Anub'Rekhan", 'Grand Widow Faerlina'), ('Grand Widow Faerlina', 'Maexxna'),
