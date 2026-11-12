@@ -12,7 +12,8 @@ local QUEST_REACH = 80
 local OFF_FLOOR = 25
 -- yards a route's earlier pass may be further from a spawn than its nearest point and still take the stop, so a
 -- route that passes a spot twice offers it the first time (Dire Maul West's Shen'dralar Ancient, on the way to
--- Tendris Warpwood and again to Immol'thar)
+-- Tendris Warpwood and again to Immol'thar). Only a pass on the spawn's own level counts: the Court of the
+-- Highborne runs right over the Treasure of the Shen'dralar.
 local FIRST_PASS = 20
 -- a height difference counts this many times its yards when matching a spawn to a boss's level
 local HEIGHT_WEIGHT = 3
@@ -61,10 +62,10 @@ local function LevelsAt(inst, x, y, z)
 end
 
 -- The spawn nearest the route and the route vertex it's met at, a vertex on another level than the spawn counting
--- OFF_FLOOR further: the first vertex within FIRST_PASS of the nearest distance. Returns x, y, vertex, distance,
--- the spawn's levels as a mask.
+-- OFF_FLOOR further: the first vertex on the nearest one's terms (the spawn's level, or not) within FIRST_PASS of
+-- the nearest distance. Returns x, y, vertex, distance, the spawn's levels as a mask.
 local function Nearest(inst, route, pts, heights)
-	local p, nearest = route.path, math.huge
+	local p, nearest, nearestSame = route.path, math.huge, false
 	local function Each(fn)
 		for j = 1, #pts - 1, 2 do
 			local x, y = pts[j], pts[j + 1]
@@ -74,14 +75,16 @@ local function Nearest(inst, route, pts, heights)
 				local d = math.sqrt(dx * dx + dy * dy)
 				local mask = p[i * 3]
 				local shared = levels and Common(mask, levels) or mask
-				fn(x, y, i, shared == 0 and d + OFF_FLOOR or d, shared ~= 0 and shared or levels)
+				fn(x, y, i, shared == 0 and d + OFF_FLOOR or d, shared ~= 0 and shared or levels, shared ~= 0)
 			end
 		end
 	end
-	Each(function(_, _, _, d) nearest = math.min(nearest, d) end)
+	Each(function(_, _, _, d, _, same)
+		if d < nearest then nearest, nearestSame = d, same end
+	end)
 	local bx, by, bi, bd, bf
-	Each(function(x, y, i, d, f)
-		if d <= nearest + FIRST_PASS and (not bi or i < bi or (i == bi and d < bd)) then
+	Each(function(x, y, i, d, f, same)
+		if d <= nearest + FIRST_PASS and (same or not nearestSame) and (not bi or i < bi or (i == bi and d < bd)) then
 			bx, by, bi, bd, bf = x, y, i, d, f
 		end
 	end)
