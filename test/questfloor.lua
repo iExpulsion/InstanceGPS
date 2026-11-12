@@ -33,4 +33,10 @@ print("not at the entrance:", stop ~= nil and stop.anchor > 1
 	and DN.OnFloor(DN.OwnLevels(inst, p[stop.anchor * 3]), 3), stop and stop.anchor, stop and p[stop.anchor * 3])
 -- the arrow names the stop's own level, not the overview
 print("own level shown:", stop ~= nil and DN.FirstFloor(DN.OwnLevels(inst, stop.f)) == 3, stop and stop.f)
+-- a kill changes only the objective's count: the stops are updated again without working their spots out anew
+QuestGPS.objectives[MAP][1].text = "Atal'ai Haze: 1/5"
+local t = os.clock()
+for _ = 1, 50 do DN:UpdateQuestStops() end
+local seconds = os.clock() - t
+print("updates quick:", seconds < 0.05 and DN.questStops[1].anchor == stop.anchor, seconds)
 print("questfloor test done")

@@ -40,11 +40,22 @@ end
 
 -- The levels two masks share, as a mask (0 for none)
 local function Common(a, b)
-	local m = 0
-	for level = 0, 20 do
-		if OnFloor(a, level) and OnFloor(b, level) then m = m + 2 ^ level end
+	local m, bit = 0, 1
+	while a > 0 and b > 0 do
+		if a % 2 == 1 and b % 2 == 1 then m = m + bit end
+		a, b, bit = math.floor(a / 2), math.floor(b / 2), bit * 2
 	end
 	return m
+end
+
+-- Each route vertex's levels without the overview levels, worked out once per route
+local function OwnMasks(inst, route)
+	if not route.ownMasks then
+		local p, own = route.path, {}
+		for i = 1, #p / 3 do own[i] = DN.OwnLevels(inst, p[i * 3]) end
+		route.ownMasks = own
+	end
+	return route.ownMasks
 end
 
 -- The map levels of a spawn at height z: those of the boss nearest it, heights counting extra. The route carries
@@ -67,15 +78,17 @@ end
 -- the nearest distance. Returns x, y, vertex, distance, the spawn's levels as a mask.
 local function Nearest(inst, route, pts, heights)
 	local p, nearest, nearestSame = route.path, math.huge, false
+	local own = OwnMasks(inst, route)
 	local function Each(fn)
 		for j = 1, #pts - 1, 2 do
 			local x, y = pts[j], pts[j + 1]
 			local levels = LevelsAt(inst, x, y, heights and heights[(j + 1) / 2])
+			local ownLevels = levels and DN.OwnLevels(inst, levels)
 			for i = 1, #p / 3 do
 				local dx, dy = p[i * 3 - 2] - x, p[i * 3 - 1] - y
 				local d = math.sqrt(dx * dx + dy * dy)
 				local mask = p[i * 3]
-				local same = not levels or Common(DN.OwnLevels(inst, mask), DN.OwnLevels(inst, levels)) ~= 0
+				local same = not levels or Common(own[i], ownLevels) ~= 0
 				local shared = levels and Common(mask, levels) or mask
 				fn(x, y, i, same and d or d + OFF_FLOOR, same and shared or levels, same)
 			end
@@ -108,6 +121,27 @@ function DN:LevelOf(mapId, x, y, z, level)
 	return where, where and DN.FirstFloor(mask) or nil
 end
 
+-- Where each objective meets each route, by route and then by objective and spawn count: a kill or a loot changes
+-- an objective's count, not its spawns, so its stop needn't be worked out again (that took a moment per kill)
+local placed = setmetatable({}, { __mode = "k" })
+
+local function Place(inst, route, e)
+	local byRoute = placed[route]
+	if not byRoute then
+		byRoute = {}
+		placed[route] = byRoute
+	end
+	local pts = e.points or NONE
+	local key = StopKey(e) .. ":" .. #pts
+	local spot = byRoute[key]
+	if not spot then
+		local x, y, anchor, d, levels = Nearest(inst, route, pts, e.heights)
+		spot = { x, y, anchor, d, levels }
+		byRoute[key] = spot
+	end
+	return spot[1], spot[2], spot[3], spot[4], spot[5]
+end
+
 -- Puts this instance's open quest objectives on the active route, in route order
 function DN:UpdateQuestStops()
 	local q, inst = self:QuestGPS(), self.inst
@@ -115,7 +149,7 @@ function DN:UpdateQuestStops()
 	local entries = q and route and q.InstanceObjectives(inst.mapId) or NONE
 	local list = {}
 	for _, e in ipairs(entries) do
-		local x, y, anchor, d, levels = Nearest(inst, route, e.points or NONE, e.heights)
+		local x, y, anchor, d, levels = Place(inst, route, e)
 		if anchor and d <= QUEST_REACH then
 			list[#list + 1] = {
 				quest = true, key = StopKey(e), qid = e.qid, kind = e.kind, name = e.text, title = e.title,

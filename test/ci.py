@@ -32,7 +32,7 @@ CHECKS = [
     ("quest stop first pass", "questpass.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
      ["first pass:\ttrue", "own level:\ttrue", "level of:\ttrue", "questpass test done"]),
     ("quest stop floor", "questfloor.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
-     ["overview:\ttrue", "not at the entrance:\ttrue", "own level shown:\ttrue", "questfloor test done"]),
+     ["overview:\ttrue", "not at the entrance:\ttrue", "own level shown:\ttrue", "updates quick:\ttrue", "questfloor test done"]),
     ("garbage", "garbage.lua", {}, ["route frames garbage-free:\ttrue", "idle frames garbage-free:\ttrue"]),
     ("idle", "idle.lua", {}, ["has waypoint after:\tfalse", "HUD shown:\tfalse"]),
     ("overrides", "overrides.lua", OVERRIDE,
