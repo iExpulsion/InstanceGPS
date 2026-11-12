@@ -565,7 +565,12 @@ end
 
 function DN:SetNavTarget(b)
 	if self.navTarget == b then self.navTarget = nil else self.navTarget = b end
-	if b and b.route and b.route ~= self.routeIndex then self:SetRoute(b.route, true) end
+	-- b.route is only the first route with the boss; keep the current one if it has it too
+	local route, onRoute = self:ActiveRoute(), false
+	for _, bi in ipairs(route and b and route.order or {}) do
+		if self.inst.bosses[bi] == b then onRoute = true end
+	end
+	if b and b.route and not onRoute then self:SetRoute(b.route, true) end
 	self:Fire("RUN_CHANGED")
 end
 

@@ -194,9 +194,6 @@ POSITIONS = {
     # Rend starts on the balcony above Blackrock Stadium and rides down on Gyth once the waves are
     # done; the fight is on the arena floor (areatrigger 2026 at_blackrock_stadium, which starts it)
     (229, 'Warchief Rend Blackhand'): (153.8, -419.8, 110.5),
-    # Rotgrip spawns on the bottom of the deep lake (-200), whose floor the navmesh joins to the rest
-    # only through the tunnels east; the shore above him is on Theradras' level
-    (349, 'Rotgrip'): (40.7, -51.1, -127.8),
 }
 
 # Doors that stay shut until bosses die: {map: [((x, y, z), radius, [bosses])]}. Routes don't walk
@@ -313,6 +310,9 @@ WALK_LINKS = {
         # Maraudon: the pool at the foot of the waterfall (-96) spills into Earth Song Falls' lake
         # 34 yd below; the navmesh only gets down by the long way round the west shore
         ((472.5, 20.7, -96.1), (466.0, 21.7, -130.5), True, 'Jump down into the lake'),
+        # Rotgrip's pool (-196) lies under the shore on Theradras' level (-128), which the navmesh
+        # joins to it only through the tunnels east; jump in from above his spawn
+        ((40.7, -51.1, -127.8), (42.1, -60.0, -196.4), True, 'Jump down into the water'),
     ],
     389: [
         # Ragefire Chasm: the ledge past Bazzalan drops straight down toward Jergosh
