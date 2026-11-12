@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.3.0. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.4.0. Change it there, then run tools/sync_style.py.
 -- Classic: the default UI's own look, drawn entirely from textures the 3.3.5 client ships, so there's no art in
 -- this folder. Dialog-box windows, red panel buttons, gold text, tooltip-bordered menus and lists, and the quest
 -- log's row highlight. Load it after Style.lua; S.UseSkin("classic") switches to it.

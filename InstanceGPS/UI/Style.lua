@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.3.0. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.4.0. Change it there, then run tools/sync_style.py.
 -- MaterialCraftUI: a flat dark style kit for WoW 3.3.5 addons on Material 3 color roles: one accent color, 1px
 -- borders, state layers and a few button kinds. Each addon ships its own copy, listed in its .toc, and reads it
 -- as NS.Style from its addon table; font objects are named after the addon, so copies never clash.
@@ -192,12 +192,25 @@ function S.Snap(region, v)
 	return math.floor(v / p + 0.5) * p
 end
 
+-- frame -> true when it snaps to whole pixels, false when it only takes the window scale
 local pixelFrames = {}
 
-local function applyPixelScale(frame)
-	local parent = frame:GetParent() or UIParent
-	local perUnit = parent:GetEffectiveScale() * screenHeight() / 768
-	frame:SetScale(math.max(1, math.floor(perUnit + 0.5)) / perUnit)
+-- The player's size for this addon's windows (S.SetWindowScale), on top of the UI scale and pixel snapping.
+S.windowScale = 1
+-- A scaled pixel-snapped window snaps again only when a whole number of pixels per unit is this close to the size
+-- asked for; otherwise it takes the exact size and its borders may blur.
+local SNAP_SLACK = 0.05
+
+local function applyScale(frame)
+	local scale = S.windowScale
+	if pixelFrames[frame] then
+		local parent = frame:GetParent() or UIParent
+		local perUnit = parent:GetEffectiveScale() * screenHeight() / 768
+		local want = math.max(1, math.floor(perUnit + 0.5)) * S.windowScale
+		local whole = math.max(1, math.floor(want + 0.5))
+		scale = (math.abs(whole / want - 1) <= SNAP_SLACK and whole or want) / perUnit
+	end
+	frame:SetScale(scale)
 end
 
 -- Moves a frame so its top left corner sits on a screen pixel, anchored to UIParent's bottom left. Run it after
@@ -221,21 +234,38 @@ function S.PlaceWindow(frame)
 	frame:SetPoint("TOP", UIParent, "TOP", 0, -S.WINDOW_TOP * UIParent:GetEffectiveScale() / frame:GetEffectiveScale())
 end
 
--- Scales a top-level window so its units are whole screen pixels (on = false puts its scale back to 1), and keeps
--- it so when the UI scale or the screen size changes.
+-- Scales a top-level window so its units are whole screen pixels, and keeps it so when the UI scale or the screen
+-- size changes. Either way it takes S.windowScale; on = false leaves out the snapping.
 function S.PixelScale(frame, on)
-	pixelFrames[frame] = on ~= false or nil
-	if on == false then frame:SetScale(1) else applyPixelScale(frame) end
+	pixelFrames[frame] = on ~= false
+	applyScale(frame)
 	return frame
+end
+
+-- Sets the size of every window given S.PixelScale, from 1 (their designed size). Each keeps its top left corner
+-- where it is on the screen.
+function S.SetWindowScale(scale)
+	S.windowScale = scale
+	for frame, snap in pairs(pixelFrames) do
+		local left, top = frame:GetLeft(), frame:GetTop()
+		local before = frame:GetEffectiveScale()
+		applyScale(frame)
+		if left and top then
+			local ratio = before / frame:GetEffectiveScale()
+			frame:ClearAllPoints()
+			frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left * ratio, top * ratio)
+			if snap then S.SnapPosition(frame) end
+		end
+	end
 end
 
 local pixelWatch = CreateFrame("Frame")
 pixelWatch:RegisterEvent("UI_SCALE_CHANGED")
 pixelWatch:RegisterEvent("DISPLAY_SIZE_CHANGED")
 pixelWatch:SetScript("OnEvent", function()
-	for frame in pairs(pixelFrames) do
-		applyPixelScale(frame)
-		S.SnapPosition(frame)
+	for frame, snap in pairs(pixelFrames) do
+		applyScale(frame)
+		if snap then S.SnapPosition(frame) end
 	end
 end)
 
@@ -1104,11 +1134,17 @@ local function newRow(self, i)
 	row.headerText:SetPoint("RIGHT", -6 - BAR_SPACE, 0)
 	row.headerText:Hide()
 
+	-- the row's item, or nil for an empty row or a group heading, which get no tooltip and no clicks
+	local function itemOf(r)
+		local item = r.item
+		return item and not (self.header and self.header(item)) and item or nil
+	end
 	row:SetScript("OnEnter", function(r)
 		r.hoverTex:Show()
-		if r.item and self.tooltip then
+		local item = itemOf(r)
+		if item and self.tooltip then
 			GameTooltip:SetOwner(r, "ANCHOR_RIGHT")
-			self.tooltip(GameTooltip, r.item)
+			self.tooltip(GameTooltip, item)
 			GameTooltip:Show()
 		end
 	end)
@@ -1117,8 +1153,9 @@ local function newRow(self, i)
 		GameTooltip:Hide()
 	end)
 	row:SetScript("OnClick", function(r, button)
+		local item = itemOf(r)
 		-- the release that ends a drag isn't a click
-		if r.item and self.onClick and not (self.reorder and self.reorder:Busy()) then self.onClick(r.item, button) end
+		if item and self.onClick and not (self.reorder and self.reorder:Busy()) then self.onClick(item, button) end
 	end)
 	if self.reorder then
 		self.reorder:Attach(row, function(r) return r.item and self.cell(r.item, self.columns[1].key) end)
