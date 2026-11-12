@@ -147,7 +147,7 @@ function mock.Tick(dt)
 	end
 end
 function UnitFactionGroup() return MOCK.faction or "Alliance" end
-function UnitGUID(unit) return unit == "player" and (MOCK.guid or "0x0000000000000001") or nil end
+function UnitGUID(unit) return unit == "player" and not MOCK.noGuid and (MOCK.guid or "0x0000000000000001") or nil end
 
 Minimap = Stub("Minimap"); Minimap.w, Minimap.h = 140, 140
 mock.cvars = { minimapZoom = "0", minimapInsideZoom = "2", rotateMinimap = "0" }

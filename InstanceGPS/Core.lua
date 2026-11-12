@@ -605,15 +605,32 @@ end
 
 local events = {}
 
+-- The client stores the per-character file by name, so a new character reusing a deleted one's name would inherit
+-- it. UnitGUID("player") is nil at ADDON_LOADED on a fresh login, so this runs again at PLAYER_LOGIN, when other
+-- files already hold its subtables: a reset empties them in place.
+local function claimCharFile(t)
+	local guid = UnitGUID("player")
+	if guid and t.guid and t.guid ~= guid then
+		for k, v in pairs(t) do
+			if type(v) == "table" then
+				for key in pairs(v) do v[key] = nil end
+			else
+				t[k] = nil
+			end
+		end
+	end
+	t.guid = guid or t.guid
+end
+
+function events:PLAYER_LOGIN()
+	claimCharFile(DN.char)
+end
+
 function events:ADDON_LOADED(name)
 	if name ~= ADDON then return end
 	InstanceGPSDB = InstanceGPSDB or {}
-	-- the per-character file follows the name, so a new character reusing a deleted one's name would inherit it
-	local guid = UnitGUID("player")
-	if not InstanceGPSCharDB or (guid and InstanceGPSCharDB.guid and InstanceGPSCharDB.guid ~= guid) then
-		InstanceGPSCharDB = {}
-	end
-	InstanceGPSCharDB.guid = guid or InstanceGPSCharDB.guid
+	InstanceGPSCharDB = InstanceGPSCharDB or {}
+	claimCharFile(InstanceGPSCharDB)
 	local db, char = InstanceGPSDB, InstanceGPSCharDB
 	db.opt = db.opt or {}
 	for k, v in pairs(defaults) do
