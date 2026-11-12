@@ -677,6 +677,9 @@ def build(D, fixups):
             for e in uniq:
                 nm = cfg.ENTRANCE_NAMES.get(e.get('id'), e['name'])
                 routes_in.append({'name': nm if len(uniq) > 1 else None, 'start': e['pos'], 'bosses': placed})
+            for e in cfg.EXTRA_ENTRANCES.get(mapid, ()):
+                routes_in.append({'name': e['name'], 'start': e['pos'],
+                                  'bosses': [b for b in placed if b['name'] in e['bosses']]})
 
         # Bosses that only exist on some difficulties (Amanitar, Yor, ...): one route per set of
         # bosses, or the normal route would still walk out to a heroic-only boss and back.

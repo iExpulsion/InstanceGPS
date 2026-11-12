@@ -38,6 +38,13 @@ MULTI_ENTRANCE = {329, 349}
 ENTRANCE_NAMES = {2216: 'Main Gate', 2214: 'Service Entrance',
                   3133: 'Orange (Foulspore)', 3134: 'Purple (Wicked Grotto)'}
 ENTRANCE_OVERRIDE = {}
+# Entrances with no areatrigger (a teleport lands there), each with the bosses reachable from it.
+EXTRA_ENTRANCES = {
+    # Maraudon: the Scepter of Celebras portal (spell 21128) to Earth Song Falls, below the
+    # one-way waterfall drop, so only the inner bosses
+    349: [{'name': 'Pristine Waters (Inner)', 'pos': (386.27, 33.41, -130.93),
+           'bosses': ['Landslide', 'Tinkerer Gizlock', 'Rotgrip', 'Princess Theradras']}],
+}
 EXIT_IS_ENTRANCE = set()
 
 # Event instances: bosses come strictly in encounter order.
