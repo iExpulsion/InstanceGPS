@@ -1,4 +1,4 @@
--- Vendored from RouteUtils v0.2.0. Change it there, then run tools/sync_route.py.
+-- Vendored from RouteUtils v0.2.0-6-g354ce48. Change it there, then run tools/sync_route.py.
 -- MIT License, Copyright (c) 2026 Expulsion.
 -- RouteUtils: route ordering and the pieces that guide a player along a route in WoW 3.3.5: a turning arrow,
 -- dots along the path on the minimap and the world map, and the geometry behind them. Each addon ships its own
@@ -101,43 +101,49 @@ end
 
 -------------------------------------------------------------------------------- ordering
 
--- Total cost of visiting `order` from (sx, sy): walking distance plus each stop's stay
-local function Cost(stops, order, sx, sy)
-	local total, x, y = 0, sx, sy
+-- Total cost of visiting `order` from (sx, sy): walking distance plus each stop's stay. With a distance table `d`
+-- (Distances), its legs instead of straight lines.
+local function Cost(stops, order, sx, sy, d)
+	local total, x, y, prev = 0, sx, sy, 0
 	for _, i in ipairs(order) do
 		local s = stops[i]
-		total = total + R.Distance(x, y, s.x, s.y) + (s.stay or 0)
-		x, y = s.x, s.y
+		total = total + (d and d[prev][i] or R.Distance(x, y, s.x, s.y)) + (s.stay or 0)
+		x, y, prev = s.x, s.y, i
 	end
 	return total
 end
 R.Cost = Cost
 
--- Whether every stop comes after the stops in its `after` list (those not in the order don't count)
+local NONE = {}
+
+-- Whether every stop comes after the stops in its `after` list (those not in the order don't count). Its table of
+-- places is reused: ordering checks thousands of orders.
+local at = {}
 local function Valid(stops, order)
-	local at = {}
 	for p, i in ipairs(order) do at[i] = p end
+	local valid = true
 	for p, i in ipairs(order) do
-		for _, before in ipairs(stops[i].after or {}) do
-			if at[before] and at[before] > p then return false end
+		for _, before in ipairs(valid and stops[i].after or NONE) do
+			valid = valid and not (at[before] and at[before] > p)
 		end
 	end
-	return true
+	for _, i in ipairs(order) do at[i] = nil end
+	return valid
 end
 R.Valid = Valid
 
-local function Greedy(stops, sx, sy)
+local function Greedy(stops, sx, sy, d)
 	local placed, order = {}, {}
-	local x, y = sx, sy
+	local x, y, prev = sx, sy, 0
 	for _ = 1, #stops do
 		local best, bestCost
 		for i, s in ipairs(stops) do
 			local ready = not placed[i]
-			for _, before in ipairs(ready and s.after or {}) do
+			for _, before in ipairs(ready and s.after or NONE) do
 				ready = ready and (placed[before] or not stops[before])
 			end
 			if ready then
-				local c = R.Distance(x, y, s.x, s.y) + (s.stay or 0)
+				local c = (d and d[prev][i] or R.Distance(x, y, s.x, s.y)) + (s.stay or 0)
 				if not bestCost or c < bestCost then best, bestCost = i, c end
 			end
 		end
@@ -149,60 +155,101 @@ local function Greedy(stops, sx, sy)
 		end
 		placed[best] = true
 		order[#order + 1] = best
-		x, y = stops[best].x, stops[best].y
+		x, y, prev = stops[best].x, stops[best].y, best
 	end
 	return order
 end
 
-local function Copy(t)
-	local out = {}
+local function CopyInto(out, t)
 	for i = 1, #t do out[i] = t[i] end
+	for i = #t + 1, #out do out[i] = nil end
 	return out
 end
 
+-- Distances between the stops and from the start (index 0), worked out once per ordering: the improvement passes
+-- try thousands of orders and each only changes a few legs. `dist(a, b)`, when given, is the leg from stop a (0 for
+-- the start) to stop b, else the straight line.
+local function Distances(stops, sx, sy, dist)
+	local d = {}
+	for a = 0, #stops do
+		local ax, ay = a == 0 and sx or stops[a].x, a == 0 and sy or stops[a].y
+		local row = {}
+		for b = 1, #stops do
+			row[b] = dist and dist(a, b) or R.Distance(ax, ay, stops[b].x, stops[b].y)
+		end
+		d[a] = row
+	end
+	return d
+end
+
+-- A try that saves less than this isn't taken; one whose quick reckoning comes within SLACK of it is checked in full
+-- (the quick sum can differ from the full one in the last digits)
+local SAVING, SLACK = 0.01, 1e-6
+
 -- One pass of improvements: move one stop elsewhere, then reverse a stretch (2-opt), keeping the rules.
--- Returns the better order and whether it changed.
-local function Improve(stops, order, sx, sy)
-	local best, bestCost = order, Cost(stops, order, sx, sy)
+-- Returns the better order and whether it changed. Each try is priced by the legs it changes, from the distance
+-- table `d`; only a try that looks cheaper is built, priced in full and checked against the rules, so the choices
+-- are those of pricing every try in full. Tries are built in `spare`, which swaps with the best order when taken, so
+-- a pass makes no tables; returns the spare after.
+local function Improve(stops, order, sx, sy, d, spare)
+	local best, bestCost = order, Cost(stops, order, sx, sy, d)
 	local changed = false
 	local n = #order
 	for i = 1, n do
 		for j = 1, n do
 			if i ~= j then
-				local cand = Copy(best)
-				local v = table.remove(cand, i)
-				table.insert(cand, j, v)
-				local c = Cost(stops, cand, sx, sy)
-				if c < bestCost - 0.01 and Valid(stops, cand) then
-					best, bestCost, changed = cand, c, true
+				-- take the stop at i out, then put it back so it ends up at j
+				local o = best
+				local v, before, after = o[i], o[i - 1] or 0, o[i + 1]
+				local delta = -d[before][v] - (after and d[v][after] or 0) + (after and d[before][after] or 0)
+				-- the neighbors at j in the order with v taken out
+				local pj = j - 1
+				local a = pj >= 1 and (pj < i and o[pj] or o[pj + 1]) or 0
+				local b = j < n and (j < i and o[j] or o[j + 1]) or nil
+				delta = delta + d[a][v] + (b and d[v][b] or 0) - (b and d[a][b] or 0)
+				if delta < -SAVING + SLACK then
+					local cand = CopyInto(spare, best)
+					table.insert(cand, j, table.remove(cand, i))
+					local c = Cost(stops, cand, sx, sy, d)
+					if c < bestCost - SAVING and Valid(stops, cand) then
+						spare, best, bestCost, changed = best, cand, c, true
+					end
 				end
 			end
 		end
 	end
 	for i = 1, n - 1 do
 		for j = i + 1, n do
-			local cand = Copy(best)
-			for k = 0, (j - i - 1) / 2 do
-				cand[i + k], cand[j - k] = cand[j - k], cand[i + k]
-			end
-			local c = Cost(stops, cand, sx, sy)
-			if c < bestCost - 0.01 and Valid(stops, cand) then
-				best, bestCost, changed = cand, c, true
+			local o = best
+			local p, q = o[i - 1] or 0, o[j + 1]
+			local delta = d[p][o[j]] - d[p][o[i]] + (q and d[o[i]][q] - d[o[j]][q] or 0)
+			if delta < -SAVING + SLACK then
+				local cand = CopyInto(spare, best)
+				for k = 0, (j - i - 1) / 2 do
+					cand[i + k], cand[j - k] = cand[j - k], cand[i + k]
+				end
+				local c = Cost(stops, cand, sx, sy, d)
+				if c < bestCost - SAVING and Valid(stops, cand) then
+					spare, best, bestCost, changed = best, cand, c, true
+				end
 			end
 		end
 	end
-	return best, changed
+	return best, changed, spare
 end
 
 -- The order to visit stops in, as a list of their indexes, starting from (sx, sy). A stop is { x, y, stay =
 -- extra cost of being there (same units as distance), after = { indexes of stops that must come first } }.
--- The route is open: it ends at its last stop. passes limits the improvement rounds (default 4).
-function R.Order(stops, sx, sy, passes)
-	local order = Greedy(stops, sx, sy)
-	local changed = true
+-- The route is open: it ends at its last stop. passes limits the improvement rounds (default 4). dist(a, b), when
+-- given, prices the leg from stop a (0 for the start) to stop b in place of the straight line: the way around a
+-- cliff, say. It's asked once per pair.
+function R.Order(stops, sx, sy, passes, dist)
+	local d = Distances(stops, sx, sy, dist)
+	local order = Greedy(stops, sx, sy, d)
+	local changed, spare = true, {}
 	local round = 0
 	while changed and round < (passes or 4) do
-		order, changed = Improve(stops, order, sx, sy)
+		order, changed, spare = Improve(stops, order, sx, sy, d, spare)
 		round = round + 1
 	end
 	return order
@@ -444,10 +491,14 @@ end
 
 -------------------------------------------------------------------------------- arrow
 
+-- How fast (radians a second) and how high (pixels) the arrow bobs in arrow:Here()
+R.BOB_SPEED, R.BOB_HEIGHT = 4, 10
+
 -- A movable arrow with a title and two lines under it. opts: name (global frame name), onClick(arrow) on
 -- left-click (not after a drag), onMenu(arrow) on right-click, onTooltip(tooltip) to fill its tooltip,
 -- position = saved { point, relPoint, x, y } or nil, onMoved(position).
--- arrow:Point(px, py, facing, x, y, arrived) turns it toward a world point; arrow:Idle() greys it out;
+-- arrow:Point(px, py, facing, x, y, arrived) turns it toward a world point; arrow:Here() points it down and bobs it,
+-- for a step done where the player stands (call it every frame); arrow:Idle() greys it out;
 -- arrow:SetText(title, sub, hint).
 function R.NewArrow(opts)
 	local arrow = CreateFrame("Button", opts.name, UIParent)
@@ -506,13 +557,32 @@ function R.NewArrow(opts)
 	end)
 	arrow:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
+	local bobbing = false
+	local function Settle()
+		if bobbing then
+			bobbing = false
+			tex:ClearAllPoints()
+			tex:SetAllPoints()
+		end
+	end
 	function arrow:Point(px, py, facing, x, y, arrived)
+		Settle()
 		local rel, dist = R.Turn(px, py, facing, x, y)
 		R.SetRotation(tex, rel)
 		tex:SetVertexColor(R.ArrowColor(rel, arrived))
 		return dist
 	end
+	function arrow:Here()
+		bobbing = true
+		R.SetRotation(tex, pi)
+		tex:SetVertexColor(0.3, 1, 0.3)
+		local dy = abs(sin(GetTime() * R.BOB_SPEED)) * R.BOB_HEIGHT
+		tex:ClearAllPoints()
+		tex:SetPoint("TOPLEFT", arrow, "TOPLEFT", 0, dy)
+		tex:SetPoint("BOTTOMRIGHT", arrow, "BOTTOMRIGHT", 0, dy)
+	end
 	function arrow:Idle()
+		Settle()
 		R.SetRotation(tex, 0)
 		tex:SetVertexColor(0.5, 0.5, 0.5)
 	end
