@@ -176,7 +176,11 @@ DN:On("INSTANCE_CHANGED", Changed)
 DN:On("ROUTE_CHANGED", Changed)
 DN:On("LOADED", function()
 	local q = DN:QuestGPS()
-	if q and q.On then q.On("QGPS_STATE_CHANGED", Changed) end
+	if q and q.On then
+		q.On("QGPS_STATE_CHANGED", Changed)
+		-- a focused quest not taken yet can start in here (an item a boss drops)
+		q.On("QGPS_FOCUS_CHANGED", Changed)
+	end
 	if q and q.AddLevelHook then
 		q.AddLevelHook(function(mapId, x, y, z, level) return DN:LevelOf(mapId, x, y, z, level) end)
 	end
