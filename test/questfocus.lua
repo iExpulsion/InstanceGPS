@@ -1,6 +1,6 @@
 -- A quest focused in QuestGPS but not taken yet, whose starting item drops inside (Baron Aquanis in Blackfathom
--- Deeps, by the Fathom Stone): once QuestGPS says the focus changed, its pickup is a stop on the route, led to even
--- once the bosses past it are down; unfocused, it goes.
+-- Deeps, by the Fathom Stone): once QuestGPS says the focus changed, its pickup is a stop on the route, after the
+-- bosses before it, and led back to once the route is past it; unfocused, it goes.
 local DN = NS.DN
 MOCK.now = 1000000
 MOCK.Fire("ADDON_LOADED", "InstanceGPS")
@@ -30,6 +30,8 @@ QuestGPS.Fire("QGPS_FOCUS_CHANGED")
 local stop = DN.questStops[1]
 print("focus stop:", #DN.questStops == 1 and stop.name == "Loot Strange Water Globe" and stop.kind == "pickup",
 	#DN.questStops)
+-- At the start of a run it's ahead, past Lorgus Jett: the bosses on the way come first
+print("bosses first:", DN:NextTarget() == inst.bosses[route.order[1]])
 
 -- With Old Serra'kis down (past the Fathom Stone on the route), the arrow still leads back to it, from the route's
 -- start, rather than on to Twilight Lord Kelris

@@ -32,7 +32,7 @@ CHECKS = [
     ("quest stop first pass", "questpass.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
      ["first pass:\ttrue", "own level:\ttrue", "level of:\ttrue", "questpass test done"]),
     ("quest focus", "questfocus.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
-     ["nothing focused:\ttrue", "focus stop:\ttrue", "focus behind:\ttrue", "way back:\ttrue", "unfocused:\ttrue",
+     ["nothing focused:\ttrue", "focus stop:\ttrue", "bosses first:\ttrue", "focus behind:\ttrue", "way back:\ttrue", "unfocused:\ttrue",
       "questfocus test done"]),
     ("quest stop floor", "questfloor.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
      ["overview:\ttrue", "not at the entrance:\ttrue", "own level shown:\ttrue", "updates quick:\ttrue", "questfloor test done"]),
