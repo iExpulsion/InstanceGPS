@@ -147,7 +147,8 @@ Found a route that doesn't work? See [Route Wrong on Your Server?](#route-wrong-
 
 ## License
 
-GPL-2.0, like AzerothCore, whose data the routes and hints are built from. See [LICENSE](LICENSE).
+GPL-2.0 or later, like AzerothCore, whose data the routes and hints are built from. See [LICENSE](LICENSE).
+The game data in `InstanceGPS/Data.lua` that comes from the 3.3.5a client isn't covered by it.
 `InstanceGPS/UI/Style.lua` and its skins are [MaterialCraftUI](https://github.com/iExpulsion/MaterialCraftUI) and
 `InstanceGPS/RouteUtils` is RouteUtils, both MIT. The Cognac art in `InstanceGPS/UI/Skins/Cognac` is from
 [AttuneNext](https://github.com/speedyrulz/AttuneNext) and isn't covered by either license.
