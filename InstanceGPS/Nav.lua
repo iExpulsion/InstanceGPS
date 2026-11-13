@@ -200,20 +200,32 @@ local NO_STOPS = {}
 
 -- Where to head next: the next boss, or a quest stop on the way to it (QuestGPS's objectives in this instance,
 -- QuestGPS.lua). A quest stop sits off the route at its `anchor` vertex; one between the previous boss's stop and
--- the next boss's comes first. A boss picked by hand goes straight there.
+-- the next boss's comes first. The quest focused in QuestGPS (kind "pickup": one not taken yet, such as Baron
+-- Aquanis's globe) comes first wherever it is: one behind is reached from the route's start, which finds the way
+-- back to it. A boss picked by hand goes straight there.
 function DN:NextTarget()
 	local boss, k = self:NextBoss()
 	local route = boss and k and not self.navTarget and self:ActiveRoute()
+	local target = boss
 	if route then
 		local lo, hi = k > 1 and route.stops[k - 1] or 1, route.stops[k]
+		local onLeg
 		for _, q in ipairs(self.questStops or NO_STOPS) do
-			if q.onRoute == route and not self:QuestSkipped(q) and q.anchor >= lo and q.anchor <= hi then
-				q.legStart = lo
+			local open = q.onRoute == route and not self:QuestSkipped(q)
+			if open and q.kind == "pickup" then
+				q.legStart = q.anchor >= lo and lo or 1
 				return q
 			end
+			if open and not onLeg and q.anchor >= lo and q.anchor <= hi then
+				onLeg = q
+			end
+		end
+		if onLeg then
+			onLeg.legStart = lo
+			target = onLeg
 		end
 	end
-	return boss
+	return target
 end
 
 function DN:QuestSkipped(q)
