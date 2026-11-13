@@ -1,4 +1,5 @@
 -- Vendored from MaterialCraftUI v1.4.1. Change it there, then run tools/sync_style.py.
+-- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- Classic: the default UI's own look, drawn entirely from textures the 3.3.5 client ships, so there's no art in
 -- this folder. Dialog-box windows, red panel buttons, gold text, tooltip-bordered menus and lists, and the quest
 -- log's row highlight. Load it after Style.lua; S.UseSkin("classic") switches to it.
