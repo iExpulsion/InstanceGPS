@@ -546,7 +546,7 @@ local function InstancesPage(def)
 			{ key = "name", label = "Instance", width = 120, stretch = true, sortable = false },
 			{ key = "kind", label = "Type", width = 80, sortable = false },
 		},
-		header = function(item) return item.header end,
+		header = function(item) return item.header end, headerClicks = true,
 		cell = function(item, key)
 			local on = not DN:IsOff(item.mapId)
 			if key == "on" then return on and CHECK or "" end

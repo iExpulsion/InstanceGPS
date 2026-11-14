@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.4.1. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.4.1-12-g81ed9e5. Change it there, then run tools/sync_style.py.
 -- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- MaterialCraftUI: a flat dark style kit for WoW 3.3.5 addons on Material 3 color roles: one accent color, 1px
 -- borders, state layers and a few button kinds. Each addon ships its own copy, listed in its .toc, and reads it
@@ -818,6 +818,79 @@ function S.Dropdown(parent, width, onSelect)
 	return b
 end
 
+-- Right-click menu: one menu serves any number of rows. menu:Open(owner, options, side) shows it beside owner
+-- (the clicked row), on its right for side "RIGHT", else its left, with options { { text, action, disabled,
+-- danger, tooltip } }; danger draws an item in the error color. Picking one closes the menu and runs its action.
+-- Opening it closes the other menus; a click elsewhere closes it, as a dropdown's does.
+local CONTEXT_MIN_W = 150
+function S.ContextMenu()
+	local menu = CreateFrame("Frame", nil, UIParent)
+	menu:SetFrameStrata("FULLSCREEN_DIALOG")
+	menu:SetWidth(CONTEXT_MIN_W)
+	S.Frame(menu, "menu")
+	menu:EnableMouse(true)
+	menu:Hide()
+	menus[#menus + 1] = menu
+	menu.items = {}
+
+	local function item(i)
+		local it = menu.items[i]
+		if not it then
+			it = CreateFrame("Button", nil, menu)
+			it:SetHeight(S.CONTROL_H)
+			local m = S.metrics.menuInset
+			it:SetPoint("TOPLEFT", m, -m - (i - 1) * S.CONTROL_H)
+			it:SetPoint("TOPRIGHT", -m, -m - (i - 1) * S.CONTROL_H)
+			S.Highlight(it)
+			it.text = S.Text(it, "small")
+			it.text:SetPoint("LEFT", 8, 0)
+			it.text:SetPoint("RIGHT", -8, 0)
+			it:SetScript("OnClick", function(self)
+				menu:Hide()
+				self.action()
+			end)
+			it:SetScript("OnEnter", function(self)
+				if self.tooltip then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+					GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true)
+					GameTooltip:Show()
+				end
+			end)
+			it:SetScript("OnLeave", function() GameTooltip:Hide() end)
+			menu.items[i] = it
+		end
+		return it
+	end
+
+	function menu:Open(owner, options, side)
+		local c, width = S.colors, CONTEXT_MIN_W
+		for i, opt in ipairs(options) do
+			local it = item(i)
+			it.text:SetText(opt.text)
+			it.text:SetTextColor(unpack(opt.disabled and c.disabled or opt.danger and c.bad or c.text))
+			it.action, it.tooltip = opt.action, opt.tooltip
+			if opt.disabled then it:Disable() else it:Enable() end
+			it:Show()
+			width = math.max(width, it.text:GetStringWidth() + 16 + 2 * S.metrics.menuInset)
+		end
+		for i = #options + 1, #self.items do self.items[i]:Hide() end
+		self:SetWidth(width)
+		self:SetHeight(#options * S.CONTROL_H + 2 * S.metrics.menuInset)
+		S.CloseMenus()
+		self.owner = owner
+		-- at the row's scale, on UIParent so a scroll frame neither clips it nor layers it under what follows
+		self:SetScale(owner:GetEffectiveScale() / UIParent:GetEffectiveScale())
+		self:ClearAllPoints()
+		if side == "RIGHT" then
+			self:SetPoint("TOPLEFT", owner, "TOPRIGHT", 2, 0)
+		else
+			self:SetPoint("TOPRIGHT", owner, "TOPLEFT", -2, 0)
+		end
+		self:Show()
+	end
+	return menu
+end
+
 -- Input with a placeholder shown while it's empty and unfocused. Never takes focus on its own. With lines above 1
 -- it's a taller box whose text wraps; Enter still finishes, and GetText turns any line break into a space.
 -- A multi-line edit box sizes its own height to its text, so a tall one is pinned by both corners inside e.box, a
@@ -1147,10 +1220,11 @@ local function newRow(self, i)
 	row.headerText:SetPoint("RIGHT", -6 - BAR_SPACE, 0)
 	row.headerText:Hide()
 
-	-- the row's item, or nil for an empty row or a group heading, which get no tooltip and no clicks
+	-- the row's item, or nil for an empty row or a group heading, which get no tooltip and no clicks unless the
+	-- table takes header clicks
 	local function itemOf(r)
 		local item = r.item
-		return item and not (self.header and self.header(item)) and item or nil
+		return item and (self.headerClicks or not (self.header and self.header(item))) and item or nil
 	end
 	row:SetScript("OnEnter", function(r)
 		r.hoverTex:Show()
@@ -1168,7 +1242,7 @@ local function newRow(self, i)
 	row:SetScript("OnClick", function(r, button)
 		local item = itemOf(r)
 		-- the release that ends a drag isn't a click
-		if item and self.onClick and not (self.reorder and self.reorder:Busy()) then self.onClick(item, button) end
+		if item and self.onClick and not (self.reorder and self.reorder:Busy()) then self.onClick(item, button, r) end
 	end)
 	if self.reorder then
 		self.reorder:Attach(row, function(r) return r.item and self.cell(r.item, self.columns[1].key) end)
@@ -1250,7 +1324,8 @@ end
 
 -- opts: columns = { { key, label, width, justify, sortable, defaultDesc, tooltip, stretch } }, rowH, icons (the
 -- first column has an icon), cell(item, key) -> text, color, icon(item) -> texture, tooltip(tt, item),
--- onClick(item, button), onSort(key, desc), header(item) -> label when the item is a group header row,
+-- onClick(item, button, row) (row: the clicked row, to open an S.ContextMenu beside), onSort(key, desc), header(item) -> label when the item is a group header row,
+-- headerClicks (group header rows also get tooltip and onClick, to collapse a group or act on all of it),
 -- isSelected(item), plain (a bare list for inside a menu or popup: no well frame and no column headers),
 -- onMove(from, to) (rows can be dragged to reorder; from and to are item indexes, to as it is after the move, and
 -- the table leaves moving the item to the caller). The table's frame is .frame; its contents sit inside the well's
@@ -1261,7 +1336,7 @@ function Table.New(parent, name, width, height, opts)
 	local inset = opts.plain and 0 or 1 + S.metrics.wellInset
 	local self = setmetatable({ columns = opts.columns, rowH = opts.rowH or 20, icons = opts.icons, cell = opts.cell,
 		iconOf = opts.icon, tooltip = opts.tooltip, onClick = opts.onClick, onSort = opts.onSort, header = opts.header,
-		isSelected = opts.isSelected, plain = opts.plain, onMove = opts.onMove, items = {}, width = width,
+		headerClicks = opts.headerClicks, isSelected = opts.isSelected, plain = opts.plain, onMove = opts.onMove, items = {}, width = width,
 		innerW = width - 2 * inset,
 		offset = 0, rows = {}, headers = {} }, { __index = Table })
 	local columns = {}
