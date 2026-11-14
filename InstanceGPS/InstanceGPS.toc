@@ -12,6 +12,7 @@ UI\Style.lua
 UI\Skins\Cognac\Atlas.lua
 UI\Skins\Cognac\Skin.lua
 UI\Skins\Classic\Skin.lua
+UI\Skins\MaterialGlass\Skin.lua
 Data.lua
 Core.lua
 UI\StyleSetup.lua
