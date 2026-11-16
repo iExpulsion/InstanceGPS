@@ -672,6 +672,7 @@ end
 
 function events:PLAYER_LOGIN()
 	claimCharFile(DN.char)
+	DN:Fire("LOGIN")
 end
 
 function events:ADDON_LOADED(name)

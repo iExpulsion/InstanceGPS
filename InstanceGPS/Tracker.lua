@@ -24,19 +24,31 @@ header:RegisterForClicks("AnyUp")
 header:SetScript("OnDragStart", function()
 	if not DN.opt.lockFrames then f:StartMoving() end
 end)
--- Pin the tracker by its top-left corner so it grows downward as rows are added
--- (dragging leaves it anchored by whatever point the game picks, usually the center).
-local function AnchorTopLeft()
-	local left, top = f:GetLeft(), f:GetTop()
-	if not left or not top then return end
-	f:ClearAllPoints()
-	f:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
-	DN.db.pos.tracker = { "TOPLEFT", "BOTTOMLEFT", left, top }
+local CORNERS = { TOPLEFT = true, TOPRIGHT = true, BOTTOMLEFT = true, BOTTOMRIGHT = true }
+
+-- Pins the tracker by the corner facing the nearest screen corner, where it now stands, so it grows away from the
+-- screen's edge as rows come and go (a tracker at the bottom grows upward). Dragging leaves it anchored by whatever
+-- point the game picks. A scaled tracker measures in its own units, so the screen's size is taken in them too.
+local function Reanchor()
+	local left, right, top, bottom = f:GetLeft(), f:GetRight(), f:GetTop(), f:GetBottom()
+	if left and right and top and bottom then
+		local k = UIParent:GetEffectiveScale() / f:GetEffectiveScale()
+		local w, h = UIParent:GetWidth() * k, UIParent:GetHeight() * k
+		local corner = ((top + bottom) / 2 > h / 2 and "TOP" or "BOTTOM") .. ((left + right) / 2 > w / 2 and "RIGHT" or "LEFT")
+		local x = corner:find("LEFT") and left or (right - w)
+		local y = corner:find("TOP") and (top - h) or bottom
+		f:ClearAllPoints()
+		f:SetPoint(corner, UIParent, corner, x, y)
+		DN.db.pos.tracker = { corner, corner, x, y }
+	end
 end
 
+-- The client keeps user-placed frames in layout-local.txt by a point of its own choosing and restores them before
+-- PLAYER_LOGIN, over the addon's anchor; the position is the addon's to keep.
 header:SetScript("OnDragStop", function()
 	f:StopMovingOrSizing()
-	AnchorTopLeft()
+	f:SetUserPlaced(false)
+	Reanchor()
 end)
 header:SetScript("OnClick", function(self, button)
 	if button == "RightButton" then DN:ShowMenu(self) end
@@ -221,7 +233,7 @@ function DN:RefreshTracker()
 	end
 	f:Show()
 	local pos = self.db.pos.tracker
-	if pos and pos[1] ~= "TOPLEFT" then AnchorTopLeft() end   -- old saved position, first showing
+	if pos and not CORNERS[pos[1]] then Reanchor() end   -- old saved position, first showing
 	f:SetScale(self.opt.trackerScale or 1)
 	f:SetAlpha(self.opt.trackerAlpha or 1)
 	local label = DiffLabel(inst, run)
@@ -350,13 +362,15 @@ DN:On("LOADED", function()
 	routeText:SetTextColor(unpack(C.muted))
 end)
 
-DN:On("LOADED", function()
+-- placed at PLAYER_LOGIN, after the client has put back any layout-cache position from older versions
+DN:On("LOGIN", function()
 	local pos = DN.db.pos.tracker
+	f:SetUserPlaced(false)
 	f:ClearAllPoints()
 	if pos then
 		f:SetPoint(pos[1], UIParent, pos[2], pos[3], pos[4])
-		-- positions saved before the top-left anchoring: convert, keeping the frame where it is
-		if pos[1] ~= "TOPLEFT" then AnchorTopLeft() end
+		-- positions saved before the corner anchoring: convert, keeping the frame where it is
+		if not CORNERS[pos[1]] then Reanchor() end
 	else
 		-- left edge, just below the screen's middle-top: room above for other addons' lists,
 		-- and a 15-boss raid still ends well above the chat frame

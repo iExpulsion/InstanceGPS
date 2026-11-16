@@ -13,6 +13,8 @@ CHECKS = [
     ("reset", "reset.lua", {}, []),
     ("character file", "chardb.lua", {}, ["other character's file reset:\ttrue", "own file kept:\ttrue", "unknown at load, kept:\ttrue",
       "reset at login in place:\ttrue", "chardb test done"]),
+    ("tracker position", "tracker.lua", {},
+     ["top left:\ttrue", "bottom right:\ttrue", "not user placed:\ttrue", "corner kept:\ttrue", "tracker test done"]),
     ("titles", "titles.lua", {}, ["titles:\ttrue"]),
     ("module options", "modules.lua", {},
      ["page:\ttrue", "checkbox:\ttrue", "dropdown:\ttrue", "late module:\ttrue", "modules test done"]),
