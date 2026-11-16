@@ -56,7 +56,7 @@ O.Open("general")
 local theme = O.Row("general", "Theme").setting
 local skins = theme.choices()
 theme.set("classic")
-print("theme:", #skins >= 3 and DN.db.skin == "classic" and MOCK.popup and MOCK.popup.which == "INSTANCEGPS_RELOAD")
+print("theme:", #skins >= 3 and DN.db.skin == "classic" and MOCK.popup and MOCK.popup.which == "INSTANCEGPS_THEME_RELOAD")
 
 -- the window size starts at 100%, lists the sizes, sizes every window when picked and resets to 100%
 local sizeRow = O.Row("general", "Window Size")
