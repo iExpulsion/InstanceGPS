@@ -260,25 +260,12 @@ local function ShowExport(text)
 		local note = S.Text(f.main, "small", S.colors.muted)
 		note:SetPoint("TOPLEFT", S.PAD, -S.PAD)
 		note:SetText("Click the text, then Ctrl+A and Ctrl+C to copy it.")
-		local well = CreateFrame("Frame", nil, f.main)
+		local well = S.TextArea(f.main, "InstanceGPSExportScroll", 560 - 2 * S.PAD, 300,
+			{ pad = 6, selectOnFocus = true, onEscape = function() f:Hide() end })
+		well:ClearAllPoints()
 		well:SetPoint("TOPLEFT", S.PAD, -S.PAD - 20)
 		well:SetPoint("BOTTOMRIGHT", -S.PAD, S.PAD)
-		S.Well(well)
-		local scroll = CreateFrame("ScrollFrame", "InstanceGPSExportScroll", well, "UIPanelScrollFrameTemplate")
-		local inner = 6 + S.metrics.wellInset
-		scroll:SetPoint("TOPLEFT", inner, -inner)
-		scroll:SetPoint("BOTTOMRIGHT", -inner - 10, inner)
-		S.ScrollBar(scroll, "InstanceGPSExportScroll")
-		local edit = CreateFrame("EditBox", nil, scroll)
-		edit:SetMultiLine(true)
-		S.SetFont(edit, "small")
-		edit:SetWidth(560 - 2 * S.PAD - 2 * inner - 20)
-		edit:SetAutoFocus(false)
-		edit:SetScript("OnEscapePressed", function() f:Hide() end)
-		edit:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-		S.TrackInput(edit, well)
-		scroll:SetScrollChild(edit)
-		f.edit = edit
+		f.edit = well.edit
 		exportFrame = f
 	end
 	exportFrame.edit:SetText(text)
