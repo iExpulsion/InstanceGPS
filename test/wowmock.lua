@@ -37,6 +37,8 @@ local function Stub(name)
 		elseif k == "ClearAllPoints" then f = function(self) self.point = nil end
 		elseif k == "SetTexCoord" then f = function(self, ...) if not mock.lean then self.tc = { ... } end end
 		elseif k == "SetVertexColor" then f = function(self, r, g, b, a) if not mock.lean then self.color = { r, g, b, a or 1 } end end
+		elseif k == "SetAttribute" then f = function(self, a, v) self.attrs = self.attrs or {}; self.attrs[a] = v end
+		elseif k == "GetAttribute" then f = function(self, a) return self.attrs and self.attrs[a] end
 		elseif k == "SetChecked" then f = function(self, v) self.checked = v and 1 or nil end
 		elseif k == "GetChecked" then f = function(self) return self.checked end
 		elseif k == "GetStringWidth" then f = function(self) return #(self.text or "") * 6 end
@@ -166,6 +168,11 @@ function UIDropDownMenu_AddButton(info) table.insert(mock.ddButtons, info) end
 mock.ddButtons = {}
 function InterfaceOptionsFrame_OpenToCategory() end
 function UnitAffectingCombat() return mock.combat end
+function InCombatLockdown() return mock.combat end
+-- bag contents: mock.bags[itemId] = count
+mock.bags = {}
+function GetItemCount(id) return mock.bags[id] or 0 end
+function GetItemIcon(id) return "Interface\\Icons\\Item" .. id end
 -- record texture placement so tests can inspect what the path views draw
 mock.placed = 0
 -- achievement statistics: mock.stat[id] = count (string "--" when never done, like the client)

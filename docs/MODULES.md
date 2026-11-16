@@ -49,9 +49,11 @@ InstanceGPS:Override("My Server", {
             ["Custom Boss"] = { npcs = { 990002 }, x = -59.6, y = -329.2, f = 1, after = "Gizrul the Slavener" },
         },
 
-        -- hints the arrow shows within 15 yards of a spot
+        -- hints the arrow shows within 15 yards of a spot; items (optional) puts a button to use the first one
+        -- you carry beside the arrow
         hints = {
             { x = 102.4, y = -319.2, f = 2, text = "Pull the lever to open the gate" },
+            { x = -14.4, y = -395.8, f = 1, text = "Use the Custom Horn here", items = { 990010 } },
         },
 
         -- remove built-in hints, by how their text starts

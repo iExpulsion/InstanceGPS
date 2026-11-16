@@ -8,7 +8,7 @@ InstanceGPS:Override("Test", {
       ["Custom Boss"] = { npcs = { 990002 }, x = -59.6, y = -329.2, f = 1, after = "Gizrul the Slavener" },
       ["The Beast"] = { x = 135.0, y = -555.0 },
     },
-    hints = { { x = 102.4, y = -319.2, text = "Test hint" } },
+    hints = { { x = 102.4, y = -319.2, text = "Test hint", items = { 990010 } } },
     removeHints = { "Kill every Blackhand" },
   },
 })

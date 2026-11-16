@@ -9,7 +9,7 @@
 --         ["Warchief Rend Blackhand"] = { npcs = { 10429, 990001 } },        -- changed kill credit
 --         ["Custom Boss"] = { npcs = { 990002 }, x = 120.5, y = -310.2, f = 2, after = "Gizrul the Slavener" },
 --       },
---       hints = { { x = 102.4, y = -319.2, f = 2, text = "..." } },
+--       hints = { { x = 102.4, y = -319.2, f = 2, text = "...", items = { 12534 } } },   -- items: optional
 --       removeHints = { "Kill every Blackhand" },             -- base hints starting with this
 --       paths = { ["The Beast"] = { from = "Warchief Rend Blackhand", points = { x, y, f, ... } } },
 --     },
@@ -28,6 +28,8 @@ local OFF_FLOOR = 25         -- yards of penalty for a route point on another le
 local PATH_JOIN = 40         -- yards: a recorded path must start this close to its "from" stop
 
 DN.overrides = {}
+-- hint text -> items the hint has the player use (Data.lua, plus modules' hints)
+DN.hintItems = ns.HintItems or {}
 
 function DN:Override(name, data)
 	if type(name) ~= "string" or type(data) ~= "table" then
@@ -313,6 +315,7 @@ local function ApplyInstance(inst, t)
 				if e.text == h.text and dist(e.x, e.y, h.x, h.y) < 1 then dup = true end
 			end
 			if not dup then table.insert(inst.extraHints, { x = h.x, y = h.y, f = Mask(h.f), text = h.text }) end
+			if type(h.items) == "table" then DN.hintItems[h.text] = h.items end
 		end
 	end
 	-- drop removed bosses, renumber the rest, and rewrite the routes

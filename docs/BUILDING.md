@@ -48,7 +48,7 @@ The build prints a report. `NAV-BRIDGED` lines are straight hops where the navme
 
 Where to change things:
 
-- **`tools/config.py`:** wings, boss order rules, teleporters and when they unlock, passages the navmesh lacks (`WALK_LINKS`), places a route must pass before a boss (`BOSS_VIA`), escorts whose path the route follows (`ESCORTS`), hard-mode variants and position overrides.
+- **`tools/config.py`:** wings, boss order rules, teleporters and when they unlock, passages the navmesh lacks (`WALK_LINKS`), places a route must pass before a boss (`BOSS_VIA`), escorts whose path the route follows (`ESCORTS`), hard-mode variants and position overrides, and the items a hint has the player use (`HINT_ITEMS`, written to `Data.lua` as `ns.HintItems` for the arrow's item button; the build stops if a hint it names is gone).
 - **`tools/hints.json`:** event hints, each with its source in AzerothCore's scripts or database. A hint attaches to a boss, `after` a boss, or `any_order`.
 - **`tools/boss_fixups.json`:** positions of summoned bosses and kill rules for multi-creature fights.
 - **`tools/achstats.py`:** links between bosses and their kill statistics.

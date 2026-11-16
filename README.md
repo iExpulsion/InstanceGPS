@@ -71,7 +71,9 @@ No module for your server? Anyone can make one, without programming tools: see [
   - objects to click: the Sunken Temple statues in order, the Gundrak altars, the Zul'Aman gong;
   - NPCs to talk to, with the gossip line to pick: Majordomo Executus, Barrett Ramsey, Arthas in The Culling of Stratholme;
   - escorts and events: Brann in Halls of Stone, Thrall in Old Hillsbrad, the Disciple of Naralex, the Zul'Farrak prisoners;
-  - groups to kill to open a door: the Stratholme ziggurats, the Dire Maul pylons.
+  - groups to kill to open a door: the Stratholme ziggurats, the Dire Maul pylons;
+  - items to use: Omokk's Head at Urok's Tribute Pile, the Mudskunk Lure for Gahz'ranka, the drake essences in The
+    Oculus. While you carry the item, a button beside the arrow uses it (it can't change in combat).
 
   ![Hints on the arrow and the 3D path view: the Gluth slime pipe and the Naxxramas portal](docs/images/hints.png)
 - **Patrol warnings.** Where a patrol's path crosses the route, the arrow names it as you get there ("Patrols: Death Knight Captain x5"), so you can wait for it to pass. They come from AzerothCore's patrol paths; turn them off under Patrol Warnings in the options.

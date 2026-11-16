@@ -488,3 +488,24 @@ def _load_hints():
 
 
 _load_hints()
+
+# Items a hint has the player use from their bags: {(map, boss, nth hint text of that boss): [item ids]}, the boss as
+# in hints.json. The arrow shows a button for the first one carried. Only items whose use casts the event's spell
+# (item_template spellid_1, spelltrigger 0); keys that just unlock an object (Opening, 3366) work by clicking it.
+HINT_ITEMS = {
+    (229, 'Urok Doomhowl', 0): [12534],           # Omokk's Head, spell 16447 at Urok's Tribute Pile
+    (309, "Gahz'ranka", 0): [19974],              # Mudskunk Lure, spell 24325 at Pagle's Point
+    (578, 'Varos Cloudstrider', 0): [37860, 37815, 37859],   # Ruby, Emerald, Amber Essence: summon the drake
+}
+
+
+def hint_items():
+    """{hint text: [item ids]} for HINT_ITEMS; fails when an entry's hint has gone."""
+    out = {}
+    for (m, boss, n), items in sorted(HINT_ITEMS.items()):
+        pts = (BOSS_VIA.get(m) or {}).get(boss) or (BOSS_AFTER.get(m) or {}).get(boss) or []
+        texts = [t for p, t in pts if p != 'any-order' and t]
+        if n >= len(texts):
+            raise SystemExit('HINT_ITEMS %r: the boss has %d hint texts' % ((m, boss, n), len(texts)))
+        out[texts[n]] = items
+    return out

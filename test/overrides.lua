@@ -75,4 +75,11 @@ for _, r in ipairs(inst.routes) do if r.name == "Upper" then DN:SetRoute(r.index
 MOCK.Tick(0.3)
 local _, _, _, _, _, _, hint = DN:NextWaypoint()
 print("hint shown:", hint == "Test hint")
+-- the module hint's item gets the arrow's use button while carried
+DN.arrow.GetRight = function() return 500 end
+DN.arrow.GetCenter = function() return 470, 300 end
+MOCK.bags[990010] = 1
+DN.arrow.scripts.OnUpdate(DN.arrow, 1)
+local b = DN.itemButton
+print("hint item:", b ~= nil and b.shown and b:GetAttribute("item") == "item:990010")
 print("overrides test done")

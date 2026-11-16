@@ -1337,3 +1337,8 @@ ns.Instances = {
   patrols={{x=3208.1, y=461, f=1, text="Charscale Assaulter x3"}, {x=3141.1, y=457, f=1, text="Charscale Commander x5"}},
  },
 }
+ns.HintItems = {
+ ["Optional: use Omokk's Head (quest 'Urok Doomhowl') at Urok's Tribute Pile; kill the ogre waves and Urok arrives."] = {12534},
+ ["Talk to Belgaristrasz, Verdisa or Eternos for a drake: e.g. 'I want to fly on the wings of the red flight.', then use the Essence to summon it."] = {37860,37815,37859},
+ ["Use a Mudskunk Lure at Pagle's Point to summon Gahz'ranka from the water."] = {19974},
+}

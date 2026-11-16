@@ -15,6 +15,9 @@ CHECKS = [
       "reset at login in place:\ttrue", "chardb test done"]),
     ("tracker position", "tracker.lua", {},
      ["top left:\ttrue", "bottom right:\ttrue", "not user placed:\ttrue", "corner kept:\ttrue", "tracker test done"]),
+    ("hint items", "hintitem.lua", {},
+     ["data:\ttrue", "not carried:\ttrue", "shown:\ttrue", "first carried:\ttrue", "gone:\ttrue", "combat:\ttrue",
+      "arrow hidden:\ttrue", "hintitem test done"]),
     ("titles", "titles.lua", {}, ["titles:\ttrue"]),
     ("module options", "modules.lua", {},
      ["page:\ttrue", "checkbox:\ttrue", "dropdown:\ttrue", "late module:\ttrue", "modules test done"]),
@@ -43,7 +46,7 @@ CHECKS = [
     ("overrides", "overrides.lua", OVERRIDE,
      ["instance removed:\ttrue", "boss removed:\ttrue", "boss renamed:\ttrue", "routes consistent:\ttrue",
       "custom boss after Gizrul:\ttrue\tnpc detected:\ttrue", "boss moved:\ttrue", "hint removed:\ttrue",
-      "hint shown:\ttrue"]),
+      "hint shown:\ttrue", "hint item:\ttrue"]),
     # the overridden routes walk cleanly (rough routes to the custom and the moved boss)
     ("override walk Lower", "scenario.lua", dict(OVERRIDE, DN_MAP="229", DN_ROUTE="1"), ["route walk done, 0 waypoint problems"]),
     ("override walk Upper", "scenario.lua", dict(OVERRIDE, DN_MAP="229", DN_ROUTE="2"), ["route walk done, 0 waypoint problems"]),
