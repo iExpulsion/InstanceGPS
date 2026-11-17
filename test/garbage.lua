@@ -21,11 +21,13 @@ local function frames(n)
 	end
 end
 
--- warm up the texture pools, then measure
+-- warm up the texture pools, then measure. A full collect shrinks Lua's own tables, which the next frames grow back
+-- once, by an amount that shifts with the size of everything loaded; a few frames after it keep that out.
 frames(50)
 MOCK.lean = true
 collectgarbage("collect")
 collectgarbage("stop")
+frames(10)
 local before = collectgarbage("count")
 frames(500)
 local made = collectgarbage("count") - before
@@ -38,6 +40,7 @@ DN.wp.x = nil
 frames(10)
 collectgarbage("collect")
 collectgarbage("stop")
+frames(10)
 before = collectgarbage("count")
 frames(500)
 made = collectgarbage("count") - before
