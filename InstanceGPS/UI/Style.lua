@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.6.0-9-g9a4a4bc. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.6.0-12-g280bc39. Change it there, then run tools/sync_style.py.
 -- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- MaterialCraftUI: a flat dark style kit for WoW 3.3.5 addons on Material 3 color roles: one accent color, 1px
 -- borders, state layers and a few button kinds. Each addon ships its own copy, listed in its .toc, and reads it
@@ -1705,10 +1705,20 @@ local LIST_STYLES = {
 	sidebar = { rowH = 22, subRowH = 36, header = "small", row = "normal" },
 }
 
--- A hovered row shows its highlight and, when it can be removed, its remove button in place of its status.
+-- A hovered row keeps the skin's highlight lit (also while the mouse is on its remove button) and, when it can be
+-- removed, shows its remove button in place of its status. A list has one hovered row: rows share edges, and the
+-- next row can be entered before the last one is left.
 local function listHover(row, on)
+	local list = row.list
 	local removable = on and row.onRemove ~= nil
-	if on then row.hoverTex:Show() else row.hoverTex:Hide() end
+	if on then
+		if list.hoverRow and list.hoverRow ~= row then listHover(list.hoverRow, false) end
+		list.hoverRow = row
+		row:LockHighlight()
+	else
+		if list.hoverRow == row then list.hoverRow = nil end
+		row:UnlockHighlight()
+	end
 	if removable then row.remove:Show() row.status:Hide() else row.remove:Hide() row.status:Show() end
 end
 
@@ -1721,9 +1731,11 @@ local function listEnter(row)
 	end
 end
 
--- Moving onto the remove button leaves the row; the row stays hovered while the mouse is over either.
+-- Moving onto the remove button leaves the row; the row stays hovered while the mouse is over either. The button
+-- sits inside the row's edges, so the mouse on the edge shared with the next row is never over it.
 local function listLeave(row)
-	if not MouseIsOver(row) then listHover(row, false) end
+	local onRemove = row.remove:IsShown() and (GetMouseFocus() == row.remove or MouseIsOver(row.remove))
+	if not onRemove then listHover(row, false) end
 	GameTooltip:Hide()
 end
 
@@ -1746,9 +1758,7 @@ local function listRow(self, parent)
 	row:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	if self.reorder and not parent then self.reorder:Attach(row, listDragLabel) end
 
-	row.hoverTex = S.Solid(row, "BACKGROUND", S.colors.rowHover)
-	row.hoverTex:SetAllPoints()
-	row.hoverTex:Hide()
+	S.Highlight(row)
 	row.selectedTex = S.Solid(row, "BACKGROUND", S.colors.rowSelected)
 	row.selectedTex:SetAllPoints()
 	row.bar = S.Solid(row, "BORDER", S.colors.accent)
@@ -1781,7 +1791,7 @@ local function listRow(self, parent)
 
 	-- shown on hover for rows added with onRemove, over the status
 	row.remove = CreateFrame("Button", nil, row)
-	row.remove:SetSize(S.CONTROL_H, S.CONTROL_H)
+	row.remove:SetSize(S.CONTROL_H, style.rowH - 6)
 	row.remove:SetPoint("RIGHT", -S.PAD + 6, 0)
 	row.remove.label = S.Text(row.remove, "normal", S.colors.muted)
 	row.remove.label:SetPoint("CENTER")
@@ -1796,7 +1806,8 @@ local function listRow(self, parent)
 	end)
 	row.remove:SetScript("OnLeave", function(b)
 		b.label:SetTextColor(unpack(S.colors.muted))
-		listLeave(row)
+		GameTooltip:Hide()
+		if GetMouseFocus() ~= row then listHover(row, false) end
 	end)
 
 	row:SetScript("OnClick", listDropOrClick)
