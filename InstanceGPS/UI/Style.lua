@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.6.0-14-gada6fcc. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.6.0-16-g0a4b274. Change it there, then run tools/sync_style.py.
 -- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- MaterialCraftUI: a flat dark style kit for WoW 3.3.5 addons on Material 3 color roles: one accent color, 1px
 -- borders, state layers and a few button kinds. Each addon ships its own copy, listed in its .toc, and reads it
@@ -842,8 +842,22 @@ function S.AddArrow(b)
 	return b
 end
 
+-- The preview card beside a dropdown's menu, while an item with a preview is hovered.
+local shownPreview
+local function showPreview(menu, card)
+	if shownPreview and shownPreview ~= card then shownPreview:Hide() end
+	shownPreview = card
+	if card then
+		card:SetScale(menu:GetEffectiveScale() / UIParent:GetEffectiveScale())
+		card:ClearAllPoints()
+		card:SetPoint("TOPLEFT", menu, "TOPRIGHT", 4, 0)
+		card:Show()
+	end
+end
+
 -- Flat dropdown: a button showing the current choice that opens a menu below it. SetOptions takes
--- { { value, text, tooltip } }; picking one calls onSelect(value) and closes the menu. Opening one closes the others.
+-- { { value, text, tooltip, preview } }, preview() giving a frame shown beside the menu while the item is hovered,
+-- in place of its tooltip; picking one calls onSelect(value) and closes the menu. Opening one closes the others.
 function S.Dropdown(parent, width, onSelect)
 	local b = S.AddArrow(S.Button(parent, "", "secondary", width))
 
@@ -855,6 +869,7 @@ function S.Dropdown(parent, width, onSelect)
 	S.Frame(menu, "menu")
 	menu:EnableMouse(true)
 	menu:Hide()
+	menu:SetScript("OnHide", function(m) showPreview(m, nil) end)
 	menus[#menus + 1] = menu
 	menu.owner = b
 	b.menu, b.items = menu, {}
@@ -878,16 +893,21 @@ function S.Dropdown(parent, width, onSelect)
 					onSelect(it.value)
 				end)
 				item:SetScript("OnEnter", function(it)
-					if it.tooltip then
+					if it.preview then
+						showPreview(menu, it.preview())
+					elseif it.tooltip then
 						GameTooltip:SetOwner(it, "ANCHOR_RIGHT")
 						GameTooltip:SetText(it.tooltip, nil, nil, nil, nil, true)
 						GameTooltip:Show()
 					end
 				end)
-				item:SetScript("OnLeave", function() GameTooltip:Hide() end)
+				item:SetScript("OnLeave", function()
+					showPreview(menu, nil)
+					GameTooltip:Hide()
+				end)
 				self.items[i] = item
 			end
-			item.value, item.tooltip = opt.value, opt.tooltip
+			item.value, item.tooltip, item.preview = opt.value, opt.tooltip, opt.preview
 			item.text:SetText(opt.text)
 			item:Show()
 		end
@@ -2186,6 +2206,88 @@ function S.Skins()
 	return list
 end
 
+local PREVIEW_W, PREVIEW_ROW_H = 200, 22
+local previews = {}
+
+-- The card's contents, top to bottom inside the skin's popup padding: name, credit, two buttons, a checkbox, and a
+-- well with a selected row and a hovered one. Nothing in it takes the mouse.
+local function buildPreview(def)
+	local C, m = S.colors, S.metrics
+	local inset = m.inset
+	local card = CreateFrame("Frame", nil, UIParent)
+	card:SetFrameStrata("FULLSCREEN_DIALOG")
+	card:SetWidth(PREVIEW_W + 2 * inset)
+	S.Frame(card, "popup")
+	local y = inset
+	local function place(region, h, gap)
+		region:SetPoint("TOPLEFT", inset, -y)
+		y = y + h + (gap or S.GAP)
+		return region
+	end
+
+	local title = place(S.Text(card, "normal", C.heading), 16, 4)
+	title:SetHeight(16)
+	title:SetText(def.label or "")
+	if def.credit then
+		local credit = place(S.Text(card, "small", C.muted), 26)
+		credit:SetWidth(PREVIEW_W)
+		credit:SetHeight(26)
+		credit:SetJustifyH("LEFT")
+		credit:SetJustifyV("TOP")
+		credit:SetText(def.credit)
+	end
+
+	local second = math.floor((PREVIEW_W - S.GAP) / 2)
+	local primary = place(S.Button(card, "Apply", "primary", PREVIEW_W - S.GAP - second), S.CONTROL_H)
+	local secondary = S.Button(card, "Cancel", "secondary", second)
+	secondary:SetPoint("LEFT", primary, "RIGHT", S.GAP, 0)
+
+	local check = place(S.Check(card), S.CHECK_H)
+	check:SetChecked(true)
+	local checkLabel = S.Text(card, "small")
+	checkLabel:SetPoint("LEFT", check, "RIGHT", 6, 0)
+	checkLabel:SetText("An Option")
+
+	local pad = m.wellInset + 2
+	local well = place(S.Well(CreateFrame("Frame", nil, card)), 2 * PREVIEW_ROW_H + 2 * pad, 0)
+	well:SetSize(PREVIEW_W, 2 * PREVIEW_ROW_H + 2 * pad)
+	card.rows = {}
+	for i, text in ipairs({ "Selected Row", "Hovered Row" }) do
+		local row = CreateFrame("Button", nil, well)
+		card.rows[i] = row
+		row:SetSize(PREVIEW_W - 2 * pad, PREVIEW_ROW_H)
+		row:SetPoint("TOPLEFT", pad, -pad - (i - 1) * PREVIEW_ROW_H)
+		S.Row(row, true)
+		local label = S.Text(row, "small")
+		label:SetPoint("LEFT", S.PAD, 0)
+		label:SetText(text)
+		if i == 1 then S.PaintRow(row, true) else row:LockHighlight() end
+		row:EnableMouse(false)
+	end
+
+	for _, control in ipairs({ primary, secondary, check }) do control:EnableMouse(false) end
+	card:SetHeight(y + inset)
+	card:Hide()
+	return card
+end
+
+-- A small card drawn in a skin, to show what a theme looks like before reloading into it. A skin's art is made with
+-- each frame, so the card is built once per skin by switching to it for a moment and back; its controls take no
+-- mouse, so the skin in use never repaints them. roles: the scheme for a skin without its own, as for S.UseSkin.
+function S.SkinPreview(key, roles)
+	local card = previews[key]
+	if not card and skins[key] then
+		local current = S.Skin()
+		S.UseSkin(key, roles)
+		local ok, built = pcall(buildPreview, skins[key])
+		S.UseSkin(current, roles)
+		if not ok then error(built, 0) end
+		card = built
+		previews[key] = card
+	end
+	return card
+end
+
 -- The flat Material look: 1px borders, state layers and tinted fills.
 S.RegisterSkin("material", {
 	label = "Material",
@@ -2583,6 +2685,17 @@ function Settings.SetWindowScale(scale)
 	return ok
 end
 
+-- Every skin as a dropdown option, each with a preview card in the addon's scheme beside the menu on hover.
+function Settings.SkinOptions()
+	local options = {}
+	for _, s in ipairs(S.Skins()) do
+		local key = s.key
+		options[#options + 1] = { value = key, text = s.label, tooltip = s.credit,
+			preview = function() return S.SkinPreview(key, settingsOpts.theme) end }
+	end
+	return options
+end
+
 -- Saves a skin for the next load and offers to reload; false for a skin that doesn't exist.
 function Settings.SetSkin(key)
 	local label = skinLabel(key)
@@ -2610,11 +2723,8 @@ end
 -- and the last control, to place more after it.
 function Settings.TitleBar(bar, anchor)
 	local controls = {}
-	local options, inUse = {}, nil
-	for _, s in ipairs(S.Skins()) do
-		options[#options + 1] = { value = s.key, text = s.label, tooltip = s.credit }
-		if s.key == S.Skin() then inUse = s.label end
-	end
+	local options = Settings.SkinOptions()
+	local inUse = skinLabel(S.Skin())
 	local themeLabel = barLabel(bar, anchor, "Theme", 2 * S.GAP)
 	controls.theme = S.Dropdown(bar, 96, function(key)
 		Settings.SetSkin(key)

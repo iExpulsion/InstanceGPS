@@ -184,13 +184,7 @@ O.PAGES = {
 			{
 				kind = "dropdown", label = "Theme",
 				tip = "How InstanceGPS's windows and menus are drawn. A new theme applies after a reload.",
-				choices = function()
-					local list = {}
-					for _, skin in ipairs(S.Skins()) do
-						list[#list + 1] = { value = skin.key, text = skin.label, tooltip = skin.credit }
-					end
-					return list
-				end,
+				choices = S.Settings.SkinOptions,
 				get = function() return DN.db.skin end,
 				set = function(v) DN.SetSkin(v) end,
 			},
