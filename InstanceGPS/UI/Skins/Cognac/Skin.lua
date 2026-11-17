@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.6.0-12-g280bc39. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.6.0-14-gada6fcc. Change it there, then run tools/sync_style.py.
 -- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- Cognac: gold-framed painted controls on dark glass. Load it after Style.lua and Atlas.lua;
 -- S.UseSkin("cognac") switches to it.
@@ -219,6 +219,7 @@ S.RegisterSkin("cognac", {
 		c.arrow = c.accent
 		c.scrollThumb = c.accent
 		c.scrollThumbHover = { 1, 0.95, 0.75, 1 }
+		c.scrollTrack = { 0.94, 0.78, 0.45, 0.08 }
 	end,
 	metrics = { edge = EDGE, inset = EDGE, navInset = 8, wellInset = 6, menuInset = 5 },
 	button = plate,
@@ -321,6 +322,13 @@ S.RegisterSkin("cognac", {
 	end,
 	paintNav = function(b, on)
 		if on then showPlate(b, "chip_selected") else b.plate:Hide() end
+	end,
+	-- list and table rows as the sidebar's entries: the plate's glow on hover, the selected chip under the selected row
+	row = function(r)
+		plate(r)
+	end,
+	paintRow = function(r, on)
+		if on then showPlate(r, "chip_selected") else r.plate:Hide() end
 	end,
 	-- a tall box is the framed card, a one-line field the search plate
 	input = function(e, tall)

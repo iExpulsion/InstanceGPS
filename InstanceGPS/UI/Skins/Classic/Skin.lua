@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.6.0-12-g280bc39. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.6.0-14-gada6fcc. Change it there, then run tools/sync_style.py.
 -- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- Classic: the default UI's own look, drawn entirely from textures the 3.3.5 client ships, so there's no art in
 -- this folder. Dialog-box windows, red panel buttons, gold text, tooltip-bordered menus and lists, and the quest
@@ -100,6 +100,7 @@ S.RegisterSkin("classic", {
 		c.arrow = GOLD
 		c.scrollThumb = { 0.55, 0.55, 0.55, 1 }
 		c.scrollThumbHover = { 0.85, 0.85, 0.85, 1 }
+		c.scrollTrack = { 0, 0, 0, 0.5 }
 	end,
 	-- the tooltip border on menus, wells and the sidebar is 4 pixels; rows sit inside it
 	metrics = { edge = EDGE, inset = 16, navInset = 4, wellInset = 4, menuInset = 4, tabPad = TAB_CAP },
@@ -168,6 +169,18 @@ S.RegisterSkin("classic", {
 	end,
 	paintNav = function(b, on)
 		if on then b.selectedTex:Show() else b.selectedTex:Hide() end
+	end,
+	-- list and table rows light like the quest log's: hover in its highlight, the selected row kept lit in gold
+	row = function(r)
+		rowHighlight(r)
+		r.selectedTex = r:CreateTexture(nil, "BACKGROUND")
+		r.selectedTex:SetTexture(ROW_HIGHLIGHT)
+		r.selectedTex:SetBlendMode("ADD")
+		r.selectedTex:SetVertexColor(1, 0.82, 0)
+		r.selectedTex:SetAllPoints()
+	end,
+	paintRow = function(r, on)
+		if on then r.selectedTex:Show() else r.selectedTex:Hide() end
 	end,
 	-- the Interface Options tabs along the bar's bottom: the open-bottomed active tab while selected, the inactive one
 	-- otherwise, with the character frame's tab glow on hover and the label centered on the art

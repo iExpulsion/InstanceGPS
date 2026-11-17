@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.6.0-12-g280bc39. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.6.0-14-gada6fcc. Change it there, then run tools/sync_style.py.
 -- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- Material Glass: Material's flat controls on see-through glass. Windows are a light-tinted, translucent pane with
 -- a faint cloudy frost, a soft sheen down from the top and a lit top edge; wells, inputs and menus stay near solid
@@ -117,6 +117,7 @@ S.RegisterSkin("materialglass", {
 		c.outline = white(0.3)
 		c.scrollThumb = white(0.18)
 		c.scrollThumbHover = white(0.32)
+		c.scrollTrack = white(0.05)
 		KINDS.primary = { bg = c.accent, hover = c.accentHover, border = c.accent, text = c.onAccent, shine = 0.3 }
 		KINDS.secondary = { bg = white(0.06), hover = white(0.11), border = white(0.14), text = c.text, shine = 0.12 }
 		KINDS.selected = { bg = tint(c.accent, 0.2), hover = tint(c.accent, 0.28), border = tint(c.accent, 0.55),
