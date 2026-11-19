@@ -17,44 +17,53 @@ jobs:
         with:
           fetch-depth: 0
 
+      # A push to main builds only when the .toc's version has no release yet; pull requests and manual runs always build.
+      - name: Check for a new version
+        id: check
+        run: |
+          version=$(sed -n 's/^## Version: *//p' InstanceGPS/InstanceGPS.toc | tr -d '\r')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ "$GITHUB_EVENT_NAME" = "push" ] && git rev-parse -q --verify "refs/tags/v$version" >/dev/null; then
+            echo "v$version is already released; raise ## Version in the .toc to build and publish a new one."
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.check.outputs.build == 'true'
         with:
           python-version: "3.12"
 
       - name: Install Lua 5.1 and test dependencies
+        if: steps.check.outputs.build == 'true'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
           pip install lupa
 
       - name: Check Lua syntax
+        if: steps.check.outputs.build == 'true'
         run: find InstanceGPS -name "*.lua" -exec luac5.1 -p {} +
 
       - name: Run tests
+        if: steps.check.outputs.build == 'true'
         working-directory: test
         run: python ci.py
 
       - name: Build zips
-        id: pkg
-        run: |
-          python tools/package.py
-          version=$(sed -n 's/^## Version: *//p' InstanceGPS/InstanceGPS.toc | tr -d '\r')
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+        if: steps.check.outputs.build == 'true'
+        run: python tools/package.py
 
       - uses: actions/upload-artifact@v4
+        if: steps.check.outputs.build == 'true'
         with:
-          name: InstanceGPS-${{ steps.pkg.outputs.version }}
+          name: InstanceGPS-${{ steps.check.outputs.version }}
           path: dist/*.zip
 
-      - name: Publish a release if the version is new
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Publish the release
+        if: steps.check.outputs.build == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.pkg.outputs.version }}
-        run: |
-          tag="v$VERSION"
-          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
-            echo "$tag is already released; raise ## Version in the .toc to publish a new one."
-            exit 0
-          fi
-          gh release create "$tag" dist/*.zip --target "$GITHUB_SHA" --title "InstanceGPS $VERSION" --generate-notes
+          VERSION: ${{ steps.check.outputs.version }}
+        run: gh release create "v$VERSION" dist/*.zip --target "$GITHUB_SHA" --title "InstanceGPS $VERSION" --generate-notes
