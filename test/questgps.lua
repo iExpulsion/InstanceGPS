@@ -73,6 +73,12 @@ WorldMapFrame.shown = false
 -- standing at it, the arrow says so
 place(objective.x, objective.y, objective.f)
 print("arrived:", DN.wp.boss == objective and DN.wp.atBoss == true)
+-- ...and points down at the player, bobbing, rather than at a spot underfoot
+local bobbed, here = false, InstanceGPSArrow.Here
+InstanceGPSArrow.Here = function(self) bobbed = true return here(self) end
+MOCK.Tick(0.2)
+InstanceGPSArrow.Here = here
+print("points down:", bobbed)
 
 -- a skip stays with the objective as its count goes up: stops are keyed on QuestGPS's id, not the text
 local bandanas = QuestGPS.objectives[MAP][1]

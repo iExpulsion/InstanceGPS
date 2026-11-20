@@ -4,6 +4,9 @@ local DN, R = ns.DN, ns.Route
 
 local floor = math.floor
 
+-- Yards from the boss within which the arrow points down at the player
+DN.AT_BOSS_YARDS = 20
+
 local arrow = R.NewArrow({
 	name = "InstanceGPSArrow",
 	locked = function() return DN.opt.lockFrames end,
@@ -145,7 +148,12 @@ arrow:SetScript("OnUpdate", function(self, elapsed)
 		local w = DN.wp
 		if w.x then
 			local dist, atBoss = w.dist, w.atBoss
-			self:Point(DN.px, DN.py, GetPlayerFacing() or 0, w.x, w.y, atBoss and dist < 20)
+			-- at the boss the arrow points down at the player and bobs, as QuestGPS's does in an objective's area
+			if atBoss and dist < DN.AT_BOSS_YARDS then
+				self:Here()
+			else
+				self:Point(DN.px, DN.py, GetPlayerFacing() or 0, w.x, w.y, false)
+			end
 			local remain = atBoss and dist or DN.remaining or dist
 			local hint, hintValue = HintLine(w)
 			SetLines(w.boss.name, "%d yd", floor(remain), hint, hintValue)
