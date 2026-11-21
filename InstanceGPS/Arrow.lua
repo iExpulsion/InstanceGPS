@@ -62,19 +62,24 @@ local function HintLine(w)
 	elseif f and DN.inst and DN.pfloor and not DN.OnFloor(f, DN.pfloor)
 		and (DN.FirstFloor(DN.OwnLevels(DN.inst, f)) or 0) ~= 0 then
 		return "Level %d", DN.FirstFloor(DN.OwnLevels(DN.inst, f))
+	elseif w.boss and w.boss.note then
+		-- a quest stop's item to use (QuestGPS.lua), which says more than a patrol nearby
+		return w.boss.note
 	end
 	local patrol = DN:NearPatrol()
 	return patrol and "|cffff5050Patrols:|r %s" or "", patrol
 end
 
--- The first of a hint's items the player carries (DN.hintItems)
-local function CarriedItem(text)
+-- The first of a hint's items the player carries (DN.hintItems), else a quest stop's item while carried
+local function CarriedItem(text, stop)
 	local items = text and DN.hintItems[text]
 	if items then
 		for _, id in ipairs(items) do
 			if GetItemCount(id) > 0 then return id end
 		end
 	end
+	local item = stop and stop.item
+	return item and GetItemCount(item) > 0 and item or nil
 end
 
 -- A hint's item beside the arrow (Omokk's Head at Urok's pile): using an item that casts a spell is protected, so
@@ -157,7 +162,7 @@ arrow:SetScript("OnUpdate", function(self, elapsed)
 			local remain = atBoss and dist or DN.remaining or dist
 			local hint, hintValue = HintLine(w)
 			SetLines(w.boss.name, "%d yd", floor(remain), hint, hintValue)
-			ShowItem(type(w.portal) == "string" and CarriedItem(w.portal) or nil)
+			ShowItem(CarriedItem(type(w.portal) == "string" and w.portal or nil, w.boss))
 		else
 			self:Idle()
 			IdleLines()

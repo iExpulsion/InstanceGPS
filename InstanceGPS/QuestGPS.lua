@@ -154,6 +154,8 @@ function DN:UpdateQuestStops()
 			list[#list + 1] = {
 				quest = true, key = StopKey(e), qid = e.qid, kind = e.kind, name = e.text, title = e.title,
 				x = x, y = y, f = levels, anchor = anchor, onRoute = route,
+				-- what QuestGPS says to use there ("Use Filled Cerulean Vial on a Vylestem Vine"), and the item
+				note = e.note, item = e.item,
 			}
 		end
 	end

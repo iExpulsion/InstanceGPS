@@ -69,4 +69,25 @@ local keptHidden = b.shown
 MOCK.combat = nil
 MOCK.Fire("PLAYER_REGEN_ENABLED")
 print("arrow hidden:", keptHidden and not b.shown)
+
+-- a quest stop QuestGPS says to use an item at: its note under the arrow, and its item on the button while carried
+arrow.shown = true
+local said
+local realSetText = arrow.SetText
+arrow.SetText = function(self, title, sub, hint) said = hint return realSetText(self, title, sub, hint) end
+local function atQuest(item)
+	local w = DN.wp
+	w.x, w.y, w.dist, w.portal = 10, 10, 5, nil
+	w.boss = { quest = true, name = "Vylestem Vines healed: 6/8", note = "Use Filled Cerulean Vial on a Vylestem Vine",
+		item = item }
+	DN.px, DN.py = 0, 0
+	arrow.scripts.OnUpdate(arrow, 1)
+end
+atQuest(17696)
+print("quest note:", said == "Use Filled Cerulean Vial on a Vylestem Vine")
+print("quest item not carried:", not b.shown)
+MOCK.bags[17696] = 1
+atQuest(17696)
+print("quest item:", b.shown and b:GetAttribute("item") == "item:17696")
+arrow.SetText = realSetText
 print("hintitem test done")
