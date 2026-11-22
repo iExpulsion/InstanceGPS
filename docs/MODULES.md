@@ -147,6 +147,19 @@ InstanceGPS:SetBossMarks("myserver", nil)                              -- remove
 
 Set the whole table again when your marks change; the tracker shows the latest one.
 
+A module that works out something per instance or per boss can also read these:
+
+| Read | What it is |
+|---|---|
+| `InstanceGPS.inst` | The instance the player is in, or nil: `mapId` (the instance map), `name` (as the game names it), `bosses` and `routes`. |
+| `InstanceGPS:ActiveRoute()` | The route being followed, or nil; its `order` lists `inst.bosses` indexes in the order they're done. |
+| `InstanceGPS:IsKilled(boss)` | Whether a boss entry is down in this run. |
+| `InstanceGPS:Print(format, ...)` | A line in chat, as InstanceGPS's own. |
+
+And these events, besides `INSTANCE_CHANGED`: `RUN_CHANGED` when a boss is killed, a kill is undone by hand or the
+run resets, and `MODULE_OPTION` (below). Keep a module's own events to itself rather than firing them on
+`InstanceGPS`.
+
 ## Options for a Module
 
 A module with options of its own gets a page for them in InstanceGPS's options window, under Modules at the bottom of the sidebar, and InstanceGPS saves them with its own settings. A dropdown with more than a dozen choices opens a searchable list instead:
