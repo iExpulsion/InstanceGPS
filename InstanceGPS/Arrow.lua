@@ -120,8 +120,10 @@ local function ShowItem(id)
 			b:SetScale(arrow:GetEffectiveScale() / UIParent:GetEffectiveScale())
 			b:ClearAllPoints()
 			b:SetPoint("LEFT", UIParent, "BOTTOMLEFT", x + 6, y)
+			-- the arrow's own level: beside it, not over it, and one higher shows over a windowed world map that
+			-- covers the arrow
 			b:SetFrameStrata(arrow:GetFrameStrata())
-			b:SetFrameLevel(level + 1)
+			b:SetFrameLevel(level)
 			b:Show()
 		else
 			shownItem = nil
