@@ -82,70 +82,12 @@ local function CarriedItem(text, stop)
 	return item and GetItemCount(item) > 0 and item or nil
 end
 
--- A hint's item beside the arrow (Omokk's Head at Urok's pile): using an item that casts a spell is protected, so
--- it's a secure button on UIParent, placed over that spot on the arrow's layer and changed only out of combat (it
--- stays as it was during a fight)
-local itemButton, shownItem, itemX, itemY, itemLevel, itemCount
-local function ItemButton()
-	if not itemButton then
-		local b = CreateFrame("Button", "InstanceGPSArrowItem", UIParent, "SecureActionButtonTemplate")
-		b:SetSize(30, 30)
-		b:SetAttribute("type", "item")
-		b.icon = b:CreateTexture(nil, "ARTWORK")
-		b.icon:SetAllPoints()
-		b.count = b:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-		b.count:SetPoint("BOTTOMRIGHT", -2, 2)
-		b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
-		b:SetScript("OnEnter", function(self)
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-			GameTooltip:SetHyperlink("item:" .. shownItem)
-			GameTooltip:Show()
-		end)
-		b:SetScript("OnLeave", function() GameTooltip:Hide() end)
-		b:Hide()
-		itemButton, DN.itemButton = b, b
-	end
-	return itemButton
-end
-
+-- A hint's item beside the arrow (Omokk's Head at Urok's pile), or a quest stop's: RouteUtils' arrow button
+local itemButton = R.NewArrowButton(arrow, "InstanceGPSArrowItem")
+DN.itemButton = itemButton
 local function ShowItem(id)
-	local x, y, level = arrow:GetRight(), select(2, arrow:GetCenter()), arrow:GetFrameLevel()
-	if not InCombatLockdown() and (id ~= shownItem or (id and (x ~= itemX or y ~= itemY or level ~= itemLevel))) then
-		local b = ItemButton()
-		shownItem, itemX, itemY, itemLevel, itemCount = id, x, y, level, nil
-		if id and x then
-			b:SetAttribute("item", "item:" .. id)
-			b.icon:SetTexture(GetItemIcon(id) or "Interface\\Icons\\INV_Misc_QuestionMark")
-			-- at the arrow's scale, so its own offsets are the arrow's
-			b:SetScale(arrow:GetEffectiveScale() / UIParent:GetEffectiveScale())
-			b:ClearAllPoints()
-			b:SetPoint("LEFT", UIParent, "BOTTOMLEFT", x + 6, y)
-			-- the arrow's own level: beside it, not over it, and one higher shows over a windowed world map that
-			-- covers the arrow
-			b:SetFrameStrata(arrow:GetFrameStrata())
-			b:SetFrameLevel(level)
-			b:Show()
-		else
-			shownItem = nil
-			b:Hide()
-		end
-	end
-	if shownItem and shownItem == id then
-		local n = GetItemCount(id)
-		if n ~= itemCount then
-			itemCount = n
-			itemButton.count:SetText(n > 1 and n or "")
-		end
-	end
+	itemButton:Set(id and "item" or nil, id)
 end
-
--- a hidden arrow takes its item with it, once out of combat
-arrow:HookScript("OnHide", function() ShowItem(nil) end)
-local combatEnd = CreateFrame("Frame")
-combatEnd:RegisterEvent("PLAYER_REGEN_ENABLED")
-combatEnd:SetScript("OnEvent", function()
-	if not arrow:IsVisible() then ShowItem(nil) end
-end)
 
 local sinceUpdate = 0
 arrow:SetScript("OnUpdate", function(self, elapsed)

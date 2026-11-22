@@ -1,4 +1,4 @@
--- Vendored from RouteUtils v0.2.0-6-g354ce48. Change it there, then run tools/sync_route.py.
+-- Vendored from RouteUtils v0.2.0-8-g8ea8f80. Change it there, then run tools/sync_route.py.
 -- MIT License, Copyright (c) 2026 Expulsion.
 -- RouteUtils: route ordering and the pieces that guide a player along a route in WoW 3.3.5: a turning arrow,
 -- dots along the path on the minimap and the world map, and the geometry behind them. Each addon ships its own
@@ -314,7 +314,9 @@ function R.MinimapEdge(sx, sy, radius, margin, square)
 	return sx * k, sy * k
 end
 
--- Gold dots along a path (world points) on the minimap. path:Draw(px, py, facing, pts, n), path:Clear().
+-- Gold dots along a path (world points) on the minimap. path:Draw(px, py, facing, pts, n, whole), path:Clear().
+-- A path is drawn from its start for as far as the minimap reaches, as a way from the player; `whole` draws every
+-- part of it the minimap shows, for a path that doesn't start at the player (a creature's patrol).
 function R.NewMinimapPath(color)
 	local frame = CreateFrame("Frame", nil, Minimap)
 	frame:SetAllPoints(Minimap)
@@ -333,11 +335,11 @@ function R.NewMinimapPath(color)
 			t:SetPoint("CENTER", frame, "CENTER", sx, sy)
 		end
 	end
-	function path:Draw(px, py, facing, pts, n)
+	function path:Draw(px, py, facing, pts, n, whole)
 		vscale, vradius, vsquare, vc, vs = R.MinimapView(frame, facing)
 		vx, vy = px, py
 		dots:Begin()
-		R.Sample(pts, n, 7 / vscale, 2 * vradius / vscale, mark)
+		R.Sample(pts, n, 7 / vscale, whole and math.huge or 2 * vradius / vscale, mark)
 		dots:Finish()
 	end
 	function path:Clear()
@@ -592,6 +594,83 @@ function R.NewArrow(opts)
 		hint:SetText(h or "")
 	end
 	return arrow
+end
+
+-- A button beside an arrow that uses an item or casts a spell (a quest item to use there, a profession to open).
+-- Using either is protected, so it's a secure button on UIParent, laid over the spot right of the arrow at the
+-- arrow's scale, strata and own frame level (one level up shows through a windowed world map covering the arrow),
+-- and changed only out of combat: during a fight it stays as it was. It goes when the arrow hides, once out of
+-- combat. button:Set(kind, value), with kind "item" (value an item ID) or "spell" (a spell name), or nil to hide;
+-- call it every frame: it changes nothing, and makes no garbage, while what it shows and where stay the same.
+-- opts.tooltip(tip, kind, value) fills its tooltip (default: the item's, or "Open <spell>").
+function R.NewArrowButton(arrow, name, opts)
+	opts = opts or {}
+	local b = CreateFrame("Button", name, UIParent, "SecureActionButtonTemplate")
+	b:SetSize(30, 30)
+	local icon = b:CreateTexture(nil, "ARTWORK")
+	icon:SetAllPoints()
+	local count = b:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+	count:SetPoint("BOTTOMRIGHT", -2, 2)
+	b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+	b.icon, b.count = icon, count
+	b:Hide()
+
+	local kind, value, placedX, placedY, placedLevel, shownCount
+	b:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		if opts.tooltip then
+			opts.tooltip(GameTooltip, kind, value)
+		elseif kind == "item" then
+			GameTooltip:SetHyperlink("item:" .. value)
+		else
+			GameTooltip:AddLine("Open " .. tostring(value))
+		end
+		GameTooltip:Show()
+	end)
+	b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+	function b:Set(newKind, newValue)
+		local shown = newKind ~= nil and newValue ~= nil
+		local x, y, level = arrow:GetRight(), select(2, arrow:GetCenter()), arrow:GetFrameLevel()
+		local moved = shown and (x ~= placedX or y ~= placedY or level ~= placedLevel)
+		if not InCombatLockdown() and (newKind ~= kind or newValue ~= value or moved) then
+			kind, value = shown and newKind or nil, shown and newValue or nil
+			placedX, placedY, placedLevel, shownCount = x, y, level, nil
+			if shown and x then
+				b:SetAttribute("type", kind)
+				b:SetAttribute("item", kind == "item" and ("item:" .. value) or nil)
+				b:SetAttribute("spell", kind == "spell" and value or nil)
+				local tex = kind == "item" and GetItemIcon(value) or (kind == "spell" and select(3, GetSpellInfo(value)))
+				icon:SetTexture(tex or "Interface\\Icons\\INV_Misc_QuestionMark")
+				-- at the arrow's scale, so the arrow's own coordinates place it
+				b:SetScale(arrow:GetEffectiveScale() / UIParent:GetEffectiveScale())
+				b:ClearAllPoints()
+				b:SetPoint("LEFT", UIParent, "BOTTOMLEFT", x + 6, y)
+				b:SetFrameStrata(arrow:GetFrameStrata())
+				b:SetFrameLevel(level)
+				b:Show()
+			else
+				kind, value = nil, nil
+				b:Hide()
+			end
+		end
+		if kind == "item" and kind == newKind and value == newValue then
+			local n = GetItemCount(value) or 0
+			if n ~= shownCount then
+				shownCount = n
+				count:SetText(n > 1 and n or "")
+			end
+		end
+	end
+
+	-- a hidden arrow takes its button with it, once out of combat
+	arrow:HookScript("OnHide", function() b:Set(nil) end)
+	local combatEnd = CreateFrame("Frame")
+	combatEnd:RegisterEvent("PLAYER_REGEN_ENABLED")
+	combatEnd:SetScript("OnEvent", function()
+		if not arrow:IsVisible() then b:Set(nil) end
+	end)
+	return b
 end
 
 -- "42 yd", "1.5k yd"
