@@ -117,10 +117,10 @@ MOCK.Tick(1.1)
 print("card refreshes:", QuestGPS.cardRefreshes - before <= 1 and QuestGPS.refreshes == beforeFull)
 
 -- QuestGPS hiding its tracker in dungeons, or the option off, brings InstanceGPS's own back
-QuestGPS.db.tracker.inDungeon = "hide"
+QuestGPS.trackerInDungeon = false
 DN:RefreshTracker()
 local hidden = DN.tracker.shown and QuestGPS.Card() == nil
-QuestGPS.db.tracker.inDungeon = "show"
+QuestGPS.trackerInDungeon = true
 DN.opt.questTracker = false
 DN:RefreshTracker()
 print("own tracker back:", hidden and DN.tracker.shown and QuestGPS.Card() == nil)
@@ -132,9 +132,13 @@ DN:UpdateQuestStops()
 MOCK.Tick(0.2)
 print("stops off:", #DN.questStops == 0)
 
+-- inside, InstanceGPS's arrow leading claims the guide: QuestGPS's arrow steps aside
+local claimed = QuestGPS.guide ~= nil and QuestGPS.guide() == true
+
 -- outside, at the instance's door, InstanceGPS's arrow is gone: QuestGPS's leads there
 MOCK.inInstance = false
 MOCK.Fire("ZONE_CHANGED_NEW_AREA")
 MOCK.Tick(0.2)
 print("outside:", DN.inst == nil and not DN.arrow.shown and QuestGPS.Card() == nil)
+print("guide claimed inside, released outside:", claimed and QuestGPS.guide() == false)
 print("questgps test done")

@@ -34,7 +34,7 @@ CHECKS = [
     ("questgps", "questgps.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
      ["card:\ttrue", "quest stops:\ttrue", "turn-in first:\ttrue", "skipped:\ttrue", "objective next:\ttrue",
       "arrived:\ttrue", "points down:\ttrue", "skip kept:\ttrue", "finished:\ttrue", "levels:\ttrue", "card refreshes:\ttrue", "own tracker back:\ttrue", "stops off:\ttrue",
-      "outside:\ttrue", "questgps test done"]),
+      "outside:\ttrue", "guide claimed inside, released outside:\ttrue", "questgps test done"]),
     ("quest stop first pass", "questpass.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},
      ["first pass:\ttrue", "own level:\ttrue", "level of:\ttrue", "questpass test done"]),
     ("quest focus", "questfocus.lua", {"DN_BEFORE": os.path.join("fixtures", "questgps_mock.lua")},

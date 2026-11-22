@@ -1,8 +1,9 @@
--- InstanceGPS with QuestGPS (an optional dependency, docs/MODULES.md "Other Addons" in QuestGPS):
+-- InstanceGPS with QuestGPS (an optional dependency, through QuestGPS.API: docs/MODULES.md "Other Addons" in
+-- QuestGPS):
 -- * the quest objectives QuestGPS knows inside this instance become stops on the route (DN.questStops), led to by
 --   the arrow and shown on the dungeon map;
--- * while QuestGPS's tracker is on, InstanceGPS's boss tracker steps aside for a card at the top of QuestGPS's.
--- QuestGPS has no position inside instances, so its arrow is already gone in here; InstanceGPS's takes over.
+-- * while QuestGPS's tracker is on, InstanceGPS's boss tracker steps aside for a card at the top of QuestGPS's;
+-- * while InstanceGPS's arrow leads, QuestGPS's steps aside (SetInstanceGuide).
 local _, ns = ...
 local DN = ns.DN
 
@@ -20,22 +21,18 @@ local HEIGHT_WEIGHT = 3
 local NONE = {}
 local OnFloor = DN.OnFloor
 
-local function Q()
-	return _G.QuestGPS
-end
-
--- QuestGPS with the hooks InstanceGPS uses (older versions have none)
+-- QuestGPS's API, looked up at use time; nil without QuestGPS, or with one older than it
 function DN:QuestGPS()
-	local q = Q()
-	return q and q.InstanceObjectives and q.TrackerFrame and q.TrackerFrame.AddCard and q or nil
+	local q = _G.QuestGPS
+	local api = type(q) == "table" and q.API
+	return api and (api.version or 0) >= 1 and api or nil
 end
 
 -------------------------------------------------------------------------------- quest stops
 
--- An objective's key: QuestGPS's id ("qid:index"), the same while its count goes up. Before QuestGPS gave ids, the
--- quest, its kind and the text without its count ("Vault Keeper slain: 0/2" -> "Vault Keeper slain").
+-- An objective's key: QuestGPS's id ("qid:index"), the same while its count goes up
 local function StopKey(e)
-	return e.id or (e.qid .. ":" .. e.kind .. ":" .. ((e.text or ""):gsub(":%s*%d+%s*/%s*%d+%s*$", "")))
+	return e.id
 end
 
 -- The levels two masks share, as a mask (0 for none)
@@ -176,15 +173,18 @@ local function Changed()
 end
 DN:On("INSTANCE_CHANGED", Changed)
 DN:On("ROUTE_CHANGED", Changed)
+-- Whether InstanceGPS's arrow leads now, for QuestGPS's to step aside
+function DN:Guiding()
+	return self.inst ~= nil and self.arrow ~= nil and self.arrow:IsShown() and true or false
+end
+
 DN:On("LOADED", function()
 	local q = DN:QuestGPS()
-	if q and q.On then
-		q.On("QGPS_STATE_CHANGED", Changed)
-		-- a focused quest not taken yet can start in here (an item a boss drops)
-		q.On("QGPS_FOCUS_CHANGED", Changed)
-	end
-	if q and q.AddLevelHook then
+	if q then
+		-- the log, the focus (a quest not taken yet can start in here) or where to go changing
+		q.OnInstanceObjectivesChanged(Changed)
 		q.AddLevelHook(function(mapId, x, y, z, level) return DN:LevelOf(mapId, x, y, z, level) end)
+		q.SetInstanceGuide(function() return DN:Guiding() end)
 	end
 end)
 DN:On("QUESTS_CHANGED", function()
@@ -197,9 +197,7 @@ end)
 -- can fold or hide its tracker in dungeons; then InstanceGPS's own stays.
 function DN:InQuestTracker()
 	local q = self:QuestGPS()
-	local s = q and q.db and q.db.tracker
-	return (s and s.enabled and self.opt.questTracker and s.inDungeon ~= "hide" and s.inDungeon ~= "minimize")
-		and true or false
+	return (q and self.opt.questTracker and q.TrackerInDungeon()) and true or false
 end
 
 -- The bosses on the active route: how many there are, how many are down, and the ones after `from` still open
@@ -216,6 +214,17 @@ local function Progress(self, from)
 		end
 	end
 	return total, done, after
+end
+
+-- How many bosses on the active route are down (Progress's count, with no list made)
+function DN:BossesDown()
+	local inst, run, route = self.inst, self.run, self:ActiveRoute()
+	local done = 0
+	for _, bi in ipairs(inst and run and route and route.order or NONE) do
+		local b = inst.bosses[bi]
+		done = done + ((self:BossAvailable(b) and run.killed[b.id]) and 1 or 0)
+	end
+	return done
 end
 
 local function CardMenu()
@@ -273,33 +282,27 @@ function DN:QuestCard()
 	return card
 end
 
--- QuestGPS draws the card when asked: once a second when the card would say something else, at once on events.
--- RefreshCards redraws just the cards (the whole tracker only when a card comes or goes); a QuestGPS without it
--- redraws the whole tracker, so the distance counts in steps of 5 yards there.
-local shownKey
+-- QuestGPS draws the card when asked: once a second when the card would say something else (the next target, the
+-- yards left, the bosses down), at once on events. RefreshCards redraws just the cards.
+local shownTarget, shownYards, shownDone, shownOn
 function DN:RefreshQuestCard(force)
 	local q = self:QuestGPS()
-	local tf = q and q.TrackerFrame
-	local redraw = tf and (tf.RefreshCards or tf.Refresh)
-	if redraw then
-		local key = "none"
-		if self:InQuestTracker() and self.inst and self.run then
-			local w = self.wp
-			local _, done = Progress(self)
-			local step = tf.RefreshCards and 1 or 5
-			key = ("%s|%s|%d"):format(tostring(w.boss and w.boss.name),
-				tostring(self.remaining and math.floor(self.remaining / step)), done)
-		end
-		if force or key ~= shownKey then
-			shownKey = key
-			redraw()
+	if q then
+		local on = self:InQuestTracker() and self.inst ~= nil and self.run ~= nil
+		local w = self.wp
+		local target = on and w.boss or nil
+		local yards = on and self.remaining and math.floor(self.remaining) or nil
+		local done = on and self:BossesDown() or nil
+		if force or on ~= shownOn or target ~= shownTarget or yards ~= shownYards or done ~= shownDone then
+			shownOn, shownTarget, shownYards, shownDone = on, target, yards, done
+			q.RefreshCards()
 		end
 	end
 end
 
 do
 	local q = DN:QuestGPS()
-	if q then q.TrackerFrame.AddCard(function() return DN:QuestCard() end) end
+	if q then q.AddCard(function() return DN:QuestCard() end) end
 end
 
 local ticker = CreateFrame("Frame")
