@@ -29,24 +29,36 @@ local function PerMinute(fn, perSecond, seconds)
 end
 
 -- (budget KB a minute: what each made when this test was written)
--- (2026-11-22: core 267.2, tracker 20.3, all 282.8; Nav's Locate builds its segment list and scorer each pass)
-local BUDGET = { core = 270, tracker = 21, all = 285 }
+-- (first written at core 267.2, tracker 20.3, all 282.8, before Nav's Locate reused its segment list and scorer and
+-- the tracker redrew only what changed; the run timer's text is the one string a second the tracker may write)
+local BUDGET = { core = 0, tracker = 0, timer = 21, all = 5 }
 
 local core = PerMinute(function()
 	MOCK.now = MOCK.now + 0.1
 	DN.scripts.OnUpdate(DN, 0.1)
 end, 10, 60)
-local tracker = PerMinute(function()
+-- the boss tracker as it's seen: shown, with QuestGPS's tracker not taking its place (a hidden frame gets no ticks
+-- in the game). Its run timer changes every second, and writing it is the one string it may make.
+QuestGPS.trackerInDungeon = false
+DN:RefreshTracker()
+local timer = PerMinute(function()
 	MOCK.now = MOCK.now + 1
 	InstanceGPSTracker.scripts.OnUpdate(InstanceGPSTracker, 1)
 end, 1, 120)
+-- ...and with the clock held, what's left is the rows: nothing to redraw standing still
+local tracker = PerMinute(function()
+	InstanceGPSTracker.scripts.OnUpdate(InstanceGPSTracker, 1)
+end, 1, 120)
+QuestGPS.trackerInDungeon = true
+DN:RefreshTracker()
 local all = PerMinute(function()
 	MOCK.now = MOCK.now + 0.05
 	MOCK.Tick(0.05)
 end, 20, 60)
 
-print(("core tick: %.1f KB/min, boss tracker: %.1f KB/min, all ticks: %.1f KB/min"):format(core, tracker, all))
+print(("core tick: %.1f KB/min, boss tracker: %.1f KB/min, its timer: %.1f KB/min, all ticks: %.1f KB/min")
+	:format(core, tracker, timer, all))
 print("core tick within budget:", core <= BUDGET.core + 1)
-print("boss tracker within budget:", tracker <= BUDGET.tracker + 1)
+print("boss tracker within budget:", tracker <= BUDGET.tracker + 1 and timer <= BUDGET.timer + 1)
 print("all ticks within budget:", all <= BUDGET.all + 1)
 print("garbage ticks test done")

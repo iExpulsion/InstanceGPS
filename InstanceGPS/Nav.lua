@@ -31,6 +31,17 @@ local LEG_SNAP = 40       -- yards: farther than this from the current leg, sear
 
 local OnFloor = DN.OnFloor
 
+-- Each segment's distance from the player, reused by every Locate (it runs ten times a second, and only reads the
+-- segments it has just written)
+local segs = {}
+
+-- A segment's distance, on a tie the part nearest our progress `hint` winning, a step back weighing more than a step
+-- ahead
+local function Score(k, hint)
+	if not hint then return segs[k] end
+	return segs[k] + (k < hint and (hint - k) * 0.5 or (k - hint) * 0.3)
+end
+
 -- Index (1-based point number) of the route position the player is at, chosen so
 -- that routes passing the same corridor twice use the pass that leads to `target`.
 -- Only segments first..last are considered.
@@ -39,7 +50,6 @@ local function Locate(route, px, py, pf, target, first, last, hint)
 	local n = #p / 3
 	if n < 2 then return 1, 0 end
 	first, last = first or 1, math.min(last or n - 1, n - 1)
-	local segs = {}
 	local best = huge
 	for i = first, last do
 		local a, b = (i - 1) * 3, i * 3
@@ -62,16 +72,11 @@ local function Locate(route, px, py, pf, target, first, last, hint)
 	while i <= last do
 		if segs[i] <= best + SAME_PASS then
 			-- Parts of a pass can lie on top of each other: a route that turns around (out to an
-			-- NPC and back), or a spiral staircase whose turns stack. On a tie the part nearest
-			-- our progress wins, a step back weighing more than a step ahead.
-			local function score(k)
-				if not hint then return segs[k] end
-				return segs[k] + (k < hint and (hint - k) * 0.5 or (k - hint) * 0.3)
-			end
+			-- NPC and back), or a spiral staircase whose turns stack (Score)
 			local runStart, runBest = i, i
 			while i + 1 <= last and segs[i + 1] <= best + SAME_PASS do
 				i = i + 1
-				if score(i) < score(runBest) then runBest = i end
+				if Score(i, hint) < Score(runBest, hint) then runBest = i end
 			end
 			if runBest < target then before = runBest elseif not after then after = runBest end
 			if hint then

@@ -251,9 +251,11 @@ function DN:RefreshTracker()
 
 	local next = self:NextBoss()
 	local shown, done, total = 0, 0, 0
+	self.trackerNextRow = nil
 	local function add(text, right, boss, routeIdx, note)
 		shown = shown + 1
 		local r = GetRow(shown)
+		if boss and boss == next then self.trackerNextRow = r end
 		r:ClearAllPoints()
 		r:SetPoint("TOPLEFT", inset, y)
 		r:SetPoint("TOPRIGHT", -inset, y)
@@ -328,21 +330,46 @@ function DN:RefreshTracker()
 	end
 	for i = shown + 1, #rows do rows[i]:Hide() end
 	self.trackerDone, self.trackerTotal = done, total
+	-- what the rows were drawn for: the once-a-second tick redraws them all only when one of these changes
+	self.trackerFor = self.trackerFor or {}
+	local drawn = self.trackerFor
+	drawn.next, drawn.navTarget, drawn.leading, drawn.route = next, self.navTarget, self.wp.boss, self.routeIndex
+	drawn.yards = self.remaining and self.px and self.wp.boss == next and math.floor(self.remaining) or nil
 	f:SetHeight(-y + inset)
 end
 
--- timer + progress text, once a second
+-- The next boss's distance, the one row that changes as the player walks; the rest stay as drawn
+local function RefreshDistance(self)
+	local drawn, row = self.trackerFor, self.trackerNextRow
+	local yards = self.remaining and self.px and self.wp.boss == drawn.next and math.floor(self.remaining) or nil
+	if row and yards ~= drawn.yards then
+		drawn.yards = yards
+		row.right:SetText(yards and ("%d yd"):format(yards) or "")
+	end
+end
+
+-- timer + progress text, once a second, and the next boss's distance; everything again only when what the rows were
+-- drawn for changed (a kill, another target or route)
 local tick = 0
+local shownSecond, shownCleared
 f:SetScript("OnUpdate", function(_, elapsed)
 	tick = tick + elapsed
 	local run = DN.run
 	if tick >= 1 and run then
 		tick = 0
 		local t = run.cleared or (time() - run.started)
-		timerText:SetText(("%s%d/%d|r %s"):format(run.cleared and "|cff33ff33" or "|cffffffff",
-			DN.trackerDone or 0, DN.trackerTotal or 0, DN.FormatTime(t)))
-		-- refresh the distance on the next-boss row
-		DN:RefreshTracker()
+		if t ~= shownSecond or run.cleared ~= shownCleared then
+			shownSecond, shownCleared = t, run.cleared
+			timerText:SetText(("%s%d/%d|r %s"):format(run.cleared and "|cff33ff33" or "|cffffffff",
+				DN.trackerDone or 0, DN.trackerTotal or 0, DN.FormatTime(t)))
+		end
+		local drawn = DN.trackerFor
+		if not drawn or DN:NextBoss() ~= drawn.next or DN.navTarget ~= drawn.navTarget or DN.wp.boss ~= drawn.leading
+			or DN.routeIndex ~= drawn.route then
+			DN:RefreshTracker()
+		elseif f:IsShown() then
+			RefreshDistance(DN)
+		end
 	end
 end)
 
