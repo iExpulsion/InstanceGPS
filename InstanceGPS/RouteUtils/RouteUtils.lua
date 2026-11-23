@@ -1,4 +1,4 @@
--- Vendored from RouteUtils v0.2.0-8-g8ea8f80. Change it there, then run tools/sync_route.py.
+-- Vendored from RouteUtils v0.2.0-9-g645910a. Change it there, then run tools/sync_route.py.
 -- MIT License, Copyright (c) 2026 Expulsion.
 -- RouteUtils: route ordering and the pieces that guide a player along a route in WoW 3.3.5: a turning arrow,
 -- dots along the path on the minimap and the world map, and the geometry behind them. Each addon ships its own
@@ -612,10 +612,22 @@ function R.NewArrowButton(arrow, name, opts)
 	local count = b:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
 	count:SetPoint("BOTTOMRIGHT", -2, 2)
 	b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
-	b.icon, b.count = icon, count
+	local cooldown = CreateFrame("Cooldown", nil, b, "CooldownFrameTemplate")
+	cooldown:SetAllPoints()
+	b.icon, b.count, b.cooldown = icon, count, cooldown
 	b:Hide()
 
 	local kind, value, placedX, placedY, placedLevel, shownCount
+
+	local function ShowCooldown()
+		local start, duration, enable = 0, 0, 0
+		if kind == "item" then
+			start, duration, enable = GetItemCooldown(value)
+		elseif kind == "spell" then
+			start, duration, enable = GetSpellCooldown(value)
+		end
+		CooldownFrame_SetTimer(cooldown, start or 0, duration or 0, enable or 0)
+	end
 	b:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		if opts.tooltip then
@@ -653,6 +665,7 @@ function R.NewArrowButton(arrow, name, opts)
 				kind, value = nil, nil
 				b:Hide()
 			end
+			ShowCooldown()
 		end
 		if kind == "item" and kind == newKind and value == newValue then
 			local n = GetItemCount(value) or 0
@@ -665,10 +678,16 @@ function R.NewArrowButton(arrow, name, opts)
 
 	-- a hidden arrow takes its button with it, once out of combat
 	arrow:HookScript("OnHide", function() b:Set(nil) end)
-	local combatEnd = CreateFrame("Frame")
-	combatEnd:RegisterEvent("PLAYER_REGEN_ENABLED")
-	combatEnd:SetScript("OnEvent", function()
-		if not arrow:IsVisible() then b:Set(nil) end
+	local events = CreateFrame("Frame")
+	events:RegisterEvent("PLAYER_REGEN_ENABLED")
+	events:RegisterEvent("BAG_UPDATE_COOLDOWN")
+	events:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+	events:SetScript("OnEvent", function(_, event)
+		if event == "PLAYER_REGEN_ENABLED" and not arrow:IsVisible() then
+			b:Set(nil)
+		elseif event ~= "PLAYER_REGEN_ENABLED" and kind then
+			ShowCooldown()
+		end
 	end)
 	return b
 end
