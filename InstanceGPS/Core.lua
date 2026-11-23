@@ -653,34 +653,41 @@ end
 
 local events = {}
 
--- The client stores the per-character file by name, so a new character reusing a deleted one's name would inherit
--- it. UnitGUID("player") is nil at ADDON_LOADED on a fresh login, so this runs again at PLAYER_LOGIN, when other
--- files already hold its subtables: a reset empties them in place.
-local function claimCharFile(t)
+-- Each character's data lives in the account file by GUID: characters can share a name, and with it the client's
+-- per-character file, which held it before and is taken over only by the character that stamped it.
+-- UnitGUID("player") is nil at ADDON_LOADED on a fresh login, so the data is found again at PLAYER_LOGIN, when
+-- other files already hold its subtables: the saved entries are copied into them.
+local function claimCharData()
 	local guid = UnitGUID("player")
-	if guid and t.guid and t.guid ~= guid then
-		for k, v in pairs(t) do
-			if type(v) == "table" then
-				for key in pairs(v) do v[key] = nil end
-			else
-				t[k] = nil
+	local file = InstanceGPSCharDB
+	local adopt = guid and file and file.guid == guid
+	local saved = guid and (DN.db.chars[guid] or adopt and file)
+	if saved and saved ~= DN.char then
+		for k, v in pairs(saved) do
+			local live = DN.char[k]
+			if type(v) == "table" and type(live) == "table" then
+				for key, value in pairs(v) do live[key] = value end
+			elseif k ~= "guid" then
+				DN.char[k] = v
 			end
 		end
 	end
-	t.guid = guid or t.guid
+	if adopt then InstanceGPSCharDB = nil end
+	if guid then DN.db.chars[guid] = DN.char end
 end
 
 function events:PLAYER_LOGIN()
-	claimCharFile(DN.char)
+	claimCharData()
 	DN:Fire("LOGIN")
 end
 
 function events:ADDON_LOADED(name)
 	if name ~= ADDON then return end
 	InstanceGPSDB = InstanceGPSDB or {}
-	InstanceGPSCharDB = InstanceGPSCharDB or {}
-	claimCharFile(InstanceGPSCharDB)
-	local db, char = InstanceGPSDB, InstanceGPSCharDB
+	InstanceGPSDB.chars = InstanceGPSDB.chars or {}
+	DN.db, DN.char = InstanceGPSDB, {}
+	claimCharData()
+	local db, char = InstanceGPSDB, DN.char
 	db.opt = db.opt or {}
 	for k, v in pairs(defaults) do
 		if db.opt[k] == nil then db.opt[k] = v end

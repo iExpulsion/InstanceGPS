@@ -11,8 +11,8 @@ OVERRIDE = {"DN_MODULES": os.path.join("fixtures", "override_brs.lua")}
 CHECKS = [
     ("ui", "ui.lua", {}, ["boss tooltip fired:\ttrue", "tracker note:\ttrue", "boss mark:\ttrue", "patrol warning:\ttrue"]),
     ("reset", "reset.lua", {}, []),
-    ("character file", "chardb.lua", {}, ["other character's file reset:\ttrue", "own file kept:\ttrue", "unknown at load, kept:\ttrue",
-      "reset at login in place:\ttrue", "chardb test done"]),
+    ("character data", "chardb.lua", {}, ["other character's file left:\ttrue", "own file adopted:\ttrue",
+      "same name, own runs:\ttrue", "unknown at load, empty:\ttrue", "filled at login in place:\ttrue", "chardb test done"]),
     ("tracker position", "tracker.lua", {},
      ["top left:\ttrue", "bottom right:\ttrue", "not user placed:\ttrue", "corner kept:\ttrue", "tracker test done"]),
     ("hint items", "hintitem.lua", {},
