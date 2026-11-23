@@ -173,6 +173,9 @@ function InCombatLockdown() return mock.combat end
 mock.bags = {}
 function GetItemCount(id) return mock.bags[id] or 0 end
 function GetItemIcon(id) return "Interface\\Icons\\Item" .. id end
+function GetItemCooldown() return 0, 0, 1 end
+function GetSpellCooldown() return 0, 0, 1 end
+function CooldownFrame_SetTimer() end
 -- record texture placement so tests can inspect what the path views draw
 mock.placed = 0
 -- achievement statistics: mock.stat[id] = count (string "--" when never done, like the client)
