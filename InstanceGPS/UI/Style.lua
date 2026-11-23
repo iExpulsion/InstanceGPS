@@ -1,4 +1,4 @@
--- Vendored from MaterialCraftUI v1.7.1. Change it there, then run tools/sync_style.py.
+-- Vendored from MaterialCraftUI v1.7.1-1-g3ca76c7. Change it there, then run tools/sync_style.py.
 -- MIT License, Copyright (c) 2026 Expulsion: https://github.com/iExpulsion/MaterialCraftUI
 -- MaterialCraftUI: a flat dark style kit for WoW 3.3.5 addons on Material 3 color roles: one accent color, 1px
 -- borders, state layers and a few button kinds. Each addon ships its own copy, listed in its .toc, and reads it
@@ -758,6 +758,43 @@ function S.Slider(parent, width, min, max, step, onChange, format)
 	s:SetValue(min)
 	paintSlider(s)
 	return s
+end
+
+-- a skin without its own progress bar draws Material's
+local function progressSkin() return skin.progressBar and skin or skins.material end
+
+-- A bar filled to how much of something is done, `width` by `height` (4 by default): p:SetValue(done, total) fills
+-- it to done / total and turns it the good color once all is done. Writes nothing when the value is unchanged, so it
+-- can be set every frame.
+function S.ProgressBar(parent, width, height)
+	local p = CreateFrame("Frame", nil, parent)
+	p:SetSize(width, height or 4)
+	p.share, p.complete = 0, false
+	p.skin = progressSkin()
+	p.skin.progressBar(p)
+	local function layout(self)
+		local w = (self:GetWidth() or 0) * self.share
+		if w > 0 then
+			self.fill:SetWidth(w)
+			self.fill:Show()
+		else
+			self.fill:Hide()
+		end
+	end
+	function p:SetValue(done, total)
+		local share = (total or 0) > 0 and math.max(0, math.min(1, done / total)) or 0
+		local complete = (total or 0) > 0 and done >= total
+		if share ~= self.share or complete ~= self.complete then
+			self.share, self.complete = share, complete
+			layout(self)
+			self.skin.paintProgress(self)
+		end
+	end
+	function p:GetValue() return self.share end
+	p:SetScript("OnSizeChanged", layout)
+	layout(p)
+	p.skin.paintProgress(p)
+	return p
 end
 
 local menus, inputs, dismissers = {}, {}, {}
@@ -2413,6 +2450,17 @@ S.RegisterSkin("material", {
 		thumb:SetVertexColor(unpack(c))
 		s.fill:SetVertexColor(unpack(s.usable and S.colors.accent or S.colors.disabled))
 		s.valueText:SetTextColor(unpack(s.usable and S.colors.text or S.colors.disabled))
+	end,
+	-- a flat track with the accent filling it from the left, the good color once complete
+	progressBar = function(p)
+		p.track = S.Solid(p, "BACKGROUND", S.colors.border)
+		p.track:SetAllPoints()
+		p.fill = S.Solid(p, "ARTWORK", S.colors.accent)
+		p.fill:SetPoint("TOPLEFT")
+		p.fill:SetPoint("BOTTOMLEFT")
+	end,
+	paintProgress = function(p)
+		p.fill:SetVertexColor(unpack(p.complete and S.colors.good or S.colors.accent))
 	end,
 	-- the soft border at rest, the stronger outline on hover, the accent while focused
 	paintInput = function(e)
