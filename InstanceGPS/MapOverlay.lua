@@ -3,6 +3,7 @@ local _, ns = ...
 local DN, R = ns.DN, ns.Route
 
 local overlay = CreateFrame("Frame", "InstanceGPSMapOverlay", WorldMapButton)
+local NONE = {}
 
 -- a quest stop's ring (QuestGPS.lua): the quest, the objective, and a click to skip it or bring it back
 local function QuestOnEnter(self)
@@ -164,6 +165,25 @@ function DN:RefreshMap()
 	mapPath:Finish()
 	mapStops:Finish()
 end
+
+-- Where the boss rings are on the map shown now, for other addons to keep their marks off them (InstanceGPS.API):
+-- fills `out` with three numbers a ring, its x and y (0..1 of the map) and its largest size in pixels, and returns
+-- how many numbers it filled. Worked out from the instance, so it holds before the rings are drawn.
+local function BossMarks(out)
+	local inst = ShownInstance(DN)
+	local level = inst and DN:MapLevel(inst)
+	local n = 0
+	for _, b in ipairs(inst and inst.floors[level] and inst.bosses or NONE) do
+		if b.x and DN.OnFloor(b.f, level) then
+			out[n + 1], out[n + 2] = DN:WorldToMap(inst, level, b.x, b.y)
+			out[n + 3] = R.STOP_LOOK.next[1]
+			n = n + 3
+		end
+	end
+	for i = n + 1, #out do out[i] = nil end
+	return n
+end
+DN.API = { version = 1, BossMarks = BossMarks }
 
 overlay:RegisterEvent("WORLD_MAP_UPDATE")
 overlay:SetScript("OnEvent", function() DN:RefreshMap() end)

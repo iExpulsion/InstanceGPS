@@ -1,5 +1,6 @@
 -- The dungeon map overlay: boss rings in RouteUtils' looks by state (next, numbered, killed), the current leg's
--- dots bright and later legs faint, and nothing drawn with the overlay option off
+-- dots bright and later legs faint, where the rings are for other addons (API.BossMarks), and nothing drawn with the
+-- overlay option off
 local DN, R = NS.DN, NS.Route
 MOCK.now = 1000000
 MOCK.Fire("ADDON_LOADED", "InstanceGPS")
@@ -42,9 +43,20 @@ DN:RefreshMap()
 r = rings()
 print("killed ring:", r.done == 1 and r.next == 1)
 
+-- other addons read where the boss rings are (InstanceGPS.API.BossMarks): x and y as 0..1 of the map and the largest
+-- ring's size, a ring each, for every boss on this level
+local marks = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 }
+local n = InstanceGPS.API.BossMarks(marks)
+local onLevel = 0
+for _, b in ipairs(inst.bosses) do onLevel = onLevel + ((b.x and DN.OnFloor(b.f, MOCK.level)) and 1 or 0) end
+local bx, by = DN:WorldToMap(inst, MOCK.level, inst.bosses[1].x, inst.bosses[1].y)
+print("boss marks:", n == onLevel * 3 and #marks == n and marks[3] == R.STOP_LOOK.next[1]
+	and (not DN.OnFloor(inst.bosses[1].f, MOCK.level) or (marks[1] == bx and marks[2] == by)))
+
 -- the overlay option off draws nothing
 DN.opt.mapOverlay = false
 DN:RefreshMap()
 r = rings()
 bright, faint = dots()
 print("option off:", next(r) == nil and bright == 0 and faint == 0)
+print("no marks off:", InstanceGPS.API.BossMarks(marks) == 0 and marks[1] == nil)

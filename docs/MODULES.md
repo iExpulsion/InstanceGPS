@@ -177,6 +177,14 @@ InstanceGPS:On("MODULE_OPTION", function(module, key, value) ... end)   -- one c
 
 The table reads saved values once InstanceGPS's settings have loaded and the defaults until then, so read it when you need a value rather than copying it at load.
 
+## Other Addons
+
+Addons that work alongside InstanceGPS, such as QuestGPS, use `InstanceGPS.API` and nothing else of InstanceGPS's: look it up when it's needed (`InstanceGPS and InstanceGPS.API`), not at load, and check `API.version` (1 now; it goes up when something is added).
+
+| `InstanceGPS.API.` | Use |
+| --- | --- |
+| `BossMarks(out)` | Where InstanceGPS's boss rings are on the dungeon map shown now, so an addon drawing its own marks there can keep them off the rings. Fills the table `out` with three numbers a ring (its x and y as 0 to 1 of the map, and its largest size in pixels), clears the rest of `out`, and returns how many numbers it filled: 0 when InstanceGPS draws nothing on that map. |
+
 ## Sharing It
 
 - **Your own repo:** copy [InstanceGPS-Synastria](https://github.com/iExpulsion/InstanceGPS-Synastria), rename the folder and the `.toc`, and put your changes in `Overrides.lua`. Raising `## Version` and pushing releases a zip. Its check runs `tools/check.py` against InstanceGPS's latest data, so a typo in a boss name or a key is caught before players see it.

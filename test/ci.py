@@ -27,7 +27,7 @@ CHECKS = [
     ("pathview", "pathview.lua", {}, ["pathview ok"]),
     ("map overlay", "mapoverlay.lua", {},
      ["next ring:\ttrue\tnumbered rings:\ttrue", "leg bright, rest faint:\ttrue", "killed ring:\ttrue",
-      "option off:\ttrue"]),
+      "boss marks:\ttrue", "option off:\ttrue", "no marks off:\ttrue"]),
     ("window", "window.lua", {},
      ["window:\ttrue", "pages:\ttrue", "sidebar:\ttrue", "table fits:\ttrue", "check and reset:\ttrue", "slider:\ttrue", "theme:\ttrue", "window size:\ttrue", "menu:\ttrue",
       "stub panel:\ttrue"]),
