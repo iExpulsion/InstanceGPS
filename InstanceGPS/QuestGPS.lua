@@ -69,6 +69,36 @@ local function LevelsAt(inst, x, y, z)
 	return best
 end
 
+-- Whether a spawn at height z belongs to another route: where the map levels can't tell places apart (every one of
+-- Blackrock Spire's bosses is on all its levels), the boss nearest it, heights counting extra, is on another route
+-- and not this one (the Lower route runs right under the Darkstone Tablet, beside Solakar Flamewreath 33 yards up)
+local function OtherRoute(inst, route, x, y, z)
+	if not inst.allLevels then
+		local all = 0
+		for f in pairs(inst.floors or NONE) do all = all + 2 ^ f end
+		inst.allLevels = all
+	end
+	local best, bd, bi
+	for i, b in ipairs(z and z ~= 0 and inst.bosses or NONE) do
+		if b.x and b.z and b.f then
+			local dx, dy, dz = b.x - x, b.y - y, (b.z - z) * HEIGHT_WEIGHT
+			local d = dx * dx + dy * dy + dz * dz
+			if not bd or d < bd then best, bd, bi = b, d, i end
+		end
+	end
+	local function Holds(r)
+		for _, k in ipairs(r.order or NONE) do
+			if k == bi then return true end
+		end
+		return false
+	end
+	local elsewhere = false
+	for _, r in ipairs(best and best.f == inst.allLevels and not Holds(route) and inst.routes or NONE) do
+		elsewhere = elsewhere or (r ~= route and Holds(r))
+	end
+	return elsewhere
+end
+
 -- The spawn nearest the route and the route vertex it's met at, a vertex on another level than the spawn counting
 -- OFF_FLOOR further (overview levels left out: Sunken Temple's entrance and its lower ring share only the
 -- overview, and a Murk Worm 40 yards under the entrance took the stop there): the first vertex on the nearest one's terms (the spawn's level, or not) within FIRST_PASS of
@@ -79,9 +109,10 @@ local function Nearest(inst, route, pts, heights)
 	local function Each(fn)
 		for j = 1, #pts - 1, 2 do
 			local x, y = pts[j], pts[j + 1]
-			local levels = LevelsAt(inst, x, y, heights and heights[(j + 1) / 2])
+			local z = heights and heights[(j + 1) / 2]
+			local levels = LevelsAt(inst, x, y, z)
 			local ownLevels = levels and DN.OwnLevels(inst, levels)
-			for i = 1, #p / 3 do
+			for i = 1, OtherRoute(inst, route, x, y, z) and 0 or #p / 3 do
 				local dx, dy = p[i * 3 - 2] - x, p[i * 3 - 1] - y
 				local d = math.sqrt(dx * dx + dy * dy)
 				local mask = p[i * 3]
