@@ -48,6 +48,10 @@ local mapStops = R.NewMapStops(WorldMapButton, {
 	onClick = RingOnClick,
 })
 DN.mapPath, DN.mapStops = mapPath, mapStops
+-- the path the next boss walks on patrol (Nav.lua), in QuestGPS's patrol blue
+DN.PATROL_COLOR = { 0.55, 0.8, 1 }
+local patrolPath = R.NewMapPath(WorldMapButton, DN.PATROL_COLOR, 7)
+DN.mapPatrolPath = patrolPath
 local function LayerDot(x, y) return mapPath:Dot(x, y) end
 
 -- One unbroken stretch of the route on this level, as 0..1 map points, and how many of its coordinates are the
@@ -101,6 +105,17 @@ local function DrawMap(self, inst, level, navOff, current, route, killed)
 	end
 	if nPiece > 0 then mapPath:Add(piece, nPiece, nActive) end
 
+	-- the next boss's patrol, closed as it walks it
+	local walker = not navOff and nextBoss and nextBoss.patrol and OnFloor(nextBoss.f, level) and nextBoss.patrol
+	if walker then
+		local n = #walker
+		for k = 1, n + 2, 2 do
+			local i = (k - 1) % n + 1
+			piece[k], piece[k + 1] = self:WorldToMap(inst, level, walker[i], walker[i + 1])
+		end
+		patrolPath:Add(piece, n + 2)
+	end
+
 	-- other layers (the route recorder's legs): fn(inst, level, toMap(x, y) -> px, py, Dot(px, py))
 	for _, fn in ipairs(self.mapLayers or {}) do fn(inst, level, toMap, LayerDot) end
 
@@ -152,6 +167,7 @@ end
 
 function DN:RefreshMap()
 	mapPath:Begin()
+	patrolPath:Begin()
 	mapStops:Begin()
 	local inst, navOff = ShownInstance(self)
 	local level = inst and self:MapLevel(inst)
@@ -163,6 +179,7 @@ function DN:RefreshMap()
 		DrawMap(self, inst, level, navOff, current, route, run and run.killed or {})
 	end
 	mapPath:Finish()
+	patrolPath:Finish()
 	mapStops:Finish()
 end
 

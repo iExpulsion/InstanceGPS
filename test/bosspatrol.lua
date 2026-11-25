@@ -29,6 +29,34 @@ place(pts[2 * k - 1], pts[2 * k], roccor.f)
 local _, _, _, wd, wboss, atBoss, hint = DN:NextWaypoint()
 print("along patrol:", wboss == roccor and hint == "Along Its Patrol" and not atBoss and wd > 30 and wd <= 76, wd, hint)
 
+-- The dungeon map and the minimap draw his path in dots, and the minimap's line ends where the arrow points
+local function shownDots(frame)
+	local n = 0
+	for _, t in ipairs(MOCK.created[frame] or {}) do
+		if t.shown and t.point then n = n + 1 end
+	end
+	return n
+end
+WorldMapFrame.shown = true
+DN:RefreshMap()
+WorldMapFrame.shown = false
+print("patrol on map:", shownDots(DN.mapPatrolPath.frame) > 10, shownDots(DN.mapPatrolPath.frame))
+DN.opt.pathMinimap = true
+DN:UpdatePathViews()
+MOCK.Tick(0.2)
+print("patrol on minimap:", shownDots(DN.minimapPatrol.frame) > 0, shownDots(DN.minimapPatrol.frame))
+local ahead, nAhead = DN:PathAhead(DN.px, DN.py, 300)
+print("line to the lead:", nAhead == 4 and ahead[3] == DN.wp.x and ahead[4] == DN.wp.y)
+
+-- With another boss next, neither draws it
+DN.navTarget = inst.bosses[route.order[1]] ~= roccor and inst.bosses[route.order[1]] or inst.bosses[route.order[2]]
+MOCK.Tick(0.2)
+WorldMapFrame.shown = true
+DN:RefreshMap()
+WorldMapFrame.shown = false
+print("patrol gone:", shownDots(DN.mapPatrolPath.frame) == 0 and shownDots(DN.minimapPatrol.frame) == 0)
+DN.navTarget = roccor
+
 -- Far from his path, the arrow follows the route as before
 place(route.path[1], route.path[2], route.path[3])
 local _, _, _, _, _, _, far = DN:NextWaypoint()

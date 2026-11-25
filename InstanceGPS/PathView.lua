@@ -57,6 +57,31 @@ local function DrawMinimap(px, py, facing)
 	end
 end
 
+-- The path the boss being led to walks on patrol (Nav.lua), all of it the minimap shows, redrawn only when the
+-- player, the facing or the boss changes
+local mmPatrol = R.NewMinimapPath(DN.PATROL_COLOR)
+DN.minimapPatrol = mmPatrol
+local drawnPatrol, patrolX, patrolY, patrolFacing
+
+local function DrawPatrol(px, py, facing)
+	local b = DN.wp.boss
+	local walker = b and not b.quest and b.patrol
+	if walker and (walker ~= drawnPatrol or px ~= patrolX or py ~= patrolY or facing ~= patrolFacing) then
+		drawnPatrol, patrolX, patrolY, patrolFacing = walker, px, py, facing
+		mmPatrol:Draw(px, py, facing, walker, #walker, true)
+	elseif not walker and drawnPatrol then
+		drawnPatrol = nil
+		mmPatrol:Clear()
+	end
+end
+
+local function ClearPatrol()
+	if drawnPatrol then
+		drawnPatrol = nil
+		mmPatrol:Clear()
+	end
+end
+
 -------------------------------------------------------------------------------- 2. HUD
 
 local hud = CreateFrame("Frame", "InstanceGPSHUD", UIParent)
@@ -259,7 +284,7 @@ end)
 -------------------------------------------------------------------------------- driver
 
 local function ClearAll()
-	mmPath:Clear() mmEnd:Hide()
+	mmPath:Clear() mmEnd:Hide() ClearPatrol()
 	hudMarks:Begin() hudMarks:Finish() hudEnd:Hide() hudRing:Hide()
 	viewMarks:Begin() viewMarks:Finish() viewEnd:Hide() viewBehind:Hide()
 	if shownName or shownHint ~= "" then
@@ -302,7 +327,10 @@ local function Draw(o)
 	local ready = px and DN.wp.x
 	if ready and range > 0 and Refresh(px, py, range + 20) then
 		local facing = GetPlayerFacing() or 0
-		if o.pathMinimap then DrawMinimap(px, py, facing) end
+		if o.pathMinimap then
+			DrawMinimap(px, py, facing)
+			DrawPatrol(px, py, facing)
+		end
 		if hudOn then
 			hudRing:Show()
 			DrawHUD(px, py, facing)
@@ -333,7 +361,7 @@ end)
 function DN:UpdatePathViews()
 	local o, inst = self.opt, self:NavOn() and self.inst
 	if not o then return end
-	if not (inst and o.pathMinimap) then mmPath:Clear() mmEnd:Hide() end
+	if not (inst and o.pathMinimap) then mmPath:Clear() mmEnd:Hide() ClearPatrol() end
 	local size = o.hudSize or 280
 	hud:SetSize(size, size)
 	hud:ClearAllPoints()

@@ -137,7 +137,7 @@ function DN:PathAhead(px, py, maxLen, out)
 	local n = 2
 	local leg, i, step = self.leg, self.navWp, self.navStep
 	if w.atBoss or not leg or not i then
-		out[3], out[4] = boss.x, boss.y
+		out[3], out[4] = w.x, w.y
 		return out, 4, "boss"
 	end
 	local route, target = leg.route, leg.to
