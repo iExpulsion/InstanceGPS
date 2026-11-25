@@ -39,4 +39,7 @@ end
 local onLower, onUpper = stops(lower), stops(upper)
 print("tablet upper only:", onLower[4768] == nil and onUpper[4768] == true, onLower[4768], onUpper[4768])
 print("lower spawn kept:", onLower[9999] == true, onLower[9999])
+-- from the Scarshield room by the entrance (level 4) the tablet is above, on level 6
+local where, level = DN:LevelOf(MAP, 65, -280, 94, 4)
+print("tablet above:", where == "above" and level == 6, where, level)
 print("questroute test done")

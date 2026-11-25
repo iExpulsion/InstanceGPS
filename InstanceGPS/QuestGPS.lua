@@ -69,15 +69,10 @@ local function LevelsAt(inst, x, y, z)
 	return best
 end
 
--- Whether a spawn at height z belongs to another route: where the map levels can't tell places apart (every one of
--- Blackrock Spire's bosses is on all its levels), the boss nearest it, heights counting extra, is on another route
--- and not this one (the Lower route runs right under the Darkstone Tablet, beside Solakar Flamewreath 33 yards up)
+-- Whether a spawn at height z belongs to another route: the boss nearest it, heights counting extra, is on another
+-- route and not this one (Lower Blackrock Spire's route runs right under the Darkstone Tablet, beside Solakar
+-- Flamewreath 33 yards up)
 local function OtherRoute(inst, route, x, y, z)
-	if not inst.allLevels then
-		local all = 0
-		for f in pairs(inst.floors or NONE) do all = all + 2 ^ f end
-		inst.allLevels = all
-	end
 	local best, bd, bi
 	for i, b in ipairs(z and z ~= 0 and inst.bosses or NONE) do
 		if b.x and b.z and b.f then
@@ -93,7 +88,7 @@ local function OtherRoute(inst, route, x, y, z)
 		return false
 	end
 	local elsewhere = false
-	for _, r in ipairs(best and best.f == inst.allLevels and not Holds(route) and inst.routes or NONE) do
+	for _, r in ipairs(best and not Holds(route) and inst.routes or NONE) do
 		elsewhere = elsewhere or (r ~= route and Holds(r))
 	end
 	return elsewhere

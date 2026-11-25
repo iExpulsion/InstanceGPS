@@ -101,15 +101,17 @@ local function Overlap(a, b)
 end
 
 -- An instance's overview levels as a mask, the way the build finds them: a level whose map holds most of two or
--- more others' (Sunken Temple's level 1 shows the whole temple). Waypoints there carry the overview's bit as well
--- as their own level's.
+-- more smaller others' (Sunken Temple's level 1 shows the whole temple). Waypoints there carry the overview's bit as
+-- well as their own level's.
 function DN.OverviewLevels(inst)
 	if not inst.overview then
 		local mask = 0
 		for f, r in pairs(inst.floors or {}) do
 			local n = 0
 			for g, q in pairs(inst.floors) do
-				if g ~= f and Area(q) > 0 and Overlap(r, q) > 0.8 * Area(q) then n = n + 1 end
+				if g ~= f and Area(q) > 0 and Area(q) < 0.9 * Area(r) and Overlap(r, q) > 0.8 * Area(q) then
+					n = n + 1
+				end
 			end
 			if n >= 2 then mask = mask + 2 ^ f end
 		end

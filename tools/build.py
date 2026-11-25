@@ -744,14 +744,15 @@ def build(D, fixups):
             if not locator.ok:
                 report.append('WMOFLOORS-OFF %d %s (coverage %.0f%%)' % (mapid, m[5], locator.coverage * 100))
                 locator = None
-        # overview levels (a rectangle holding most of two or more other levels) show everything
+        # overview levels (a rectangle holding most of two or more smaller levels) show everything; levels
+        # sharing one rectangle (all seven of Blackrock Spire's) are ordinary levels
         def area(r):
             return max(0.0, r[1] - r[0]) * max(0.0, r[3] - r[2])
 
         def overlap(a, b):
             return area((max(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), min(a[3], b[3])))
         overview = {f for f, r in floors.items()
-                    if sum(1 for g, q in floors.items() if g != f and area(q) > 0
+                    if sum(1 for g, q in floors.items() if g != f and 0 < area(q) < 0.9 * area(r)
                            and overlap(r, q) > 0.8 * area(q)) >= 2}
 
         def floor_of(p):
