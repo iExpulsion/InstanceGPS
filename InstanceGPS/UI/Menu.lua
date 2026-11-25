@@ -57,12 +57,22 @@ local function Entries()
 		{ heading = DN.Window.Title() },
 		{ text = "Show Arrow", checked = o.arrow, action = Toggle("arrow"), keepOpen = true },
 		{ text = "Show Boss Tracker", checked = o.tracker, action = Toggle("tracker"), keepOpen = true },
+	}
+	if DN:QuestGPS() then
+		list[#list + 1] = { text = "Merge with QuestGPS's Tracker", checked = o.questTracker,
+			action = function()
+				Toggle("questTracker")()
+				DN:RefreshQuestCard(true)
+			end }
+	end
+	local rest = {
 		{ text = "Route on the Dungeon Map", checked = o.mapOverlay, action = Toggle("mapOverlay"), keepOpen = true },
 		{ text = "Path on the Minimap", checked = o.pathMinimap, action = Toggle("pathMinimap"), keepOpen = true },
 		{ text = "Path HUD Around the Character", checked = o.pathHud, action = Toggle("pathHud"), keepOpen = true },
 		{ text = "3D Path View", checked = o.pathView, action = Toggle("pathView"), keepOpen = true },
 		{ text = "Lock Frames", checked = o.lockFrames, action = Toggle("lockFrames"), keepOpen = true },
 	}
+	for _, e in ipairs(rest) do list[#list + 1] = e end
 	if inst and #inst.routes > 1 then
 		list[#list + 1] = { heading = "Route / Wing" }
 		for i, r in ipairs(inst.routes) do
