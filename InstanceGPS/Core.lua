@@ -120,6 +120,31 @@ function DN.OverviewLevels(inst)
 	return inst.overview
 end
 
+local PACK_ALPHABET, PACK_OFFSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", 20000
+local PACK_VALUE = {}
+for i = 1, #PACK_ALPHABET do PACK_VALUE[PACK_ALPHABET:byte(i)] = i - 1 end
+
+-- The build's packed whole numbers (tools/build.py pack), three characters each
+function DN.Unpack(packed)
+	local out, n = {}, 0
+	for i = 1, #packed, 3 do
+		local a, b, c = packed:byte(i, i + 2)
+		n = n + 1
+		out[n] = PACK_VALUE[a] * 4096 + PACK_VALUE[b] * 64 + PACK_VALUE[c] - PACK_OFFSET
+	end
+	return out
+end
+
+-- An instance's spawn points with their levels, { x, y, z, mask, ... }, unpacked when first asked for
+function DN.LevelPoints(inst)
+	if not inst.levelPoints then
+		local pts = inst.levelPts and DN.Unpack(inst.levelPts) or {}
+		for i = 4, #pts, 4 do pts[i] = pts[i] + PACK_OFFSET end
+		inst.levelPoints = pts
+	end
+	return inst.levelPoints
+end
+
 -- A level mask without its overview levels, which say nothing about the floor; the mask itself when that leaves none
 function DN.OwnLevels(inst, mask)
 	local over, own = DN.OverviewLevels(inst), mask

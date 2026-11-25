@@ -18,6 +18,8 @@ local OFF_FLOOR = 25
 local FIRST_PASS = 20
 -- a height difference counts this many times its yards when matching a spawn to a boss's level
 local HEIGHT_WEIGHT = 3
+-- yards: a level point further than this (heights counting extra) says nothing of a spawn's level
+local LEVEL_REACH = 25
 local NONE = {}
 local OnFloor = DN.OnFloor
 
@@ -55,15 +57,23 @@ local function OwnMasks(inst, route)
 	return route.ownMasks
 end
 
--- The map levels of a spawn at height z: those of the boss nearest it, heights counting extra. The route carries
--- levels but no heights; the bosses have both. nil when the height is unknown (0).
+-- The map levels of a spawn at height z: those of the build's level point nearest it (every creature and object
+-- spawn, LEVEL_REACH at most), else of the boss nearest it, heights counting extra. nil when the height is unknown (0).
 local function LevelsAt(inst, x, y, z)
-	local best, bd
-	for _, b in ipairs(z and z ~= 0 and inst.bosses or NONE) do
+	local known = z and z ~= 0
+	local pts = known and DN.LevelPoints(inst) or NONE
+	local best, bd = nil, LEVEL_REACH * LEVEL_REACH
+	for i = 1, #pts - 3, 4 do
+		local dx, dy, dz = pts[i] - x, pts[i + 1] - y, (pts[i + 2] - z) * HEIGHT_WEIGHT
+		local d = dx * dx + dy * dy + dz * dz
+		if d < bd then best, bd = pts[i + 3], d end
+	end
+	local bossD
+	for _, b in ipairs(known and not best and inst.bosses or NONE) do
 		if b.x and b.z and b.f then
 			local dx, dy, dz = b.x - x, b.y - y, (b.z - z) * HEIGHT_WEIGHT
 			local d = dx * dx + dy * dy + dz * dz
-			if not bd or d < bd then best, bd = b.f, d end
+			if not bossD or d < bossD then best, bossD = b.f, d end
 		end
 	end
 	return best

@@ -276,6 +276,11 @@ TELEPORT_UNLOCK = {
 # Assign map levels from WMO groups + DungeonMapChunk.dbc (the client's method); texture/rectangle guess as fallback.
 USE_WMO_FLOORS = True
 
+# Level points (spawns' map levels, for quest spawns known only by position): yards between kept points on the same
+# levels, a height difference counting LEVEL_HEIGHT_WEIGHT times (the addon's LEVEL_REACH and HEIGHT_WEIGHT match)
+LEVEL_SPACING = 20.0
+LEVEL_HEIGHT_WEIGHT = 3
+
 # Blizzard's map data is used wherever it exists. Classic/TBC instances have no Blizzard map
 # on 3.3.5; the WoW Dungeon Maps (WDM) patch adds them (Project Reforged bundles the same maps).
 # True: include those maps for those instances (they only take effect for players who have the

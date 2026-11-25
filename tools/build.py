@@ -955,6 +955,22 @@ def build(D, fixups):
         crossed = [c for R in routes
                    for c in patrols.crossings(R['poly'], set(R['tele']), patrols_of.get(mapid, []), boss_npcs)]
         inst['patrols'] = [dict(s, floor=floor_of(s['pos'])) for s in patrols.merge(crossed)]
+        # creature and object spawns with their levels, for spawns the addon hears of with a height only
+        # (QuestGPS's quest objects): the nearest of these says their level. A spawn within LEVEL_SPACING of a
+        # kept one on the same levels is left out.
+        inst['levelPts'] = []
+        if len(floors) > 1:
+            kept = collections.defaultdict(list)
+            cell = cfg.LEVEL_SPACING
+            for p in ([(s[10], s[11], s[12]) for s in spawns] + [(g[7], g[8], g[9]) for g in go_by_map[mapid]]):
+                mask = floor_of(p)
+                cx, cy = int(p[0] // cell), int(p[1] // cell)
+                near = any(q[3] == mask and (q[0] - p[0]) ** 2 + (q[1] - p[1]) ** 2
+                           + ((q[2] - p[2]) * cfg.LEVEL_HEIGHT_WEIGHT) ** 2 < cell * cell
+                           for i in (-1, 0, 1) for j in (-1, 0, 1) for q in kept[(cx + i, cy + j)])
+                if not near:
+                    kept[(cx, cy)].append((p[0], p[1], p[2], mask))
+                    inst['levelPts'].append((p[0], p[1], p[2], mask))
         if inst['patrols']:
             report.append('PATROLS %d %s %d' % (mapid, m[5], len(inst['patrols'])))
         out[mapid] = inst
@@ -970,6 +986,19 @@ def lua_str(s):
 def f1(v):
     s = ('%.1f' % v)
     return s[:-2] if s.endswith('.0') else s
+
+
+PACK_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+PACK_OFFSET = 20000
+
+
+def pack(values):
+    """Whole numbers as three characters each, read back by DN.Unpack."""
+    out = []
+    for v in values:
+        n = int(round(v)) + PACK_OFFSET
+        out.append(PACK_ALPHABET[n // 4096] + PACK_ALPHABET[n // 64 % 64] + PACK_ALPHABET[n % 64])
+    return ''.join(out)
 
 
 def attach_expansions(out, dbc_dir):
@@ -1055,6 +1084,9 @@ def write_lua(out, path, head=None, open_line='ns.Instances = {', close_line='}'
         if I.get('patrols'):
             L.append('  patrols={%s},' % ', '.join('{x=%s, y=%s, f=%d, text=%s}' % (
                 f1(s['pos'][0]), f1(s['pos'][1]), s['floor'], lua_str(s['text'])) for s in I['patrols']))
+        if I.get('levelPts'):
+            # masks go in without the offset: Karazhan's reach 250,582
+            L.append('  levelPts="%s",' % pack([v for p in I['levelPts'] for v in (p[0], p[1], p[2], p[3] - PACK_OFFSET)]))
         L.append(' },')
     L.append(close_line)
     L.extend(tail or [])

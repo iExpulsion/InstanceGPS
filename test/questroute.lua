@@ -1,6 +1,7 @@
 -- Quest stops in an instance whose map levels can't tell places apart (run with DN_BEFORE=fixtures/questgps_mock.lua),
 -- on Blackrock Spire: the Darkstone Tablet, 33 yards above the Lower route by Solakar Flamewreath, goes on the Upper
--- route only; a spawn down by the Lower route's bosses stays on it
+-- route only; a spawn down by the Lower route's bosses stays on it; spawns take their level from the build's level
+-- points
 local DN = NS.DN
 MOCK.now = 1000000
 MOCK.Fire("ADDON_LOADED", "InstanceGPS")
@@ -42,4 +43,13 @@ print("lower spawn kept:", onLower[9999] == true, onLower[9999])
 -- from the Scarshield room by the entrance (level 4) the tablet is above, on level 6
 local where, level = DN:LevelOf(MAP, 65, -280, 94, 4)
 print("tablet above:", where == "above" and level == 6, where, level)
+-- a spawn's level comes from the build's level points, not the nearest boss: a bonfire 20 yards over Overlord
+-- Wyrmthalak (level 6) is on level 7, above him
+where, level = DN:LevelOf(MAP, 21.6, -506.6, 110.9, 6)
+print("level point:", where == "above" and level == 7, where, level)
+-- Karazhan's masks reach past the packing's offset and come back whole
+local most = 0
+local kara = DN.LevelPoints(NS.Instances[532])
+for i = 4, #kara, 4 do most = math.max(most, kara[i]) end
+print("big masks:", most > 20000 and most < 2 ^ 20, most)
 print("questroute test done")
