@@ -3,7 +3,7 @@ one off to the side, a teleport hop over a patrol, skipped bosses, and merged wa
 
     python patrols.py        (from test/)
 """
-import os, sys
+import math, os, sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools"))
 import patrols
@@ -31,4 +31,14 @@ check("boss skipped", patrols.crossings(route, set(), [(7, "Boss", 1, across)], 
 # two patrols at one spot make one warning, the bigger group first
 spots = patrols.merge([(40, 0, 0, "Guard", 1), (45, 2, 0, "Hound", 2), (150, 0, 0, "Guard", 1)])
 check("merged", len(spots) == 2 and spots[0]["text"] == "Hound x2, Guard" and spots[1]["text"] == "Guard")
+# a boss's 40-by-20 loop comes out a point every 15 yards around it, from its first point
+loop = patrols.resample([(0, 0, 0), (40, 0, 0), (40, 20, 0), (0, 20, 0)], 15)
+check("resampled", len(loop) == 8 and loop[0] == (0, 0) and abs(loop[1][0] - 15) < 0.01
+      and all(abs(math.dist(a, b) - 15) < 0.01 for a, b in zip(loop[:2], loop[1:3])))
+# a walking spawn gets its path, its formation follower the same one, a still spawn none
+D = {"waypoint_data": [(10, 1, 0, 0, 0), (10, 2, 50, 0, 0)], "creature_addon": [(1, 10)],
+     "creature": [(1,) + (0,) * 18 + (2,), (2,) + (0,) * 18 + (0,), (3,) + (0,) * 18 + (2,)],
+     "creature_formations": [(1, 2)]}
+paths = patrols.spawn_paths(D)
+check("spawn paths", paths.get(1) == [(0, 0, 0), (50, 0, 0)] and paths.get(2) is paths.get(1) and 3 not in paths)
 print("patrols test done")

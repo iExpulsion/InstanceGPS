@@ -112,3 +112,37 @@ def merge(found):
         names = sorted(s.pop('names').items(), key=lambda kv: (-kv[1], kv[0]))
         s['text'] = ', '.join('%s x%d' % (nm, n) if n > 1 else nm for nm, n in names)
     return spots
+
+
+def spawn_paths(D):
+    """guid -> [(x, y, z), ...]: the waypoint path each walking spawn loops (MovementType 2), a
+    formation member taking its leader's, for bosses that patrol (Lord Roccor in Blackrock Depths)."""
+    paths = collections.defaultdict(list)
+    for r in D['waypoint_data']:
+        paths[r[0]].append((r[1], (r[2], r[3], r[4])))
+    path_of = {r[0]: r[1] for r in D['creature_addon'] if r[1]}
+    out = {}
+    for c in D['creature']:
+        pid = path_of.get(c[0]) or c[0] * 10
+        if c[19] == 2 and len(paths.get(pid, ())) > 1:
+            out[c[0]] = [p for _, p in sorted(paths[pid])]
+    for r in D.get('creature_formations') or []:
+        if r[0] != r[1] and r[0] in out and r[1] not in out:
+            out[r[1]] = out[r[0]]
+    return out
+
+
+def resample(pts, step):
+    """A closed path's points every `step` yards along it, (x, y) only, starting at its first point."""
+    loop = list(pts) + [pts[0]]
+    out, carry = [(pts[0][0], pts[0][1])], 0.0
+    for a, b in zip(loop, loop[1:]):
+        L = math.dist(a[:2], b[:2])
+        t = step - carry
+        while L and t <= L:
+            out.append((a[0] + (b[0] - a[0]) * t / L, a[1] + (b[1] - a[1]) * t / L))
+            t += step
+        carry = (carry + L) % step if L else carry
+    if len(out) > 1 and math.dist(out[-1], out[0]) < step / 2:
+        out.pop()
+    return out

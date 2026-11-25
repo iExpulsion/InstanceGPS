@@ -238,6 +238,7 @@ local function ApplyInstance(inst, t)
 				if v.x and v.y and (not b.x or dist(b.x, b.y, v.x, v.y) > MOVED) then
 					b.x, b.y, b.z, b.f = v.x, v.y, v.z, Mask(v.f) or b.f
 					b.hx, b.hy, b.hz, b.hf = nil, nil, nil, nil
+					b.patrol, b.patrolAt = nil, nil
 					moved[bi] = true
 				end
 			elseif v.x and v.y and v.npcs and #v.npcs > 0 then

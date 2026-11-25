@@ -199,6 +199,55 @@ function DN:NearPatrol()
 	end
 end
 
+-- A boss walking a patrol (boss.patrol, x1, y1, ... from the build): within ON_PATROL yards of its path the arrow
+-- leads PATROL_LEAD yards back along it, against the way the boss walks, to meet it, as QuestGPS does for creatures.
+-- The points just behind and ahead of the last one led from are searched first, so a path walked out and back
+-- doesn't flip the lead to the other way.
+local ON_PATROL, PATROL_LEAD = 40, 60
+local PATROL_BACK, PATROL_AHEAD = 8, 2
+
+-- The point of the closed path pts nearest (x, y) among points first..last (wrapping), and its squared yards
+local function NearestOnPath(pts, x, y, first, last)
+	local n = #pts / 2
+	local bi, best
+	for j = first, last do
+		local k = (j - 1) % n + 1
+		local dx, dy = pts[2 * k - 1] - x, pts[2 * k] - y
+		local d = dx * dx + dy * dy
+		if not best or d < best then bi, best = k, d end
+	end
+	return bi, best
+end
+
+-- Where to lead along the boss's patrol from (x, y), and the yards from there to its path. Makes no garbage.
+local function PatrolLead(boss, x, y)
+	local pts, at, best = boss.patrol, nil, nil
+	if boss.patrolAt then
+		at, best = NearestOnPath(pts, x, y, boss.patrolAt - PATROL_BACK, boss.patrolAt + PATROL_AHEAD)
+	end
+	if not best or best > ON_PATROL * ON_PATROL then
+		at, best = NearestOnPath(pts, x, y, 1, #pts / 2)
+	end
+	boss.patrolAt = at
+	local n, k, walked, steps = #pts / 2, at, 0, 0
+	while walked < PATROL_LEAD and steps < n do
+		local j = (k - 2) % n + 1
+		local dx, dy = pts[2 * j - 1] - pts[2 * k - 1], pts[2 * j] - pts[2 * k]
+		walked, k, steps = walked + sqrt(dx * dx + dy * dy), j, steps + 1
+	end
+	return pts[2 * k - 1], pts[2 * k], sqrt(best)
+end
+DN.PatrolLead = PatrolLead
+
+-- Whether the route has a hint or a teleport between vertices a and b (either order)
+local function StepsBetween(route, a, b)
+	local hints, tele = route.hints, route.teleAt
+	for i = min(a, b), max(a, b) do
+		if tele[i] or (hints and hints[i]) then return true end
+	end
+	return false
+end
+
 -- the current leg, DN.leg: one table filled again on every tick
 local legBuf = {}
 local NO_STOPS = {}
@@ -308,6 +357,17 @@ function DN:NextWaypoint()
 		self.progress = seg
 	else
 		seg = Locate(route, px, py, self.pfloor, target)
+	end
+	-- a boss on patrol is met along its path once the player is near it, on its level, with nothing left to do on
+	-- the way (Atal'alarion's statues ring the pit he walks below)
+	if boss.patrol and (not self.pfloor or not boss.f or OnFloor(boss.f, self.pfloor))
+		and not StepsBetween(route, seg, target) then
+		local lx, ly, toPath = PatrolLead(boss, px, py)
+		if toPath <= ON_PATROL then
+			local ex, ey = lx - px, ly - py
+			self.remaining = sqrt(ex * ex + ey * ey)
+			return lx, ly, boss.f, self.remaining, boss, false, "Along Its Patrol"
+		end
 	end
 	-- Standing at the boss: near it, and near the end of the leg too. A route can pass
 	-- right over or under a boss on another floor (Shadowfang Keep's tower) on its way there.

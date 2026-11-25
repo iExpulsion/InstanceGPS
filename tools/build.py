@@ -25,6 +25,7 @@ import overlay
 ROOT = os.path.dirname(HERE)
 CACHE_DIR = None
 STOCK_DBC = os.path.join(ROOT, 'dbc_stock')
+PATROL_STEP = 15   # yards between the exported points of a boss's patrol path
 DBC = os.path.join(ROOT, 'dbc') if os.path.isdir(os.path.join(ROOT, 'dbc')) else os.path.join(HERE, '..', 'dbc')
 
 
@@ -491,6 +492,9 @@ def build(D, fixups):
     out = {}
     report = []
     patrols_of = patrols.by_map(D, report)
+    spawn_paths = patrols.spawn_paths(D)
+    # creatures that fly (Razorscale circling her arena): their path is no way to meet them on foot
+    flyers = {r[0] for r in sp.rows('creature_template_movement', CACHE_DIR) if r[3]}
     enc_by_map = collections.defaultdict(list)
     for r in D['de']:
         enc_by_map[r[1]].append(r)
@@ -631,6 +635,8 @@ def build(D, fixups):
                 s = posc[0]
                 pos = (s[10], s[11], s[12])
                 b['posSource'] = 'spawn'
+                if s[0] in spawn_paths and s[1] not in flyers:
+                    b['patrol'] = patrols.resample(spawn_paths[s[0]], PATROL_STEP)
             man = cfg.POSITIONS.get((mapid, b['name']))
             if man:
                 if man[2] is None and pos:
@@ -939,6 +945,9 @@ def build(D, fixups):
             if b['pos']:
                 e['pos'] = b['pos']
                 e['floor'] = floor_of(b['pos'])
+            if b.get('patrol') and b.get('posSource') == 'spawn' and b['name'] not in fpos:
+                e['patrol'] = b['patrol']
+                report.append('BOSS-PATROL %d %s %s %d pts' % (mapid, m[5], b['name'], len(b['patrol'])))
             inst['bosses'].append(e)
         for R in routes:
             inst['routes'].append({'name': R['name'], 'faction': R.get('faction'), 'hard': R.get('hard'),
@@ -1063,6 +1072,8 @@ def write_lua(out, path, head=None, open_line='ns.Instances = {', close_line='}'
             if b.get('hpos'):
                 p = b['hpos']
                 parts.append('hx=%s, hy=%s, hz=%s, hf=%d' % (f1(p[0]), f1(p[1]), f1(p[2]), b['hfloor']))
+            if b.get('patrol'):
+                parts.append('patrol={%s}' % ','.join('%s,%s' % (f1(x), f1(y)) for x, y in b['patrol']))
             L.append('   {%s},' % ', '.join(parts))
         L.append('  },')
         L.append('  routes={')
