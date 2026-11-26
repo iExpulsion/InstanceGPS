@@ -1,6 +1,7 @@
--- The right-click menu of the arrow, the tracker's title and the 3D view (also /igps menu): quick switches, the
--- route or wing to follow, this run's progress, and the way into the options window. Drawn in the style kit's menu
--- look; a click anywhere else closes it.
+-- The right-click menu of the tracker's title (also /igps menu): quick switches, the route or wing to follow, this
+-- run's progress, and the way into the options window. The arrow and the 3D view get a short one about where they
+-- lead, as QuestGPS's arrow does: skip the quest stop, the route to follow, navigation here, the options. Drawn in
+-- the style kit's menu look; a click anywhere else closes it.
 local _, ns = ...
 local DN, S = ns.DN, ns.Style
 local C = S.colors
@@ -50,6 +51,35 @@ local function Toggle(key)
 	end
 end
 
+-- The route or wing to follow, when there's a choice
+local function RouteEntries(list, inst)
+	if inst and #inst.routes > 1 then
+		list[#list + 1] = { heading = "Route / Wing" }
+		for i, r in ipairs(inst.routes) do
+			list[#list + 1] = { text = r.name or ("Route " .. i), checked = DN.routeIndex == i,
+				action = function() DN:SetRoute(i, true) end }
+		end
+		list[#list + 1] = { text = "Follow Me (Automatic)", checked = not DN.routeManual,
+			action = function() DN.routeManual = false end }
+	end
+end
+
+-- The arrow's and the 3D view's entries
+local function ShortEntries()
+	local inst, target = DN.inst, DN.wp.boss
+	local list = { { heading = DN.Window.Title() } }
+	if inst and target and target.quest then
+		list[#list + 1] = { text = "Skip This Quest Stop", action = function() DN:SkipQuest(target) end }
+	end
+	RouteEntries(list, inst)
+	if inst then
+		if #list > 1 then list[#list + 1] = { heading = inst.name } end
+		list[#list + 1] = { text = "Turn Off Navigation Here", action = function() DN:SetOff(inst.mapId, true) end }
+	end
+	list[#list + 1] = { text = "Options...", action = function() DN:OpenOptions() end }
+	return list
+end
+
 -- The menu's entries: { text, action, checked = true/false for a switch, keepOpen, danger } or { heading }
 local function Entries()
 	local o, inst = DN.opt, DN.inst
@@ -73,15 +103,7 @@ local function Entries()
 		{ text = "Lock Frames", checked = o.lockFrames, action = Toggle("lockFrames"), keepOpen = true },
 	}
 	for _, e in ipairs(rest) do list[#list + 1] = e end
-	if inst and #inst.routes > 1 then
-		list[#list + 1] = { heading = "Route / Wing" }
-		for i, r in ipairs(inst.routes) do
-			list[#list + 1] = { text = r.name or ("Route " .. i), checked = DN.routeIndex == i,
-				action = function() DN:SetRoute(i, true) end }
-		end
-		list[#list + 1] = { text = "Follow Me (Automatic)", checked = not DN.routeManual,
-			action = function() DN.routeManual = false end }
-	end
+	RouteEntries(list, inst)
 	local target = inst and DN.wp.boss
 	if target and target.quest then
 		list[#list + 1] = { heading = "Quest" }
@@ -100,10 +122,12 @@ local function Entries()
 	return list
 end
 
--- Opens the menu at the cursor (or where it already is, when `again` redraws it after a switch)
-function DN:ShowMenu(anchor, again)
+-- Opens the menu at the cursor (or where it already is, when `again` redraws it after a switch); `short` for the
+-- arrow's and the 3D view's
+function DN:ShowMenu(anchor, again, short)
 	if not menu then Build() end
-	local list = Entries()
+	menu.short = (again and menu.short) or (not again and short) or false
+	local list = menu.short and ShortEntries() or Entries()
 	local m = S.metrics.menuInset
 	local y = -m
 	for i, e in ipairs(list) do

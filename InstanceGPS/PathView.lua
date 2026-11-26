@@ -278,7 +278,7 @@ view:SetScript("OnDragStop", function(self)
 	DN.db.pos.pathView = { p, rp, x, y }
 end)
 view:SetScript("OnClick", function(self, button)
-	if button == "RightButton" then DN:ShowMenu(self) end
+	if button == "RightButton" then DN:ShowMenu(self, false, true) end
 end)
 
 -------------------------------------------------------------------------------- driver

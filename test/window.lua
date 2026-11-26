@@ -78,6 +78,15 @@ end
 local before = DN.opt.tracker
 item.scripts.OnClick(item)
 print("menu:", menu.shown and DN.opt.tracker == not before and item.check.on == DN.opt.tracker)
+-- the arrow's own menu is short, as QuestGPS's is: no display switches, the way into the options last
+DN:ShowMenu(DN.arrow, false, true)
+local shown = {}
+for _, it in ipairs(menu.items) do
+	if it.shown and it.text.shown then shown[#shown + 1] = it.text.text end
+end
+local switches = false
+for _, text in ipairs(shown) do switches = switches or text == "Show Boss Tracker" or text == "Lock Frames" end
+print("short menu:", not switches and shown[#shown] == "Options...", table.concat(shown, ", "))
 
 -- Interface Options > AddOns > InstanceGPS is a page with a button to the window
 local panel

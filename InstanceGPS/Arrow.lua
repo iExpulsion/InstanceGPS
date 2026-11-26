@@ -11,7 +11,7 @@ local arrow = R.NewArrow({
 	name = "InstanceGPSArrow",
 	locked = function() return DN.opt.lockFrames end,
 	onMoved = function(pos) DN.db.pos.arrow = pos end,
-	onMenu = function(self) DN:ShowMenu(self) end,
+	onMenu = function(self) DN:ShowMenu(self, false, true) end,
 	onTooltip = function(tip)
 		tip:AddLine("InstanceGPS")
 		local b = DN.inst and (DN.wp.boss or DN:NextBoss())
@@ -21,7 +21,7 @@ local arrow = R.NewArrow({
 		elseif b then
 			DN:Fire("BOSS_TOOLTIP", b, tip)
 		end
-		DN.HintLines(tip, not DN.opt.lockFrames and "Drag: Move", "Right-Click: Options")
+		DN.HintLines(tip, not DN.opt.lockFrames and "Drag: Move", "Right-Click: Skip or Turn Off")
 	end,
 })
 DN.arrow = arrow
