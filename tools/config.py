@@ -208,6 +208,9 @@ POSITIONS = {
     # Rend starts on the balcony above Blackrock Stadium and rides down on Gyth once the waves are
     # done; the fight is on the arena floor (areatrigger 2026 at_blackrock_stadium, which starts it)
     (229, 'Warchief Rend Blackhand'): (153.8, -419.8, 110.5),
+    # Razorfen Kraul's ward (GO 21099) opens 5 s after it loads and sets Agathelos' data, which moves him from his
+    # pen's loop to beside it (SmartAI 4422 id 0, Move Point), so he's there by the time anyone arrives
+    (47, 'Agathelos the Raging'): (2070.26, 2003.44, 64.0),
 }
 
 # Doors that stay shut until bosses die: {map: [((x, y, z), radius, [bosses])]}. Routes don't walk
