@@ -38,6 +38,13 @@ MULTI_ENTRANCE = {329, 349}
 ENTRANCE_NAMES = {2216: 'Main Gate', 2214: 'Service Entrance',
                   3133: 'Orange (Foulspore)', 3134: 'Purple (Wicked Grotto)'}
 ENTRANCE_OVERRIDE = {}
+# Entrances whose route takes only some bosses (by areatrigger), the rest being the other entrance's. Stratholme's
+# Service Entrance is the Dungeon Finder's own dungeon of the dead side: with every boss in it, the Baron kept last
+# sent the route from Barthilas back through the Live side first.
+ENTRANCE_BOSSES = {
+    2214: ['Magistrate Barthilas', 'Nerub\'enkan', 'Baroness Anastari', 'Maleki the Pallid', 'Ramstein the Gorger',
+           'Baron Rivendare'],
+}
 # Entrances with no areatrigger (a teleport lands there), each with the bosses reachable from it.
 EXTRA_ENTRANCES = {
     # Maraudon: the Dungeon Finder's Pristine Waters entrance, at the foot of the one-way waterfall

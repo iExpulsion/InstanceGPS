@@ -56,4 +56,17 @@ local allOff = true
 for _, item in ipairs(header.members) do allOff = allOff and DN:IsOff(item.mapId) end
 tbl.onClick(header, "LeftButton")
 print("heading switches all:", allOff and DN:NavOn())
+
+-- Stratholme's Service Entrance route keeps to the dead side (the Dungeon Finder's own dungeon there), ending
+-- with the Baron, instead of going back through the Live side first
+local strat, service = NS.Instances[329], nil
+for _, r in ipairs(strat.routes) do
+	if r.name == "Service Entrance" then service = r end
+end
+local deadSide = { ["Magistrate Barthilas"] = true, ["Nerub'enkan"] = true, ["Baroness Anastari"] = true,
+	["Maleki the Pallid"] = true, ["Ramstein the Gorger"] = true, ["Baron Rivendare"] = true }
+local onlyDead = service ~= nil and #service.order == 6
+for _, i in ipairs(service and service.order or {}) do onlyDead = onlyDead and deadSide[strat.bosses[i].name] end
+print("service entrance keeps to the dead side:", onlyDead
+	and strat.bosses[service.order[#service.order]].name == "Baron Rivendare")
 print("instances test done")

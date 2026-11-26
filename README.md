@@ -94,7 +94,7 @@ No module for your server? Anyone can make one, without programming tools: see [
 | Move frames | Drag the tracker title or the arrow (`/igps lock` to lock them) |
 | Navigation only in some instances | The Instances page of the options window (`/igps instances`): click an instance to switch it, or an expansion's heading for all of them. Where it's off there's no arrow, path or hints, but the boss tracker still runs (an option on the Boss Tracker page hides it too). In the instance you're in: `/igps off` / `on`, or "Navigation Here" in the menu |
 
-The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance. InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow Me" in the menu turns it back on.
+The route follows you automatically. Dire Maul, Scarlet Monastery and Blackrock Spire have separate wings, and Stratholme and Maraudon have more than one entrance (Stratholme's Service Entrance route covers the Undead side's bosses only, as the Dungeon Finder's Service Entrance does). InstanceGPS picks the route that starts where you came in and switches if you walk into another wing. Picking a route yourself turns this off; "Follow Me" in the menu turns it back on.
 
 ![The options window](docs/images/options.png)
 

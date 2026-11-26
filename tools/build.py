@@ -682,7 +682,9 @@ def build(D, fixups):
                 uniq = uniq[:1]
             for e in uniq:
                 nm = cfg.ENTRANCE_NAMES.get(e.get('id'), e['name'])
-                routes_in.append({'name': nm if len(uniq) > 1 else None, 'start': e['pos'], 'bosses': placed})
+                only = cfg.ENTRANCE_BOSSES.get(e.get('id'))
+                routes_in.append({'name': nm if len(uniq) > 1 else None, 'start': e['pos'],
+                                  'bosses': [b for b in placed if b['name'] in only] if only else placed})
             for e in cfg.EXTRA_ENTRANCES.get(mapid, ()):
                 routes_in.append({'name': e['name'], 'start': e['pos'],
                                   'bosses': [b for b in placed if b['name'] in e['bosses']]})
