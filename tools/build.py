@@ -683,8 +683,11 @@ def build(D, fixups):
             for e in uniq:
                 nm = cfg.ENTRANCE_NAMES.get(e.get('id'), e['name'])
                 only = cfg.ENTRANCE_BOSSES.get(e.get('id'))
-                routes_in.append({'name': nm if len(uniq) > 1 else None, 'start': e['pos'],
-                                  'bosses': [b for b in placed if b['name'] in only] if only else placed})
+                moved = cfg.ENTRANCE_POSITIONS.get(e.get('id'), {})
+                bosses = [dict(b, pos=moved[b['name']], posSource='manual', patrol=None) if b['name'] in moved else b
+                          for b in placed if not only or b['name'] in only]
+                routes_in.append({'name': nm if len(uniq) > 1 else None, 'start': e['pos'], 'bosses': bosses,
+                                  'at': dict(moved)})
             for e in cfg.EXTRA_ENTRANCES.get(mapid, ()):
                 routes_in.append({'name': e['name'], 'start': e['pos'],
                                   'bosses': [b for b in placed if b['name'] in e['bosses']]})
@@ -918,6 +921,8 @@ def build(D, fixups):
                     stops.append(len(poly))  # 1-based index into poly of this boss
                     cur = tgt
                 routes.append({'name': R['name'], 'hard': R.get('hard'), 'diffs': R.get('diffs'), 'faction': R.get('faction'), 'start': R['start'], 'order': [blist.index(bl[k]) + 1 for k in seq],
+                               'at': {i + 1: R['at'][b['name']] for i, b in enumerate(blist)
+                                      if b['name'] in R.get('at', {}) and any(x['name'] == b['name'] for x in R['bosses'])},
                                'poly': poly, 'stops': stops, 'tele': tele_idx, 'length': total})
 
 
@@ -956,6 +961,7 @@ def build(D, fixups):
                                    'diffs': R.get('diffs'), 'order': R['order'],
                                    'stops': R['stops'], 'tele': R['tele'], 'teleText': R.get('teleText') or {},
                                    'hints': R.get('hints') or {},
+                                   'at': {i: (p[0], p[1], p[2], floor_of(p)) for i, p in (R.get('at') or {}).items()},
                                    'path': [(p[0], p[1], floor_of(p)) for p in R['poly']],
                                    'length': R['length']})
             report.append('ROUTE %d %-28s %-14s len=%6.0f pts=%3d order=%s' % (
@@ -1092,6 +1098,9 @@ def write_lua(out, path, head=None, open_line='ns.Instances = {', close_line='}'
                 L.append('    teleText={%s},' % ', '.join('[%d]=%s' % (i, lua_str(t)) for i, t in sorted(R['teleText'].items())))
             if R.get('hints'):
                 L.append('    hints={%s},' % ', '.join('[%d]=%s' % (i, lua_str(t)) for i, t in sorted(R['hints'].items())))
+            if R.get('at'):
+                L.append('    at={%s},' % ', '.join('[%d]={%s,%s,%s,%d}' % (i, f1(p[0]), f1(p[1]), f1(p[2]), p[3])
+                                                    for i, p in sorted(R['at'].items())))
             L.append('    path={%s}},' % pts)
         L.append('  },')
         if I.get('patrols'):

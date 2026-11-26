@@ -45,6 +45,13 @@ ENTRANCE_BOSSES = {
     2214: ['Magistrate Barthilas', 'Nerub\'enkan', 'Baroness Anastari', 'Maleki the Pallid', 'Ramstein the Gorger',
            'Baron Rivendare'],
 }
+# Bosses somewhere else when the player comes in by an entrance (by areatrigger). Opening Stratholme's Service
+# Gate (GO 175368, its SmartAI sets Barthilas' data) sends Magistrate Barthilas running; the instance script then
+# puts him by the gate to Slaughter Square (BarthilasPos, instance_stratholme.cpp) as his home, where he also
+# respawns. From the Main Gate the Service Gate stays shut and he stays at his spawn.
+ENTRANCE_POSITIONS = {
+    2214: {'Magistrate Barthilas': (4068.74, -3535.97, 122.825)},
+}
 # Entrances with no areatrigger (a teleport lands there), each with the bosses reachable from it.
 EXTRA_ENTRANCES = {
     # Maraudon: the Dungeon Finder's Pristine Waters entrance, at the foot of the one-way waterfall

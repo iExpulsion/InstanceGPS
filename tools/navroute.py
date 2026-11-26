@@ -443,5 +443,6 @@ def nav_routes(M, mapid, m, routes_in, blist, go_by_map, got, report, order_boss
         routes.append({'name': R['name'], 'faction': R.get('faction'), 'hard': R.get('hard'), 'diffs': R.get('diffs'),
                        'start': R['start'], 'order': order,
                        'poly': poly, 'stops': stops, 'tele': tele_idx, 'teleText': tele_text, 'hints': hints,
+                       'at': {index_of[b['name']] + 1: b['pos'] for b in R['bosses'] if b['name'] in R.get('at', {})},
                        'length': total + nonlocal_total[0]})
     return routes

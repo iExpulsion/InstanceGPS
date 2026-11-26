@@ -69,4 +69,23 @@ local onlyDead = service ~= nil and #service.order == 6
 for _, i in ipairs(service and service.order or {}) do onlyDead = onlyDead and deadSide[strat.bosses[i].name] end
 print("service entrance keeps to the dead side:", onlyDead
 	and strat.bosses[service.order[#service.order]].name == "Baron Rivendare")
+
+-- Opening the Service Gate sends Barthilas to the gate before Slaughter Square: on that route he's there, on the
+-- Main Gate's at his spawn
+local barthilas, serviceIndex, mainIndex
+for i, b in ipairs(strat.bosses) do
+	if b.name == "Magistrate Barthilas" then barthilas = b end
+end
+for i, r in ipairs(strat.routes) do
+	if r.name == "Service Entrance" then serviceIndex = i elseif r.name == "Main Gate" then mainIndex = i end
+end
+local savedInst, savedRoute = DN.inst, DN.routeIndex
+DN.inst, DN.routeIndex = strat, serviceIndex
+DN:ApplyRouteSpots()
+local moved = math.abs(barthilas.x - 4068.7) < 1 and math.abs(barthilas.y + 3536) < 1
+DN.routeIndex = mainIndex
+DN:ApplyRouteSpots()
+local home = math.abs(barthilas.x - 3663.2) < 1 and math.abs(barthilas.y + 3619.1) < 1
+print("barthilas met where the service gate sends him:", moved, "home from the main gate:", home)
+DN.inst, DN.routeIndex = savedInst, savedRoute
 print("instances test done")

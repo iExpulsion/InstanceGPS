@@ -251,6 +251,7 @@ function DN:ApplyHardModes()
 		if self.run then self.run.route = nil end
 		if #inst.routes > 1 and self.px then self.routeIndex = self:NearestRoute() end
 		if self.run then self.run.route = self.routeIndex end
+		self:ApplyRouteSpots()
 		self:Fire("ROUTE_CHANGED")
 		self:Fire("RUN_CHANGED")
 	end
@@ -516,6 +517,18 @@ end
 
 -------------------------------------------------------------------------------- routes
 
+-- A route can meet a boss elsewhere than his usual spot (route.at, by boss index: from Stratholme's Service
+-- Entrance, Barthilas is where opening its gate sends him). The active route's spots, the usual ones otherwise.
+function DN:ApplyRouteSpots()
+	local inst = self.inst
+	local route = inst and inst.routes[self.routeIndex or 1]
+	for i, b in ipairs(inst and inst.bosses or {}) do
+		b.home = b.home or { b.x, b.y, b.z, b.f }
+		local at = route and route.at and route.at[i] or b.home
+		b.x, b.y, b.z, b.f = at[1], at[2], at[3], at[4]
+	end
+end
+
 function DN:ActiveRoute()
 	local inst = self.inst
 	if not inst then return nil end
@@ -529,6 +542,7 @@ function DN:SetRoute(index, manual)
 	self.startPending = false
 	if self.run then self.run.route = index end
 	self.progress = nil
+	self:ApplyRouteSpots()
 	self:Fire("ROUTE_CHANGED")
 	self:Fire("RUN_CHANGED")
 end
@@ -666,6 +680,7 @@ function DN:DetectInstance()
 				self.startPending = false
 			end
 		end
+		self:ApplyRouteSpots()
 		self:Fire("INSTANCE_CHANGED", inst)
 		self:Fire("RUN_CHANGED")
 	elseif inst then
