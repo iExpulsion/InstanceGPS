@@ -18,7 +18,7 @@ import collections, heapq, itertools, json, math, os, random, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import dbc, maptex, navmesh, navroute, patrols, wmofloors, sqlparse as sp
+import dbc, maptex, navmesh, navroute, patrols, paths, wmofloors, sqlparse as sp
 import config as cfg
 import overlay
 
@@ -790,6 +790,8 @@ def build(D, fixups):
             pick = on + unknown or c
             return sum(1 << f for f in set(pick))
 
+        if cfg.USE_NAVMESH:
+            paths.need("AC_MMAPS")
         navm = navmesh.NavMesh(cfg.MMAPS_DIR, mapid) if cfg.USE_NAVMESH else None
         if navm is not None and navm.ok:
             for centre_xy, radius, z in cfg.ADD_FLOORS.get(mapid, []):

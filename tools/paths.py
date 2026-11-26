@@ -4,7 +4,8 @@ Set them with environment variables, or put the same names in tools/paths_local.
 
     WOW_DIR = r"C:\Games\WoW 3.3.5a"                    # the client, with its Data folder
     MPQCLI = r"C:\Tools\mpqcli.exe"                     # https://github.com/TheGrayDot/mpqcli
-    AC_WORLD_SQL = r"C:\azerothcore\data\sql\base\db_world"
+    AC_WORLD_SQL = r"C:\azerothcore\world"              # the world tables, one <table>.sql each (BUILDING.md)
+    AC_MMAPS = r"C:\azerothcore\mmaps"                  # the server's navmesh
 """
 import os, tempfile
 
@@ -29,6 +30,7 @@ def _get(name):
 WOW_DIR = _get("WOW_DIR")
 MPQCLI = _get("MPQCLI")
 AC_WORLD_SQL = _get("AC_WORLD_SQL")
+AC_MMAPS = _get("AC_MMAPS")
 WOW_DATA = os.path.join(WOW_DIR, "Data") if WOW_DIR else None
 
 

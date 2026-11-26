@@ -11,7 +11,7 @@ The addon's Lua code works as-is. `InstanceGPS/Data.lua` (every instance's bosse
 | `test/` | Lua test harness: a mocked 3.3.5 API (`wowmock.lua`) that loads the addon and walks its routes |
 | `docs/` | This page and ROUTES.md |
 
-These folders are created by the build and aren't tracked: `cache/`, `mmaps/`, `dbc/`, `dbc_stock/`, `blpcache/`, `out/`, `png/`, `dist/`, and `tmp/` for the tools' temporary files.
+These folders are created by the build and aren't tracked: `cache/`, `dbc/`, `dbc_stock/`, `blpcache/`, `out/`, `png/`, `dist/`, and `tmp/` for the tools' temporary files.
 
 ## Setup
 
@@ -19,15 +19,17 @@ These folders are created by the build and aren't tracked: `cache/`, `mmaps/`, `
    ```
    pip install pillow lupa
    ```
-2. **A 3.3.5a client** (the one you play on, so its patches match), **[mpqcli](https://github.com/TheGrayDot/mpqcli)**, and an **[AzerothCore](https://github.com/azerothcore/azerothcore-wotlk)** checkout for its world SQL. Tell the tools where they are in `tools/paths_local.py` (not tracked) or with environment variables:
+2. **A 3.3.5a client** (the one you play on, so its patches match), **[mpqcli](https://github.com/TheGrayDot/mpqcli)**, and **[AzerothCore](https://github.com/azerothcore/azerothcore-wotlk)**'s world tables and navmesh. Tell the tools where they are in `tools/paths_local.py` (not tracked) or with environment variables:
    ```python
    WOW_DIR = r"C:\Games\WoW 3.3.5a"
    MPQCLI = r"C:\Tools\mpqcli.exe"
-   AC_WORLD_SQL = r"C:\azerothcore\data\sql\base\db_world"
+   AC_WORLD_SQL = r"C:\azerothcore\world"
+   AC_MMAPS = r"C:\azerothcore\mmaps"
    ```
-3. **The navmesh**, in `mmaps/`. It's the same mmaps an AzerothCore server uses. With AzerothCore's Docker setup, copy it from the client-data volume (its name starts with your Compose project's name; `docker volume ls` shows it):
+   `AC_WORLD_SQL` is a folder of one `<table>.sql` per world table, as `mysqldump` writes them. AzerothCore's own `data/sql/base/db_world` works, but it holds only the last database release: the fixes since are in `data/sql/updates`, which the build doesn't apply. A server's world database has them all once it has started, so dump it table by table (`mysqldump acore_world <table>` into `<table>.sql`). Its newer `creature` layout, one `id` with the other entries in `creature_multispawn`, is read as the older `id1` to `id3`.
+3. **The navmesh**, in `AC_MMAPS`. It's the same mmaps an AzerothCore server uses. With AzerothCore's Docker setup, copy it from the client-data volume (its name starts with your Compose project's name; `docker volume ls` shows it):
    ```
-   docker run --rm -v azerothcore-wotlk_ac-client-data:/data -v "%CD%\mmaps:/out" alpine sh -c "cp /data/mmaps/* /out/"
+   docker run --rm -v azerothcore-wotlk_ac-client-data:/data -v "C:\azerothcore\mmaps:/out" alpine sh -c "cp /data/mmaps/* /out/"
    ```
 4. **The client's DBCs** (from `tools/`). `dbc/` gets what the client actually loads, `dbc_stock/` Blizzard's own copies without add-on patches:
    ```

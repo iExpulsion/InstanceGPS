@@ -250,10 +250,12 @@ FRIENDLY_ON_DEFEAT = {'Hodir', 'Thorim', 'Freya', 'Mimiron', 'Algalon the Observ
 BRIDGE_MASK_PENALTY = 1.3
 MASK_MIN_ON_FLOOR = 0.6
 
-# AzerothCore navmesh (mmaps, copied from the client-data Docker volume). The spawn graph is the fallback.
+# AzerothCore navmesh (mmaps, from the client-data Docker volume; AC_MMAPS in tools/paths.py). The spawn graph is
+# the fallback.
 import os as _os
+import paths as _paths
 USE_NAVMESH = True
-MMAPS_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'mmaps')
+MMAPS_DIR = _paths.AC_MMAPS
 NAV_SIMPLIFY_EPS = 1.5
 
 # Teleporter destinations that only open once bosses are dead (from the AzerothCore gossip
