@@ -61,9 +61,27 @@ jobs:
           name: InstanceGPS-${{ steps.check.outputs.version }}
           path: dist/*.zip
 
+      # The release notes are the version's section of CHANGELOG.md: publishing a version without one fails here, while
+      # pull requests and manual runs only warn.
+      - name: Read the changelog
+        if: steps.check.outputs.build == 'true'
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+        run: |
+          tr -d '\r' < CHANGELOG.md | awk -v v="## $VERSION" '$0 == v { f = 1; next } /^## / { if (f) exit } f' \
+            | sed '/./,$!d' > notes.md
+          if [ -s notes.md ]; then
+            cat notes.md
+          elif [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo "::error::CHANGELOG.md has no '## $VERSION' section."
+            exit 1
+          else
+            echo "::warning::CHANGELOG.md has no '## $VERSION' section yet."
+          fi
+
       - name: Publish the release
         if: steps.check.outputs.build == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.check.outputs.version }}
-        run: gh release create "v$VERSION" dist/*.zip --target "$GITHUB_SHA" --title "InstanceGPS $VERSION" --generate-notes
+        run: gh release create "v$VERSION" dist/*.zip --target "$GITHUB_SHA" --title "InstanceGPS $VERSION" --notes-file notes.md
